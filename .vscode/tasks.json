@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Solution",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLSP.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build Extension",
+            "command": "yarn",
+            "args": [
+                "compile"
+            ],
+            "type": "shell",
+            "problemMatcher": "$tsc-watch",
+            "options": {
+                "cwd": "${workspaceFolder}/src/vscode-avalonia"
+            },
+            "dependsOn": [
+                "Build LSP Server"
+            ]
+        },
+        {
+            "label": "Build LSP Server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "--output",
+                "${workspaceFolder}/src/vscode-avalonia/avaloniaServer",
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

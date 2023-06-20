@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Launch Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/src/vscode-avalonia"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/src/vscode-avalonia/out/**/*.js"
+            ],
+            "preLaunchTask": "Build Extension",
+            "sourceMaps": true,
+        }
+    ]
+}
