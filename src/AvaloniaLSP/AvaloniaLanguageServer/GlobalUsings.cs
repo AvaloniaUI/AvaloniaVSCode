@@ -5,3 +5,4 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.DependencyInjection;
 global using OmniSharp.Extensions.LanguageServer.Server;
 global using Serilog;
+global using OmniSharp.Extensions.LanguageServer.Protocol;
