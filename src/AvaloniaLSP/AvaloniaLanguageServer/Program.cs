@@ -1,4 +1,5 @@
 ﻿using AvaloniaLanguageServer.Handlers;
+using AvaloniaLanguageServer.Models;
 
 namespace AvaloniaLanguageServer;
 
@@ -21,7 +22,7 @@ public class Program
             .ConfigureLogging(
                 b => b.AddSerilog(Log.Logger)
                 .AddLanguageProtocolLogging()
-                .SetMinimumLevel(LogLevel.Trace))
+                .SetMinimumLevel(LogLevel.Debug))
             .WithHandler<HoverHandler>()
             .WithHandler<CompletionHandler>()
             .WithServices(ConfigureServices);
@@ -33,15 +34,14 @@ public class Program
         services.AddSingleton(new DocumentSelector(
             new DocumentFilter { Pattern = "**/*.axaml" }
         ));
+        services.AddSingleton<Workspace>();
     }
 
     static void InitializeLogging()
     {
-        const string format = "{Timestamp:HH:mm:ss.fff} [{Level}] {Pid} {Message}{NewLine}{Exception}";
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .WriteTo.File("/Users/prashantvc/avaloniaServer.log", rollingInterval: RollingInterval.Hour, outputTemplate: format)
-            .MinimumLevel.Verbose()
+            .MinimumLevel.Debug()
             .CreateLogger();
     }
 }

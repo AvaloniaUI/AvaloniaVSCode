@@ -29,7 +29,22 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": []
+    "configuration": {
+      "title": "Avalonia LSP configuration",
+      "type": "object",
+      "properties": {
+        "axaml.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "messages",
+          "description": "Traces the communication between VS Code and the language server."
+        }
+      }
+    }
   },
   "languages": [
     {
