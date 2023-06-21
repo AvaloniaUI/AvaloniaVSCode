@@ -1,13 +1,8 @@
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-
 namespace AvaloniaLanguageServer.Handlers;
 
-public class CompletionHandler: CompletionHandlerBase
+public class CompletionHandler : CompletionHandlerBase
 {
-
-
+    
     public override Task<CompletionItem> Handle(CompletionItem request, CancellationToken cancellationToken)
     {
         return Task.FromResult(request);
@@ -15,6 +10,7 @@ public class CompletionHandler: CompletionHandlerBase
 
     public override Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Inside CompletionHandler: {Request}", request);
         var completions = new List<CompletionItem>
         {
             new()
@@ -50,9 +46,12 @@ public class CompletionHandler: CompletionHandlerBase
         };
     }
 
-    public CompletionHandler(DocumentSelector documentSelector)
+    public CompletionHandler(DocumentSelector documentSelector, ILogger<CompletionHandler> logger)
     {
         _documentSelector = documentSelector;
+        _logger = logger;
     }
+    
     readonly DocumentSelector _documentSelector;
+    readonly ILogger<CompletionHandler> _logger;
 }

@@ -1,7 +1,3 @@
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-
 namespace AvaloniaLanguageServer.Handlers;
 
 public sealed class HoverHandler: HoverHandlerBase
@@ -17,6 +13,8 @@ public sealed class HoverHandler: HoverHandlerBase
 
     public override Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Inside HoverHandler: {Request}", request);
+        
         var hover = new Hover
         {
             Contents = new MarkedStringsOrMarkupContent (
@@ -29,10 +27,12 @@ public sealed class HoverHandler: HoverHandlerBase
         return Task.FromResult<Hover?>(hover);
     }
 
-    public HoverHandler(DocumentSelector documentSelector)
+    public HoverHandler(DocumentSelector documentSelector, ILogger<HoverHandler> logger)
     {
         _documentSelector = documentSelector;
+        _logger = logger;
     }
     
     readonly DocumentSelector _documentSelector;
+    private readonly ILogger<HoverHandler> _logger;
 }
