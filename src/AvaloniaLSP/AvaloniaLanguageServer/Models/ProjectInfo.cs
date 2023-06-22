@@ -4,7 +4,7 @@ namespace AvaloniaLanguageServer.Models;
 
 public class ProjectInfo
 {
-    public static ProjectInfo? GetProjectInfo(DocumentUri uri)
+    public static async Task<ProjectInfo?> GetProjectInfoAsync(DocumentUri uri)
     {
         string path = Utils.FromUri(uri);
         string root = Directory.GetDirectoryRoot(path);
@@ -14,25 +14,38 @@ public class ProjectInfo
             return null;
 
         var files = Array.Empty<FileInfo>();
-
-        while (root!=current && files.Length == 0)
+        var info = await Task.Run(() =>
         {
-            var directory = new DirectoryInfo(current);
-            files = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
+            while (root != current && files.Length == 0)
+            {
+                var directory = new DirectoryInfo(current!);
+                files = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
 
-            if (files.Length == 0)
-                break;
-            
-            current = Path.GetDirectoryName(current);
-        }
+                if (files.Length != 0)
+                    break;
 
-        return files.Length == 0 ? null : new ProjectInfo(current);
+                current = Path.GetDirectoryName(current);
+            }
+
+            return files.Length != 0 ? new ProjectInfo(files.FirstOrDefault()?.FullName, current) : null;
+        });
+
+        return info;
     }
 
-    public ProjectInfo(string projectPath)
+    ProjectInfo(string? projectPath, string? projectDirectory)
     {
-        ProjectPath = projectPath;
+        ProjectPath = projectPath ?? throw new ArgumentNullException(nameof(projectPath));
+        ProjectDirectory = projectDirectory ?? throw new ArgumentNullException(nameof(projectDirectory));
     }
     
+    /// <summary>
+    /// Returns full project path
+    /// </summary>
     public string ProjectPath { get; }
+
+    /// <summary>
+    /// Project directory path
+    /// </summary>
+    public string ProjectDirectory { get; }
 }

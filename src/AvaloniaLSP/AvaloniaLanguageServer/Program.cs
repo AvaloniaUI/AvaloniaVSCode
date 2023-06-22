@@ -22,7 +22,7 @@ public class Program
             .ConfigureLogging(
                 b => b.AddSerilog(Log.Logger)
                 .AddLanguageProtocolLogging()
-                .SetMinimumLevel(LogLevel.Debug))
+                .SetMinimumLevel(LogLevel.Trace))
             .WithHandler<HoverHandler>()
             .WithHandler<CompletionHandler>()
             .WithServices(ConfigureServices);
@@ -41,7 +41,7 @@ public class Program
     {
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Verbose()
             .CreateLogger();
     }
 }

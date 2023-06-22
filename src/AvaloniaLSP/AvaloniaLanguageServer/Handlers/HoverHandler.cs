@@ -1,38 +1,49 @@
+using AvaloniaLanguageServer.Models;
+
 namespace AvaloniaLanguageServer.Handlers;
 
-public sealed class HoverHandler: HoverHandlerBase
+public sealed class HoverHandler : HoverHandlerBase
 {
-    protected override HoverRegistrationOptions CreateRegistrationOptions(HoverCapability capability, 
+    protected override HoverRegistrationOptions CreateRegistrationOptions(HoverCapability capability,
         ClientCapabilities clientCapabilities)
     {
+        _logger.LogInformation("Hover handlers: {Workspace}",
+            clientCapabilities.Workspace);
+
         return new()
         {
             DocumentSelector = _documentSelector
         };
     }
 
-    public override Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
+    public override async Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Inside HoverHandler: {Request}", request);
-        
+        if (_workspace.ProjectInfo == null)
+        {
+            await _workspace.InitializeAsync(request.TextDocument.Uri);
+        }
+
         var hover = new Hover
         {
-            Contents = new MarkedStringsOrMarkupContent (
+            Contents = new MarkedStringsOrMarkupContent(
                 new MarkupContent
                 {
                     Kind = MarkupKind.Markdown,
                     Value = $"# {DateTime.Now}"
                 })
         };
-        return Task.FromResult<Hover?>(hover);
+
+        return hover;
     }
 
-    public HoverHandler(DocumentSelector documentSelector, ILogger<HoverHandler> logger)
+    public HoverHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<HoverHandler> logger)
     {
+        _workspace = workspace;
         _documentSelector = documentSelector;
         _logger = logger;
     }
-    
+
     readonly DocumentSelector _documentSelector;
-    private readonly ILogger<HoverHandler> _logger;
+    readonly ILogger<HoverHandler> _logger;
+    readonly Workspace _workspace;
 }

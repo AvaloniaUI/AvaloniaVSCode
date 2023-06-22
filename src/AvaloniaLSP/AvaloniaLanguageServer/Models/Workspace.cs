@@ -6,8 +6,8 @@ public class Workspace
 {
     public ProjectInfo? ProjectInfo { get; private set; }
 
-    public void Initialize(DocumentUri uri)
+    public async Task InitializeAsync(DocumentUri uri)
     {
-        ProjectInfo = ProjectInfo.GetProjectInfo(uri);
+        ProjectInfo = await ProjectInfo.GetProjectInfoAsync(uri);
     }
 }
