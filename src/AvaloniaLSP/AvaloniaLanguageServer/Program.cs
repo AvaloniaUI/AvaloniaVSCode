@@ -25,6 +25,7 @@ public class Program
                 .SetMinimumLevel(LogLevel.Trace))
             .WithHandler<HoverHandler>()
             .WithHandler<CompletionHandler>()
+            .WithHandler<TextDocumentSyncHandler>()
             .WithServices(ConfigureServices);
     }
 
@@ -40,6 +41,7 @@ public class Program
     static void InitializeLogging()
     {
         Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("/Users/prashantvc/avalonia-logs/server.log", rollingInterval: RollingInterval.Hour)
             .Enrich.FromLogContext()
             .MinimumLevel.Verbose()
             .CreateLogger();

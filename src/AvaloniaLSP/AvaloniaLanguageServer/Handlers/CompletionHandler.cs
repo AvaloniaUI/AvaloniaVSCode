@@ -18,8 +18,17 @@ public class CompletionHandler : CompletionHandlerBase
     {
         _logger.LogInformation("** Inside CompletionHandler: {Request}", request);
 
+        string? text = _workspace.BufferService.GetLine(request.TextDocument.Uri, request.Position);
+        if (text == null)
+        {
+            return new CompletionList();
+        }
+
+
         var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
-        var set = _completionEngine.GetCompletions(metadata!, "<", 1);
+        var set = _completionEngine.GetCompletions(metadata!, text, request.Position.Character);
+
+        _logger.LogInformation("** COMPLETION SET COUNT: {Set}", set?.Completions.Count);
 
         var completions = set?.
             Completions.Select(p => new CompletionItem
@@ -33,21 +42,18 @@ public class CompletionHandler : CompletionHandlerBase
 
         if (completions == null)
             return new CompletionList(true);
-            
-        return new CompletionList(completions, isIncomplete: false);
+
+        return new CompletionList(completions);
     }
 
-    protected override CompletionRegistrationOptions CreateRegistrationOptions(CompletionCapability capability, ClientCapabilities clientCapabilities)
+    protected override CompletionRegistrationOptions CreateRegistrationOptions
+        (CompletionCapability capability, ClientCapabilities clientCapabilities)
     {
-        _logger.LogInformation("** CompletionRegistrationOptions: {Capability}", capability.ToString());
-
         return new()
         {
             DocumentSelector = _documentSelector,
-            ResolveProvider = true,
-            TriggerCharacters = new Container<string>(".", ":", "<", ">", "/", "\\"),
+            TriggerCharacters = new Container<string>("\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/"),
             AllCommitCharacters = new Container<string>("\n")
-
         };
     }
 
@@ -83,7 +89,7 @@ public class CompletionHandler : CompletionHandlerBase
     readonly Workspace _workspace;
     readonly DocumentSelector _documentSelector;
     readonly ILogger<CompletionHandler> _logger;
-    
+
     readonly CompletionEngine _completionEngine;
     readonly MetadataReader _metadataReader;
 }
