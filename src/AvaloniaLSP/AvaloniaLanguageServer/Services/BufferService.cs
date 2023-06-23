@@ -16,18 +16,8 @@ public class BufferService
     {
         _buffers.TryRemove(key, out _);
     }
-    
-    public string GetText(DocumentUri key)
-    {
-        return _buffers[key].GetText();
-    }
 
-    public string? GetLine(DocumentUri key, Position position)
-    {
-        return _buffers[key].GetLine(position);
-    }
-
-    public string? GetLinesTillPosition(DocumentUri key, Position position)
+    public string? GetTextTillPosition(DocumentUri key, Position position)
     {
         return _buffers[key].GetTextTillLine(position);
     }

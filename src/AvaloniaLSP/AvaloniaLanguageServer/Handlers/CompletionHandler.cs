@@ -18,7 +18,7 @@ public class CompletionHandler : CompletionHandlerBase
     {
         _logger.LogInformation("** Inside CompletionHandler: {Request}", request);
 
-        string? text = _workspace.BufferService.GetLine(request.TextDocument.Uri, request.Position);
+        string? text = _workspace.BufferService.GetTextTillPosition(request.TextDocument.Uri, request.Position);
         if (text == null)
         {
             return new CompletionList();
@@ -26,7 +26,7 @@ public class CompletionHandler : CompletionHandlerBase
 
 
         var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
-        var set = _completionEngine.GetCompletions(metadata!, text, request.Position.Character);
+        var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
 
         _logger.LogInformation("** COMPLETION SET COUNT: {Set}", set?.Completions.Count);
 
@@ -37,6 +37,7 @@ public class CompletionHandler : CompletionHandlerBase
                 Detail = p.Description,
                 InsertText = p.InsertText,
                 Kind = GetCompletionItemKind(p.Kind)
+
             });
 
 
@@ -52,7 +53,7 @@ public class CompletionHandler : CompletionHandlerBase
         return new()
         {
             DocumentSelector = _documentSelector,
-            TriggerCharacters = new Container<string>("\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/"),
+            TriggerCharacters = new Container<string>("\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/", "{"),
             AllCommitCharacters = new Container<string>("\n")
         };
     }
@@ -82,8 +83,24 @@ public class CompletionHandler : CompletionHandlerBase
 
     static CompletionItemKind GetCompletionItemKind(CompletionKind completionKind)
     {
-        bool success = Enum.TryParse(Enum.GetName(completionKind), out CompletionItemKind kind);
-        return success ? kind : CompletionItemKind.Text;
+        string name = Enum.GetName(completionKind) ?? string.Empty;
+
+        var result = name switch
+        {
+            _ when name.Contains("Property") => CompletionItemKind.Property,
+            _ when name.Contains("Event") => CompletionItemKind.Event,
+            _ when name.Contains("Namespace") || name.Contains("VS_XMLNS") => CompletionItemKind.Module,
+            _ when name.Contains("MarkupExtension") => CompletionItemKind.Class,
+            _ => GetRest(name)
+        };
+
+        return result;
+
+        CompletionItemKind GetRest(string enumName)
+        {
+            bool success = Enum.TryParse(enumName, out CompletionItemKind kind);
+            return success ? kind : CompletionItemKind.Text;
+        }
     }
 
     readonly Workspace _workspace;

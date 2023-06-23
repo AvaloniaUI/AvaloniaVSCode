@@ -8,8 +8,11 @@ public sealed class Buffer
     public string? GetTextTillLine(Position position)
     {
         string[] lines = _text.Split(NewLine);
-        var lineRange = lines[0..position.Line];
-        return string.Join(NewLine, lineRange);
+        var linesRange = string.Join(string.Empty, lines[0..position.Line]);
+        string lastLine = lines[position.Line];
+        
+        string rangeText = linesRange.Replace(NewLine, string.Empty);
+        return rangeText + lastLine.Substring(0, position.Character);
     }
     
     public string? GetLine(Position position)
@@ -26,5 +29,5 @@ public sealed class Buffer
     }
 
     readonly string _text;
-    const string NewLine = "\n";
+    const string NewLine = "\r\n";
 }
