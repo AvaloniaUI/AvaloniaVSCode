@@ -11,7 +11,7 @@
         <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="17.2.8" />
         <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.7" />
         <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.7" />
-        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="serilog" Version="3.0.1" />
         
     </ItemGroup>
 

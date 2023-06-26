@@ -1,12 +1,11 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import * as lsp from "vscode-languageclient/node";
+import { getDotnetRuntimePath, getLanguageServerPath as getAvaloniaServerPath } from "./runtimeManager";
 
-export async function createLanguageService(context: vscode.ExtensionContext): Promise<lsp.LanguageClient> {
+export async function createLanguageService(): Promise<lsp.LanguageClient> {
 	logger.appendLine("Creating language service");
-	const serverPath = getLSPPath(context);
 
-	const serverOptions = getServerStartupOptions(serverPath);
+	const serverOptions = await getServerStartupOptions();
 	let outputChannel = logger;
 
 	const clientOptions: lsp.LanguageClientOptions = {
@@ -35,8 +34,10 @@ export async function createLanguageService(context: vscode.ExtensionContext): P
 	return client;
 }
 
-function getServerStartupOptions(serverPath: string): lsp.ServerOptions {
-	const dotnetCommandPath = "/usr/local/share/dotnet/dotnet";
+async function getServerStartupOptions(): Promise<lsp.ServerOptions> {
+	const dotnetCommandPath = await getDotnetRuntimePath();
+	const serverPath = getAvaloniaServerPath();
+
 	const executable = {
 		command: dotnetCommandPath,
 		args: [serverPath],
@@ -49,11 +50,6 @@ function getServerStartupOptions(serverPath: string): lsp.ServerOptions {
 		run: executable,
 		debug: executable,
 	};
-}
-
-function getLSPPath(context: vscode.ExtensionContext) {
-	const serverPath = context.asAbsolutePath("avaloniaServer/AvaloniaLanguageServer.dll");
-	return path.resolve(serverPath);
 }
 
 export const avaloniaFileExtension = "axaml";

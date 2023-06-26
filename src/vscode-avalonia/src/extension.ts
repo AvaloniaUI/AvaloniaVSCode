@@ -14,7 +14,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 
-	languageClient = await createLanguageService(context);
+	languageClient = await createLanguageService();
 
 	try {
 		logger.appendLine("Starting Avalonia Language Server...");
