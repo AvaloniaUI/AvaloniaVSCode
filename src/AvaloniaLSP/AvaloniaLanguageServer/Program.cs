@@ -19,8 +19,7 @@ public class Program
         options
             .WithInput(Console.OpenStandardInput())
             .WithOutput(Console.OpenStandardOutput())
-            .ConfigureLogging(
-                b => b.AddSerilog(Log.Logger)
+            .ConfigureLogging(p=>p
                 .AddLanguageProtocolLogging()
                 .SetMinimumLevel(LogLevel.Trace))
             .WithHandler<HoverHandler>()
@@ -41,7 +40,6 @@ public class Program
     static void InitializeLogging()
     {
         Log.Logger = new LoggerConfiguration()
-            .WriteTo.File("/Users/prashantvc/avalonia-logs/server.log", rollingInterval: RollingInterval.Hour)
             .Enrich.FromLogContext()
             .MinimumLevel.Verbose()
             .CreateLogger();
