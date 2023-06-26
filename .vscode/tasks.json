@@ -14,6 +14,18 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Only Extension",
+            "command": "yarn",
+            "args": [
+                "compile"
+            ],
+            "type": "shell",
+            "problemMatcher": "$tsc-watch",
+            "options": {
+                "cwd": "${workspaceFolder}/src/vscode-avalonia"
+            },
+        },
+        {
             "label": "Build Extension",
             "command": "yarn",
             "args": [
