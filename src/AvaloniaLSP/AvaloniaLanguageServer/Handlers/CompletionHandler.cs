@@ -20,12 +20,23 @@ public class CompletionHandler : CompletionHandlerBase
 
         string? text = _workspace.BufferService.GetTextTillPosition(request.TextDocument.Uri, request.Position);
         if (text == null)
-        {
             return new CompletionList();
+
+        var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
+        if (metadata == null)
+        {
+            return new CompletionList(new[]
+            {
+                new CompletionItem
+                {
+                    Label = "Build the project",
+                    Documentation = new StringOrMarkupContent("You must build project to populate auto-complete items"),
+                    Kind = CompletionItemKind.Unit
+                }
+            });
         }
 
 
-        var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
         var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
 
         _logger.LogInformation("** COMPLETION SET COUNT: {Set}", set?.Completions.Count);
@@ -65,9 +76,13 @@ public class CompletionHandler : CompletionHandlerBase
             await _workspace.InitializeAsync(uri);
         }
 
-        string assemblyPath = Path.Combine(_workspace.ProjectInfo!.ProjectDirectory, "bin/Debug/net6.0/TestApp.dll");
-        var metaDataLoad = await Task.Run(() => _metadataReader.GetForTargetAssembly(assemblyPath));
+        if (!_workspace.ProjectInfo!.IsAssemblyExist)
+            return null;
 
+        string assemblyPath = _workspace.ProjectInfo!.AssemblyPath;
+        _logger.LogCritical("** Assembly Path: {Assembly}", assemblyPath);
+
+        var metaDataLoad = await Task.Run(() => _metadataReader.GetForTargetAssembly(assemblyPath));
         return metaDataLoad;
     }
 

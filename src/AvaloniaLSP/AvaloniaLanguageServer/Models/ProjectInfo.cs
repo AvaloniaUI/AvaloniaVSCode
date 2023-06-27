@@ -38,7 +38,7 @@ public class ProjectInfo
         ProjectPath = projectPath ?? throw new ArgumentNullException(nameof(projectPath));
         ProjectDirectory = projectDirectory ?? throw new ArgumentNullException(nameof(projectDirectory));
     }
-    
+
     /// <summary>
     /// Returns full project path
     /// </summary>
@@ -47,5 +47,12 @@ public class ProjectInfo
     /// <summary>
     /// Project directory path
     /// </summary>
-    public string ProjectDirectory { get; }
+    private string ProjectDirectory { get; }
+
+    public string AssemblyPath =>
+         Path.Combine(ProjectDirectory, "bin", "Debug", "net6.0",
+            Path.GetFileNameWithoutExtension(ProjectPath) + ".dll");
+
+    public bool IsAssemblyExist => Path.Exists(AssemblyPath);
+
 }
