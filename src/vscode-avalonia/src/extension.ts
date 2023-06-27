@@ -3,25 +3,25 @@
 import * as vscode from "vscode";
 import * as lsp from "vscode-languageclient/node";
 import { createLanguageService, logger } from "./client";
+import { registerAvaloniaCommands } from "./commands";
+import { CommandManager } from "./commandManager";
 
 let languageClient: lsp.LanguageClient | null = null;
 
 export async function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "mylspclient" is now active!');
-	let disposable = vscode.commands.registerCommand("mylspclient.helloWorld", () => {
-		vscode.window.showInformationMessage("Hello World from MyLSPClient!");
-	});
+	console.log('Congratulations, your extension "Avalonia UI" is now active!');
+	const commandManager = new CommandManager();
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(registerAvaloniaCommands(commandManager));
 
-	languageClient = await createLanguageService();
-
-	try {
-		logger.appendLine("Starting Avalonia Language Server...");
-		await languageClient.start();
-	} catch (error) {
-		logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
-	}
+	// TODO: Uncomment this when the language server is ready
+	// languageClient = await createLanguageService();
+	// try {
+	// 	logger.appendLine("Starting Avalonia Language Server...");
+	// 	await languageClient.start();
+	// } catch (error) {
+	// 	logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
+	// }
 }
 
 // This method is called when your extension is deactivated

@@ -29,6 +29,55 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "avalonia.showPreview",
+        "title": "Show preview",
+        "category": "Avalonia"
+      },
+      {
+        "command": "avalonia.showPreviewToSide",
+        "title": "Show preview to the side",
+        "category": "Avalonia",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "avalonia.showSource",
+        "title": "Show source",
+        "category": "Avalonia",
+        "icon": "$(go-to-file)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorLangId == xml",
+          "command": "avalonia.showPreviewToSide",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceLangId == xml",
+          "command": "avalonia.showPreview",
+          "group": "1_open"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId == xml",
+          "command": "avalonia.showPreview",
+          "group": "1_open"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "avalonia.showPreview",
+          "when": "resourceLangId == xml",
+          "group": "Avalonia"
+        }
+      ]
+    },
     "configuration": {
       "title": "Avalonia LSP configuration",
       "type": "object",
@@ -50,6 +99,7 @@
     {
       "id": "axaml",
       "aliases": [
+        "Avalonia",
         "axaml",
         "AXAML"
       ],
