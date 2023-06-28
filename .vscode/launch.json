@@ -10,7 +10,7 @@
             "outFiles": [
                 "${workspaceFolder}/src/vscode-avalonia/out/**/*.js"
             ],
-            "preLaunchTask": "Only Extension",
+            "preLaunchTask": "Build Extension",
             "sourceMaps": true,
         },
         {
@@ -23,7 +23,7 @@
             "outFiles": [
                 "${workspaceFolder}/src/vscode-avalonia/out/**/*.js"
             ],
-            "preLaunchTask": "Build Extension",
+            "preLaunchTask": "Only Extension",
             "sourceMaps": true,
         }
     ]

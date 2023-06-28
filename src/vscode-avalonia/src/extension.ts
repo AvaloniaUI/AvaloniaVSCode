@@ -12,7 +12,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "Avalonia UI" is now active!');
 	const commandManager = new CommandManager();
 
-	context.subscriptions.push(registerAvaloniaCommands(commandManager));
+	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
 	// TODO: Uncomment this when the language server is ready
 	// languageClient = await createLanguageService();
