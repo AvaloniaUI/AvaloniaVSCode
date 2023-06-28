@@ -24,7 +24,11 @@ export class AvaloniaPreviewPanel {
 		const panel = vscode.window.createWebviewPanel(
 			AvaloniaPreviewPanel.viewType,
 			"Preview",
-			column || vscode.ViewColumn.One
+			column || vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				retainContextWhenHidden: true,
+			}
 		);
 
 		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context);
@@ -34,7 +38,8 @@ export class AvaloniaPreviewPanel {
 		const filename = path.basename(filePath.fsPath);
 		this._panel.title = `${filename} - Preview`;
 		this._panel.iconPath = this.getPreviewPanelIcon(this._context);
-		this._panel.webview.html = `<h2>${filePath.fsPath}</h2>`;
+
+		this._panel.webview.html = this._getHtmlForWebview(filePath);
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, context: vscode.ExtensionContext) {
@@ -66,6 +71,21 @@ export class AvaloniaPreviewPanel {
 				x.dispose();
 			}
 		}
+	}
+
+	_getHtmlForWebview(fileUri: vscode.Uri) {
+		return /*html*/ `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Document</title>
+		</head>
+		<body>
+			<p>${fileUri}</p>
+		</body>
+		</html>`;
 	}
 
 	getPreviewPanelIcon(context: vscode.ExtensionContext) {
