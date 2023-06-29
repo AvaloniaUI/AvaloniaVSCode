@@ -11,8 +11,12 @@ export class AvaloniaPreviewPanel {
 	private readonly _context: vscode.ExtensionContext;
 	private _disposables: vscode.Disposable[] = [];
 
-	public static createOrShow(fileUri: vscode.Uri, context: vscode.ExtensionContext) {
-		const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
+	public static createOrShow(
+		fileUri: vscode.Uri,
+		context: vscode.ExtensionContext,
+		previewColumn?: vscode.ViewColumn
+	) {
+		const column = previewColumn || vscode.window.activeTextEditor?.viewColumn;
 
 		// If we already have a panel, show it.
 		if (AvaloniaPreviewPanel.currentPanel) {
@@ -21,15 +25,10 @@ export class AvaloniaPreviewPanel {
 		}
 
 		// Otherwise, create a new panel.
-		const panel = vscode.window.createWebviewPanel(
-			AvaloniaPreviewPanel.viewType,
-			"Preview",
-			column || vscode.ViewColumn.One,
-			{
-				enableScripts: true,
-				retainContextWhenHidden: true,
-			}
-		);
+		const panel = vscode.window.createWebviewPanel(AvaloniaPreviewPanel.viewType, "Preview", column!, {
+			enableScripts: true,
+			retainContextWhenHidden: true,
+		});
 
 		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context);
 	}
