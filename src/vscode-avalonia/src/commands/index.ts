@@ -9,7 +9,6 @@ export function registerAvaloniaCommands(
 ): vscode.Disposable {
 	commandManager.register(new ShowPreviewCommand(context));
 	commandManager.register(new ShowPreviewToSideCommand(context));
-	commandManager.register(new ShowSourceCommand());
-
+	//commandManager.register(new ShowSourceCommand());
 	return commandManager;
 }

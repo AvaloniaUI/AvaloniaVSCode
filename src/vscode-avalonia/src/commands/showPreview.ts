@@ -30,10 +30,7 @@ function showPreview(context: vscode.ExtensionContext, settings: ShowPreviewSett
 		resource = vscode.window.activeTextEditor.document.uri;
 	}
 
-	if (!(resource instanceof vscode.Uri)) {
-		if (!vscode.window.activeTextEditor) {
-			return vscode.commands.executeCommand("avalonia.showSource");
-		}
+	if (!(resource instanceof vscode.Uri) && !vscode.window.activeTextEditor) {
 		return;
 	}
 

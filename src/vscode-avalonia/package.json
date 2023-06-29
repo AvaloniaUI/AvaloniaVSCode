@@ -41,12 +41,6 @@
         "title": "Show preview to the side",
         "category": "Avalonia",
         "icon": "$(open-preview)"
-      },
-      {
-        "command": "avalonia.showSource",
-        "title": "Show source",
-        "category": "Avalonia",
-        "icon": "$(go-to-file)"
       }
     ],
     "menus": {
@@ -55,11 +49,6 @@
           "when": "editorLangId == xml",
           "command": "avalonia.showPreviewToSide",
           "group": "navigation"
-        },
-        {
-          "command": "avalonia.showSource",
-          "when": "activeWebviewPanelId == 'avalonia.preview'",
-          "group": "navigation"
         }
       ],
       "editor/title/context": [
@@ -67,11 +56,6 @@
           "when": "resourceLangId == xml",
           "command": "avalonia.showPreview",
           "group": "1_open"
-        },
-        {
-          "command": "avalonia.showSource",
-          "when": "activeWebviewPanelId == 'avalonia.preview'",
-          "group": "navigation"
         }
       ],
       "editor/context": [
@@ -86,11 +70,6 @@
           "command": "avalonia.showPreview",
           "when": "resourceLangId == xml",
           "group": "Avalonia"
-        },
-        {
-          "command": "avalonia.showSource",
-          "when": "activeWebviewPanelId == 'avalonia.preview'",
-          "group": "navigation"
         }
       ]
     },
