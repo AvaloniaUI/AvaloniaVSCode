@@ -4,6 +4,7 @@ import { logger } from "../util/constants";
 import path = require("path");
 import * as fs from "fs-extra";
 import { spawn } from "child_process";
+import { PreviewerParams } from "../models/PreviewerParams";
 
 export class CreateDesignerAssets implements Command {
 	public readonly id = "avalonia.createDesignerAssets";
@@ -17,33 +18,41 @@ export class CreateDesignerAssets implements Command {
 
 		if (fs.pathExistsSync(projectPath)) {
 			const output = await generateDesignerAssets(projectPath);
-			const e = fs.existsSync(output);
 			console.log(output);
 		}
 	}
 }
 
-function generateDesignerAssets(projectPath: string): Promise<string> {
+function generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
 	return new Promise((resolve, reject) => {
-		const dotnet = spawn("dotnet", ["build", projectPath, "/t:GeneratePreviewerAssets"]);
+		const dotnet = spawn("dotnet", [
+			"build",
+			projectPath,
+			"/t:GeneratePreviewerAssets",
+			"/consoleloggerparameters:NoSummary",
+		]);
 
 		let output: string[] = [];
 		dotnet.stdout.on("data", (data) => {
-			output.push(data.toString().trim());
+			output.push(...data.toString().trim().split("\n"));
 		});
 
 		dotnet.on("close", (code) => {
 			if (code === 0) {
-				const pathline = output.find((line) => line.includes("PreviewerPath"));
-				if (!pathline) {
-					reject("PreviewerPath not found in output");
-					return;
-				}
-				const path = pathline.split("=")[1].trim();
-				resolve(path);
+				const previewParams = parseBuildOutput(output);
+				resolve(previewParams);
 			} else {
 				reject(`dotnet build exited with code ${code}`);
 			}
 		});
 	});
+}
+
+function parseBuildOutput(output: string[]): PreviewerParams {
+	return {
+		previewerPath: output.getValue("PreviewerPath"),
+		targetPath: output.getValue("TargetPath"),
+		projectRuntimeConfigFilePath: output.getValue("ProjectRuntimeConfigFilePath"),
+		projectDepsFilePath: output.getValue("ProjectDepsFilePath"),
+	};
 }
