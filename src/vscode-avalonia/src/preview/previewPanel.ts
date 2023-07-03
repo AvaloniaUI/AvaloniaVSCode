@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { logger } from "../client";
 import path = require("path");
+import { logger } from "../util/constants";
 
 export class AvaloniaPreviewPanel {
 	public static currentPanel: AvaloniaPreviewPanel | undefined;

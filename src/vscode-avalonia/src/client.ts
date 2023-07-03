@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as lsp from "vscode-languageclient/node";
 import { getDotnetRuntimePath, getLanguageServerPath as getAvaloniaServerPath } from "./runtimeManager";
+import { avaloniaLanguageId, logger } from "./util/constants";
 
 export async function createLanguageService(): Promise<lsp.LanguageClient> {
 	logger.appendLine("Creating language service");
@@ -51,7 +52,3 @@ async function getServerStartupOptions(): Promise<lsp.ServerOptions> {
 		debug: executable,
 	};
 }
-
-export const avaloniaFileExtension = "axaml";
-export const avaloniaLanguageId = "axaml";
-export const logger = vscode.window.createOutputChannel("Avalonia Client");

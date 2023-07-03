@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../client";
 import { AvaloniaPreviewPanel } from "../preview/previewPanel";
+import { logger } from "../util/constants";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}

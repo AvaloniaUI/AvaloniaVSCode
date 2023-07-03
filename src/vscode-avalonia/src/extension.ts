@@ -2,9 +2,10 @@
 
 import * as vscode from "vscode";
 import * as lsp from "vscode-languageclient/node";
-import { createLanguageService, logger } from "./client";
+import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
+import { logger } from "./util/constants";
 
 let languageClient: lsp.LanguageClient | null = null;
 

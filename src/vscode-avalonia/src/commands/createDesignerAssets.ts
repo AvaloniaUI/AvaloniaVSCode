@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../client";
+import { logger } from "../util/constants";
 
 export class CreateDesignerAssets implements Command {
 	public readonly id = "avalonia.createDesignerAssets";
