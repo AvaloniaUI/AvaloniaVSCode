@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
 import { logger } from "../util/constants";
+import path = require("path");
+import * as fs from "fs-extra";
+import { spawn } from "child_process";
 
 export class CreateDesignerAssets implements Command {
 	public readonly id = "avalonia.createDesignerAssets";
@@ -9,18 +12,38 @@ export class CreateDesignerAssets implements Command {
 			logger.appendLine("No active workspace.");
 			return;
 		}
+		const workspaceFolder = vscode.workspace.workspaceFolders[0];
+		const projectPath = path.join(workspaceFolder.uri.fsPath, `${workspaceFolder.name}.csproj`);
 
-		await vscode.commands.executeCommand("dotnet.restore.all");
-
-		// const files = await vscode.workspace.findFiles("**/launch.json");
-		// logger.appendLine(`Found ${files.length} launch.json files.`);
-
-		// const wsedit = new vscode.WorkspaceEdit();
-		// const wsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-		// const filePath = vscode.Uri.file(wsPath + "/.avalonia/DesignerAssets.target");
-		// wsedit.createFile(filePath, { ignoreIfExists: true });
-		// vscode.workspace.applyEdit(wsedit);
-
-		// vscode.window.showInformationMessage(`Created a new file: ${filePath}`);
+		if (fs.pathExistsSync(projectPath)) {
+			const output = await generateDesignerAssets(projectPath);
+			const e = fs.existsSync(output);
+			console.log(output);
+		}
 	}
+}
+
+function generateDesignerAssets(projectPath: string): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const dotnet = spawn("dotnet", ["build", projectPath, "/t:GeneratePreviewerAssets"]);
+
+		let output: string[] = [];
+		dotnet.stdout.on("data", (data) => {
+			output.push(data.toString().trim());
+		});
+
+		dotnet.on("close", (code) => {
+			if (code === 0) {
+				const pathline = output.find((line) => line.includes("PreviewerPath"));
+				if (!pathline) {
+					reject("PreviewerPath not found in output");
+					return;
+				}
+				const path = pathline.split("=")[1].trim();
+				resolve(path);
+			} else {
+				reject(`dotnet build exited with code ${code}`);
+			}
+		});
+	});
 }
