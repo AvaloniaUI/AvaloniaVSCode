@@ -38,7 +38,7 @@ export class AvaloniaPreviewPanel {
 		this._panel.title = `${filename} - Preview`;
 		this._panel.iconPath = this.getPreviewPanelIcon(this._context);
 
-		this._panel.webview.html = this._getHtmlForWebview(filePath);
+		this._panel.webview.html = this.getHtmlForWebview(filePath);
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, context: vscode.ExtensionContext) {
@@ -50,34 +50,26 @@ export class AvaloniaPreviewPanel {
 		this._context = context;
 		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-		this._panel.webview.onDidReceiveMessage(
-			(message) => {
-				logger.appendLine(`Received message from webview: ${message.command}`);
-				switch (message.command) {
-					case "generateAssets":
-						vscode.commands.executeCommand("avalonia.createDesignerAssets").then(() => {
-							logger.appendLine("Assets generated.");
-						});
-						break;
-				}
-			},
-			null,
-			this._disposables
-		);
+		this._panel.webview.onDidReceiveMessage(this.handleMessage, null, this._disposables);
 	}
 
-	public dispose() {
-		AvaloniaPreviewPanel.currentPanel = undefined;
-		this._panel.dispose();
-		while (this._disposables.length) {
-			const x = this._disposables.pop();
-			if (x) {
-				x.dispose();
-			}
+	async handleMessage(message: { command: string }) {
+		logger.appendLine(`Received message from webview: ${message.command}`);
+		switch (message.command) {
+			case "generateAssets":
+				await vscode.window.withProgress(
+					{ location: vscode.ProgressLocation.Window, cancellable: false },
+					async (progress) => {
+						progress.report({ message: "Generating preview assets" });
+						await vscode.commands.executeCommand("avalonia.createDesignerAssets");
+						logger.appendLine("Previwer assets generated");
+					}
+				);
+				break;
 		}
 	}
 
-	_getHtmlForWebview(fileUri: vscode.Uri) {
+	getHtmlForWebview(fileUri: vscode.Uri) {
 		const extensionUri = this._context.extensionUri;
 
 		const webviewScript = this._panel.webview.asWebviewUri(
@@ -136,5 +128,16 @@ export class AvaloniaPreviewPanel {
 			text += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
 		return text;
+	}
+
+	public dispose() {
+		AvaloniaPreviewPanel.currentPanel = undefined;
+		this._panel.dispose();
+		while (this._disposables.length) {
+			const x = this._disposables.pop();
+			if (x) {
+				x.dispose();
+			}
+		}
 	}
 }

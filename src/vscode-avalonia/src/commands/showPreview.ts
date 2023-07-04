@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
 import { AvaloniaPreviewPanel } from "../preview/previewPanel";
-import { logger } from "../util/constants";
+import { AppConstants, logger } from "../util/constants";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
@@ -10,6 +10,7 @@ export class ShowPreviewCommand implements Command {
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
 		for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
 			showPreview(this._context, { sideBySide: false }, uri);
+			vscode.commands.executeCommand(AppConstants.previewProcessCommandId, uri);
 		}
 	}
 }
@@ -20,6 +21,7 @@ export class ShowPreviewToSideCommand implements Command {
 
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
 		showPreview(this._context, { sideBySide: true }, mainUri);
+		vscode.commands.executeCommand(AppConstants.previewProcessCommandId, mainUri);
 	}
 }
 

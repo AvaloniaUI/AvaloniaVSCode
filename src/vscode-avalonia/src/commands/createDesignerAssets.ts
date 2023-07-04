@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../util/constants";
+import { AppConstants, logger } from "../util/constants";
 import path = require("path");
 import * as fs from "fs-extra";
 import { spawn } from "child_process";
@@ -18,9 +18,12 @@ export class CreateDesignerAssets implements Command {
 
 		if (fs.pathExistsSync(projectPath)) {
 			const output = await generateDesignerAssets(projectPath);
+			this._context.workspaceState.update(AppConstants.previewerParamState, output);
 			logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
 		}
 	}
+
+	constructor(private readonly _context: vscode.ExtensionContext) {}
 }
 
 function generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
