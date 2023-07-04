@@ -18,7 +18,7 @@ export class CreateDesignerAssets implements Command {
 
 		if (fs.pathExistsSync(projectPath)) {
 			const output = await generateDesignerAssets(projectPath);
-			console.log(output);
+			logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
 		}
 	}
 }
@@ -34,7 +34,9 @@ function generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
 
 		let output: string[] = [];
 		dotnet.stdout.on("data", (data) => {
-			output.push(...data.toString().trim().split("\n"));
+			const outputString = data.toString();
+			logger.appendLine(outputString);
+			output.push(...outputString.trim().split("\n"));
 		});
 
 		dotnet.on("close", (code) => {
