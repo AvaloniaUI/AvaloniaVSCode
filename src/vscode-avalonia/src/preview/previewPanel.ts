@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import path = require("path");
 import { logger } from "../util/constants";
+import { AppConstants } from "../util/AppConstants";
+import { PreviewerData } from "../models/previewerSettings";
 
 export class AvaloniaPreviewPanel {
 	public static currentPanel: AvaloniaPreviewPanel | undefined;
@@ -33,12 +35,16 @@ export class AvaloniaPreviewPanel {
 		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context);
 	}
 
-	public update(filePath: vscode.Uri) {
+	public update(filePath: vscode.Uri, previewerData: PreviewerData) {
 		const filename = path.basename(filePath.fsPath);
 		this._panel.title = `${filename} - Preview`;
 		this._panel.iconPath = this.getPreviewPanelIcon(this._context);
 
-		this._panel.webview.html = this.getHtmlForWebview(filePath);
+		if (previewerData.assetsAvailable && previewerData.previewerUrl) {
+			this.getWebview().html = this.getPreviewerHtml(previewerData.previewerUrl);
+		} else {
+			this.getWebview().html = this.getHtmlForWebview(filePath, previewerData.assetsAvailable ?? false);
+		}
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, context: vscode.ExtensionContext) {
@@ -49,8 +55,9 @@ export class AvaloniaPreviewPanel {
 		this._panel = panel;
 		this._context = context;
 		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+		this.handleMessage = this.handleMessage.bind(this);
 
-		this._panel.webview.onDidReceiveMessage(this.handleMessage, null, this._disposables);
+		this.getWebview().onDidReceiveMessage(this.handleMessage, null, this._disposables);
 	}
 
 	async handleMessage(message: { command: string }) {
@@ -63,16 +70,34 @@ export class AvaloniaPreviewPanel {
 						progress.report({ message: "Generating preview assets" });
 						await vscode.commands.executeCommand("avalonia.createDesignerAssets");
 						logger.appendLine("Previwer assets generated");
+						await vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, this._fileUri);
 					}
 				);
 				break;
 		}
 	}
 
-	getHtmlForWebview(fileUri: vscode.Uri) {
+	getPreviewerHtml(url: string) {
+		return /*html*/ `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Document</title>
+		</head>
+		<body>
+			<div id="app">
+				<iframe src="${url}" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+			</div>
+		</body>
+		</html>`;
+	}
+
+	getHtmlForWebview(fileUri: vscode.Uri, assetsAvailable: boolean) {
 		const extensionUri = this._context.extensionUri;
 
-		const webviewScript = this._panel.webview.asWebviewUri(
+		const webviewScript = this.getWebview().asWebviewUri(
 			vscode.Uri.joinPath(extensionUri, "out", "preview", "previewScripts.js")
 		);
 
@@ -101,7 +126,7 @@ export class AvaloniaPreviewPanel {
 			</style>
 		</head>
 		<body>
-			<div id="details">
+			<div id="details" data-assets="${assetsAvailable}">
 				<div id="description">
 					Previewer is unavailable. Please build the project to enable it.
 				</div>
@@ -109,7 +134,7 @@ export class AvaloniaPreviewPanel {
 					<button id="generateAssets">Generate Assets</button>
 				</div>
 			</div>
-			<Script nonce="${nonce}" src="${webviewScript}" type="module"></Script>
+			<script nonce="${nonce}" src="${webviewScript}" type="module"></script>
 		</body>
 		</html>`;
 	}
@@ -129,6 +154,8 @@ export class AvaloniaPreviewPanel {
 		}
 		return text;
 	}
+
+	getWebview = () => this._panel.webview;
 
 	public dispose() {
 		AvaloniaPreviewPanel.currentPanel = undefined;

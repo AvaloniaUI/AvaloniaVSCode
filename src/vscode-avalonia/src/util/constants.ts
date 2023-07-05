@@ -13,9 +13,3 @@ Array.prototype.getValue = function (this: string[], property: string): string {
 	const value = this.find((line) => line.includes(property));
 	return value ? value.split("=")[1].trim() : "";
 };
-
-export class AppConstants {
-	static readonly previewerParamState = "previewerParams";
-	static readonly previewProcessCommandId = "avalonia.previewProcess";
-	static readonly localhost = "http://127.0.0.1";
-}

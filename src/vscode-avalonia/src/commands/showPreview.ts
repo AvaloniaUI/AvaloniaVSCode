@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
 import { AvaloniaPreviewPanel } from "../preview/previewPanel";
-import { AppConstants, logger } from "../util/constants";
+import { logger } from "../util/constants";
+import { AppConstants } from "../util/AppConstants";
+import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
@@ -9,44 +11,44 @@ export class ShowPreviewCommand implements Command {
 
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
 		for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
-			showPreview(this._context, { sideBySide: false }, uri);
-			vscode.commands.executeCommand(AppConstants.previewProcessCommandId, uri);
+			//TODO: enable later
+			// showPreview(this._context, { sideBySide: false }, uri);
+			// vscode.commands.executeCommand(AppConstants.previewProcessCommandId, uri);
 		}
 	}
 }
 
 export class ShowPreviewToSideCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
-	public readonly id = "avalonia.showPreviewToSide";
+	public readonly id = AppConstants.showPreviewToSideCommand;
 
-	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
-		showPreview(this._context, { sideBySide: true }, mainUri);
-		vscode.commands.executeCommand(AppConstants.previewProcessCommandId, mainUri);
+	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
+		var previewerData = await vscode.commands.executeCommand<PreviewerData>(
+			AppConstants.previewProcessCommandId,
+			mainUri
+		);
+		showPreview(this._context, { sideBySide: true }, previewerData);
 	}
 }
 
-function showPreview(context: vscode.ExtensionContext, settings: ShowPreviewSettings, uri?: vscode.Uri) {
+function showPreview(context: vscode.ExtensionContext, settings: ShowPreviewSettings, previewerData: PreviewerData) {
+	let uri = previewerData.file;
+
 	logger.appendLine(`Show Preview to side: ${uri?.toString() ?? "no mainUri"}`);
-	let resource = uri;
-	if (!(resource instanceof vscode.Uri) && vscode.window.activeTextEditor) {
-		resource = vscode.window.activeTextEditor.document.uri;
+	if (!(uri instanceof vscode.Uri) && vscode.window.activeTextEditor) {
+		uri = vscode.window.activeTextEditor.document.uri;
 	}
 
-	if (!(resource instanceof vscode.Uri) && !vscode.window.activeTextEditor) {
+	if (!(uri instanceof vscode.Uri) && !vscode.window.activeTextEditor) {
 		return;
 	}
 
 	const resourceColumn =
 		(vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
 
-	if (resource) {
+	if (uri) {
 		const column = settings.sideBySide ? vscode.ViewColumn.Beside : resourceColumn;
-		AvaloniaPreviewPanel.createOrShow(resource, context, column);
-		AvaloniaPreviewPanel.currentPanel?.update(resource);
+		AvaloniaPreviewPanel.createOrShow(uri, context, column);
+		AvaloniaPreviewPanel.currentPanel?.update(uri, previewerData);
 	}
-}
-
-interface ShowPreviewSettings {
-	readonly sideBySide?: boolean;
-	readonly locked?: boolean;
 }

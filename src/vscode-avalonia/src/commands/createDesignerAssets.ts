@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { AppConstants, logger } from "../util/constants";
+import { logger } from "../util/constants";
+import { AppConstants } from "../util/AppConstants";
 import path = require("path");
 import * as fs from "fs-extra";
 import { spawn } from "child_process";
