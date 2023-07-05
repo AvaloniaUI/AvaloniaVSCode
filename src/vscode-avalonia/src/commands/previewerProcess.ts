@@ -43,27 +43,30 @@ export class PreviewerProcess implements Command {
 			previewParams.targetPath,
 		];
 
-		const previewer = spawn("dotnet", previewerArags, {
-			env: process.env,
-			shell: true,
+		return new Promise((resolve, reject) => {
+			const previewer = spawn("dotnet", previewerArags, {
+				env: process.env,
+				shell: true,
+			});
+
+			previewer.on("spawn", () => {
+				logger.appendLine(`Previewer process started with args: ${previewerArags}`);
+				resolve({ file: mainUri, previewerUrl: htmlUrl, assetsAvailable: true });
+			});
+
+			previewer.stdout.on("data", (data) => {
+				logger.appendLine(data.toString());
+			});
+
+			previewer.stderr.on("data", (data) => {
+				logger.appendLine(data.toString());
+				reject(data.toString());
+			});
+
+			previewer.on("close", (code) => {
+				logger.appendLine(`Previewer process exited with code ${code}`);
+			});
 		});
-
-		previewer.stdout.on("data", (data) => {
-			logger.appendLine(data.toString());
-		});
-
-		previewer.stderr.on("data", (data) => {
-			logger.appendLine(data.toString());
-			console.error(data.toString());
-		});
-
-		previewer.on("close", (code) => {
-			logger.appendLine(`Previewer process exited with code ${code}`);
-		});
-
-		logger.appendLine(`Starting previewer process pid: ${previewer.pid}`);
-
-		return { file: mainUri, previewerUrl: htmlUrl, assetsAvailable: true };
 	}
 
 	canStartPreviewerProcess(previewParams: PreviewerParams) {

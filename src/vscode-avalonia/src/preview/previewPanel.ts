@@ -69,7 +69,6 @@ export class AvaloniaPreviewPanel {
 					async (progress) => {
 						progress.report({ message: "Generating preview assets" });
 						await vscode.commands.executeCommand("avalonia.createDesignerAssets");
-						logger.appendLine("Previwer assets generated");
 						await vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, this._fileUri);
 					}
 				);
@@ -85,10 +84,21 @@ export class AvaloniaPreviewPanel {
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>Document</title>
+			<style>
+				html, body {
+					margin: 0;
+					padding: 0;
+				}
+				iframe {
+					width: 100%;
+					height: 100%;
+					border: none;
+				}
+			</style>
 		</head>
 		<body>
 			<div id="app">
-				<iframe src="${url}" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+				<iframe src="${url}" frameborder="0"></iframe>
 			</div>
 		</body>
 		</html>`;
