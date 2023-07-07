@@ -8,6 +8,7 @@ import { PreviewProcessManager } from "../previewProcessManager";
 export class AvaloniaPreviewPanel {
 	public static currentPanel: AvaloniaPreviewPanel | undefined;
 	public static readonly viewType = "avalonia.preview";
+	public currentUrl = "";
 
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _context: vscode.ExtensionContext;
@@ -38,15 +39,18 @@ export class AvaloniaPreviewPanel {
 		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context, processManager);
 	}
 
-	public update(filePath: vscode.Uri, previewerData: PreviewerData) {
+	public async update(filePath: vscode.Uri, previewerData: PreviewerData) {
 		const filename = path.basename(filePath.fsPath);
 		this._panel.title = `${filename} - Preview`;
 		this._panel.iconPath = this.getPreviewPanelIcon(this._context);
 
 		if (previewerData.assetsAvailable && previewerData.previewerUrl) {
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 			this.getWebview().html = this.getPreviewerHtml(previewerData.previewerUrl);
+			this.currentUrl = previewerData.previewerUrl;
 		} else {
 			this.getWebview().html = this.getHtmlForWebview(filePath, previewerData.assetsAvailable ?? false);
+			this.currentUrl = "";
 		}
 	}
 
