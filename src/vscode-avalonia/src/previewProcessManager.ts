@@ -34,8 +34,8 @@ export class PreviewProcessManager {
 		const { pid } = this._processes.get(file) ?? {};
 		if (pid) {
 			// Remove the process from the map and kill the process
-			this._processes.delete(file);
 			process.kill(pid);
+			this._processes.delete(file);
 		}
 	}
 

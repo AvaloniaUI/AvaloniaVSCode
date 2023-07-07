@@ -6,6 +6,7 @@ import path = require("path");
 import * as fs from "fs-extra";
 import { spawn } from "child_process";
 import { PreviewerParams } from "../models/PreviewerParams";
+import { DOMParser, XMLSerializer } from "xmldom";
 
 export class CreateDesignerAssets implements Command {
 	public readonly id = "avalonia.createDesignerAssets";
@@ -15,50 +16,101 @@ export class CreateDesignerAssets implements Command {
 			return;
 		}
 		const workspaceFolder = vscode.workspace.workspaceFolders[0];
-		const projectPath = path.join(workspaceFolder.uri.fsPath, `${workspaceFolder.name}.csproj`);
+		const wsPath = workspaceFolder.uri;
+		const projectPath = path.join(wsPath.fsPath, `${workspaceFolder.name}.csproj`);
 
 		if (fs.pathExistsSync(projectPath)) {
-			const output = await generateDesignerAssets(projectPath);
+			await this.addPreviewerTarget(projectPath, wsPath);
+			const output = await this.generateDesignerAssets(projectPath);
 			this._context.workspaceState.update(AppConstants.previewerParamState, output);
 			logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
 		}
 	}
 
+	async addPreviewerTarget(projectPath: string, wsPath: vscode.Uri) {
+		const targetFile = vscode.Uri.joinPath(wsPath, ".avalonia", "AvaloniaPreviewer.target");
+
+		if (!fs.existsSync(targetFile.fsPath)) {
+			const previewerAssetPath = vscode.Uri.joinPath(
+				this._context.extensionUri,
+				"assets",
+				"AvaloniaPreviewer.target"
+			);
+
+			fs.emptyDirSync(path.dirname(targetFile.fsPath));
+			fs.copyFileSync(previewerAssetPath.fsPath, targetFile.fsPath, fs.constants.COPYFILE_EXCL);
+		}
+
+		const relativeTargetPath = path.relative(wsPath.fsPath, targetFile.fsPath);
+		await this.updateProjectFile(projectPath, relativeTargetPath);
+		logger.appendLine(`Created a new file: ${relativeTargetPath}`);
+	}
+
+	async updateProjectFile(projectPath: string, targetPath: string) {
+		var data = await fs.readFile(projectPath, "utf8");
+
+		const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(data, "application/xml");
+
+		const imports = xmlDoc.getElementsByTagName("Import");
+		const previewerTarget = Array.from(imports).find((i) =>
+			i.getAttribute("Project")?.includes("AvaloniaPreviewer.target")
+		);
+
+		if (previewerTarget) {
+			return;
+		}
+
+		const updatedXml = this.createNewImportElement(xmlDoc, targetPath);
+		fs.writeFileSync(projectPath, updatedXml, "utf8");
+	}
+
+	createNewImportElement(xmlDoc: Document, targetPath: string) {
+		const newImport = xmlDoc.createElement("Import");
+		newImport.setAttribute("Project", targetPath);
+		newImport.setAttribute("Condition", "'$(Configuration)' == 'Debug'");
+
+		const targetParentNode = xmlDoc.getElementsByTagName("Project")[0];
+		targetParentNode?.appendChild(newImport);
+
+		const updatedXml = new XMLSerializer().serializeToString(xmlDoc);
+		return updatedXml;
+	}
+
+	generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
+		return new Promise((resolve, reject) => {
+			const dotnet = spawn("dotnet", [
+				"build",
+				projectPath,
+				"/t:GeneratePreviewerAssets",
+				"/consoleloggerparameters:NoSummary",
+			]);
+
+			let output: string[] = [];
+			dotnet.stdout.on("data", (data) => {
+				const outputString = data.toString();
+				logger.appendLine(outputString);
+				output.push(...outputString.trim().split("\n"));
+			});
+
+			dotnet.on("close", (code) => {
+				if (code === 0) {
+					const previewParams = this.parseBuildOutput(output);
+					resolve(previewParams);
+				} else {
+					reject(`dotnet build exited with code ${code}`);
+				}
+			});
+		});
+	}
+
+	parseBuildOutput(output: string[]): PreviewerParams {
+		return {
+			previewerPath: output.getValue("PreviewerPath"),
+			targetPath: output.getValue("TargetPath"),
+			projectRuntimeConfigFilePath: output.getValue("ProjectRuntimeConfigFilePath"),
+			projectDepsFilePath: output.getValue("ProjectDepsFilePath"),
+		};
+	}
 	constructor(private readonly _context: vscode.ExtensionContext) {}
-}
-
-function generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
-	return new Promise((resolve, reject) => {
-		const dotnet = spawn("dotnet", [
-			"build",
-			projectPath,
-			"/t:GeneratePreviewerAssets",
-			"/consoleloggerparameters:NoSummary",
-		]);
-
-		let output: string[] = [];
-		dotnet.stdout.on("data", (data) => {
-			const outputString = data.toString();
-			logger.appendLine(outputString);
-			output.push(...outputString.trim().split("\n"));
-		});
-
-		dotnet.on("close", (code) => {
-			if (code === 0) {
-				const previewParams = parseBuildOutput(output);
-				resolve(previewParams);
-			} else {
-				reject(`dotnet build exited with code ${code}`);
-			}
-		});
-	});
-}
-
-function parseBuildOutput(output: string[]): PreviewerParams {
-	return {
-		previewerPath: output.getValue("PreviewerPath"),
-		targetPath: output.getValue("TargetPath"),
-		projectRuntimeConfigFilePath: output.getValue("ProjectRuntimeConfigFilePath"),
-		projectDepsFilePath: output.getValue("ProjectDepsFilePath"),
-	};
 }
