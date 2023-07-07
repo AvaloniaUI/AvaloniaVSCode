@@ -4,6 +4,7 @@ import { AvaloniaPreviewPanel } from "../preview/previewPanel";
 import { logger } from "../util/constants";
 import { AppConstants } from "../util/AppConstants";
 import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
+import { PreviewProcessManager } from "../previewProcessManager";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
@@ -19,7 +20,10 @@ export class ShowPreviewCommand implements Command {
 }
 
 export class ShowPreviewToSideCommand implements Command {
-	constructor(private readonly _context: vscode.ExtensionContext) {}
+	constructor(
+		private readonly _context: vscode.ExtensionContext,
+		private readonly _processManager: PreviewProcessManager
+	) {}
 	public readonly id = AppConstants.showPreviewToSideCommand;
 
 	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
@@ -27,11 +31,17 @@ export class ShowPreviewToSideCommand implements Command {
 			AppConstants.previewProcessCommandId,
 			mainUri
 		);
-		showPreview(this._context, { sideBySide: true }, previewerData);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+		showPreview(this._context, { sideBySide: true }, previewerData, this._processManager);
 	}
 }
 
-function showPreview(context: vscode.ExtensionContext, settings: ShowPreviewSettings, previewerData: PreviewerData) {
+function showPreview(
+	context: vscode.ExtensionContext,
+	settings: ShowPreviewSettings,
+	previewerData: PreviewerData,
+	processManager: PreviewProcessManager
+) {
 	let uri = previewerData.file;
 
 	logger.appendLine(`Show Preview to side: ${uri?.toString() ?? "no mainUri"}`);
@@ -48,7 +58,7 @@ function showPreview(context: vscode.ExtensionContext, settings: ShowPreviewSett
 
 	if (uri) {
 		const column = settings.sideBySide ? vscode.ViewColumn.Beside : resourceColumn;
-		AvaloniaPreviewPanel.createOrShow(uri, context, column);
+		AvaloniaPreviewPanel.createOrShow(uri, context, processManager, column);
 		AvaloniaPreviewPanel.currentPanel?.update(uri, previewerData);
 	}
 }

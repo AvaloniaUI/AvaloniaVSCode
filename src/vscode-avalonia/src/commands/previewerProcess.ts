@@ -8,6 +8,7 @@ import { spawn } from "child_process";
 import * as portfinder from "portfinder";
 import * as fs from "fs";
 import { PreviewerData } from "../models/previewerSettings";
+import { PreviewProcessManager } from "../previewProcessManager";
 
 export class PreviewerProcess implements Command {
 	id: string = AppConstants.previewProcessCommandId;
@@ -27,6 +28,12 @@ export class PreviewerProcess implements Command {
 		if (!this.canStartPreviewerProcess(previewParams)) {
 			logger.appendLine(`Previewer path not found: ${previewParams.previewerPath}`);
 			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
+		}
+
+		const previewerData = this._processManager.getPreviewerData(mainUri.toString());
+		if (previewerData) {
+			logger.appendLine(`Previewer process already started: ${previewerData.pid}`);
+			return previewerData;
 		}
 
 		const port = await portfinder.getPortPromise();
@@ -51,7 +58,9 @@ export class PreviewerProcess implements Command {
 
 			previewer.on("spawn", () => {
 				logger.appendLine(`Previewer process started with args: ${previewerArags}`);
-				resolve({ file: mainUri, previewerUrl: htmlUrl, assetsAvailable: true });
+				let previewerData = { file: mainUri, previewerUrl: htmlUrl, assetsAvailable: true, pid: previewer.pid };
+				this._processManager.addProcess(xamlFile, previewerData);
+				resolve(previewerData);
 			});
 
 			previewer.stdout.on("data", (data) => {
@@ -78,5 +87,8 @@ export class PreviewerProcess implements Command {
 
 		return result;
 	}
-	constructor(private readonly _context: vscode.ExtensionContext) {}
+	constructor(
+		private readonly _context: vscode.ExtensionContext,
+		private readonly _processManager: PreviewProcessManager
+	) {}
 }

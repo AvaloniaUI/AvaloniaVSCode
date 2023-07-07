@@ -3,6 +3,7 @@ import path = require("path");
 import { logger } from "../util/constants";
 import { AppConstants } from "../util/AppConstants";
 import { PreviewerData } from "../models/previewerSettings";
+import { PreviewProcessManager } from "../previewProcessManager";
 
 export class AvaloniaPreviewPanel {
 	public static currentPanel: AvaloniaPreviewPanel | undefined;
@@ -11,10 +12,12 @@ export class AvaloniaPreviewPanel {
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _context: vscode.ExtensionContext;
 	private _disposables: vscode.Disposable[] = [];
+	private _processManager: PreviewProcessManager;
 
 	public static createOrShow(
 		fileUri: vscode.Uri,
 		context: vscode.ExtensionContext,
+		processManager: PreviewProcessManager,
 		previewColumn?: vscode.ViewColumn
 	) {
 		const column = previewColumn || vscode.window.activeTextEditor?.viewColumn;
@@ -32,7 +35,7 @@ export class AvaloniaPreviewPanel {
 			localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "out")],
 		});
 
-		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context);
+		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, fileUri, context, processManager);
 	}
 
 	public update(filePath: vscode.Uri, previewerData: PreviewerData) {
@@ -47,13 +50,16 @@ export class AvaloniaPreviewPanel {
 		}
 	}
 
-	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, context: vscode.ExtensionContext) {
-		AvaloniaPreviewPanel.currentPanel = new AvaloniaPreviewPanel(panel, extensionUri, context);
-	}
-
-	private constructor(panel: vscode.WebviewPanel, readonly _fileUri: vscode.Uri, context: vscode.ExtensionContext) {
+	private constructor(
+		panel: vscode.WebviewPanel,
+		readonly _fileUri: vscode.Uri,
+		context: vscode.ExtensionContext,
+		processManager: PreviewProcessManager
+	) {
 		this._panel = panel;
 		this._context = context;
+		this._processManager = processManager;
+
 		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 		this.handleMessage = this.handleMessage.bind(this);
 
@@ -168,6 +174,7 @@ export class AvaloniaPreviewPanel {
 	getWebview = () => this._panel.webview;
 
 	public dispose() {
+		this._processManager.killPreviewProcess();
 		AvaloniaPreviewPanel.currentPanel = undefined;
 		this._panel.dispose();
 		while (this._disposables.length) {

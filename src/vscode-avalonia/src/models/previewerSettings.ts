@@ -6,6 +6,7 @@ export interface ShowPreviewSettings {
 
 export interface PreviewerData {
 	readonly file: vscode.Uri;
+	readonly pid?: number;
 	readonly previewerUrl?: string;
 	readonly assetsAvailable?: boolean;
 }
