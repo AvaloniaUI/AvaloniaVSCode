@@ -42,7 +42,9 @@ public class CompletionHandler : CompletionHandlerBase
         _logger.LogInformation("** COMPLETION SET COUNT: {Set}", set?.Completions.Count);
 
         var completions = set?.
-            Completions.Select(p => new CompletionItem
+            Completions
+            .Where(p => !p.DisplayText.Contains('`'))
+            .Select(p => new CompletionItem
             {
                 Label = p.DisplayText,
                 Detail = p.Description,

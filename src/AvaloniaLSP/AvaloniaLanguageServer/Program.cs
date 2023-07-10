@@ -19,10 +19,9 @@ public class Program
         options
             .WithInput(Console.OpenStandardInput())
             .WithOutput(Console.OpenStandardOutput())
-            .ConfigureLogging(p=>p
+            .ConfigureLogging(p => p
                 .AddLanguageProtocolLogging()
                 .SetMinimumLevel(LogLevel.Trace))
-            .WithHandler<HoverHandler>()
             .WithHandler<CompletionHandler>()
             .WithHandler<TextDocumentSyncHandler>()
             .WithServices(ConfigureServices);
