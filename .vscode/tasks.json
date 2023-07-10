@@ -23,7 +23,7 @@
             "problemMatcher": "$tsc-watch",
             "options": {
                 "cwd": "${workspaceFolder}/src/vscode-avalonia"
-            },
+            }
         },
         {
             "label": "Build Extension",
@@ -50,9 +50,24 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "--output",
-                "${workspaceFolder}/src/vscode-avalonia/avaloniaServer",
+                "${workspaceFolder}/src/vscode-avalonia/avaloniaServer"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Package Extension",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/.vscode/package.sh", //package command
+                "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj", //project to build
+                "${workspaceFolder}/src/vscode-avalonia/avaloniaServer", //output directory
+                "${workspaceFolder}/output/" //package directory
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/vscode-avalonia" //working directory
+            },
+            "problemMatcher": []
         }
     ]
 }
