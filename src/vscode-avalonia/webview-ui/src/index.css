@@ -11,3 +11,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+#designframe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #181818;
+  }
+  #root {
+    background-image: url('media/grid-dark.png');
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: whitesmoke;
+  }
+  #root {
+    background-image: url('media/grid-light.png');
+  }
+
+}
+
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+
+

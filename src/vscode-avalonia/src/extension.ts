@@ -6,6 +6,7 @@ import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
 import { logger } from "./util/constants";
+import { DesignerPanel } from "./panels/DesignerPanel";
 
 let languageClient: lsp.LanguageClient | null = null;
 
@@ -14,6 +15,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	const commandManager = new CommandManager();
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
+
+	// Create the show hello world command
+	const showHelloWorldCommand = vscode.commands.registerCommand("hello-world.showHelloWorld", () => {
+		DesignerPanel.render(context.extensionUri);
+	});
+
+	// Add command to the extension context
+	context.subscriptions.push(showHelloWorldCommand);
 
 	languageClient = await createLanguageService();
 	try {
