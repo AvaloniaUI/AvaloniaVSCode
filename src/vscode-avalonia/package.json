@@ -32,11 +32,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "avalonia.showCRAPreview",
-        "title": "CRA Preview",
-        "category": "Avalonia"
-      },
-      {
         "command": "avalonia.createDesignerAssets",
         "title": "Create designer assets",
         "category": "Avalonia"

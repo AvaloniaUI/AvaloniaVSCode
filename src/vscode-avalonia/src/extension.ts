@@ -16,21 +16,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
-	// Create the show hello world command
-	const showHelloWorldCommand = vscode.commands.registerCommand("avalonia.showCRAPreview", () => {
-		DesignerPanel.render(context.extensionUri);
-	});
-
-	// Add command to the extension context
-	context.subscriptions.push(showHelloWorldCommand);
-
-	languageClient = await createLanguageService();
-	try {
-		logger.appendLine("Starting Avalonia Language Server...");
-		await languageClient.start();
-	} catch (error) {
-		logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
-	}
+	// languageClient = await createLanguageService();
+	// try {
+	// 	logger.appendLine("Starting Avalonia Language Server...");
+	// 	await languageClient.start();
+	// } catch (error) {
+	// 	logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
+	// }
 }
 
 // This method is called when your extension is deactivated

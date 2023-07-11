@@ -3,11 +3,11 @@ import { getUri } from "../util/getUri";
 import { getNonce } from "../util/getNouce";
 
 /**
- * This class manages the state and behavior of HelloWorld webview panels.
+ * This class manages the state and behavior of DesignerPanel webview panels.
  *
  * It contains all the data and methods for:
  *
- * - Creating and rendering HelloWorld webview panels
+ * - Creating and rendering DesignerPanel webview panels
  * - Properly cleaning up and disposing of webview resources when the panel is closed
  * - Setting the HTML (and by proxy CSS/JavaScript) content of the webview panel
  * - Setting message listeners so data can be passed between the webview and extension
@@ -18,7 +18,7 @@ export class DesignerPanel {
 	private _disposables: Disposable[] = [];
 
 	/**
-	 * The HelloWorldPanel class private constructor (called only from the render method).
+	 * The DesignerPanel class private constructor (called only from the render method).
 	 *
 	 * @param panel A reference to the webview panel
 	 * @param extensionUri The URI of the directory containing the extension
@@ -43,30 +43,17 @@ export class DesignerPanel {
 	 *
 	 * @param extensionUri The URI of the directory containing the extension.
 	 */
-	public static render(extensionUri: Uri) {
+	public static render(extensionUri: Uri, previewColumn: ViewColumn = ViewColumn.Active) {
+		const column = previewColumn || window.activeTextEditor?.viewColumn;
 		if (DesignerPanel.currentPanel) {
 			// If the webview panel already exists reveal it
-			DesignerPanel.currentPanel._panel.reveal(ViewColumn.One);
+			DesignerPanel.currentPanel._panel.reveal(column);
 		} else {
 			// If a webview panel does not already exist create and show a new one
-			const panel = window.createWebviewPanel(
-				// Panel view type
-				"showDesigner",
-				// Panel title
-				"Designer",
-				// The editor column the panel should be displayed in
-				ViewColumn.One,
-				// Extra panel configurations
-				{
-					// Enable JavaScript in the webview
-					enableScripts: true,
-					// Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-					localResourceRoots: [
-						Uri.joinPath(extensionUri, "out"),
-						Uri.joinPath(extensionUri, "webview-ui/build"),
-					],
-				}
-			);
+			const panel = window.createWebviewPanel("showDesigner", "Preview", column, {
+				enableScripts: true,
+				localResourceRoots: [Uri.joinPath(extensionUri, "out"), Uri.joinPath(extensionUri, "webview-ui/build")],
+			});
 
 			DesignerPanel.currentPanel = new DesignerPanel(panel, extensionUri);
 		}
@@ -127,6 +114,10 @@ export class DesignerPanel {
     `;
 	}
 
+	public postMessage(message: { command: string }) {
+		this._panel.webview.postMessage(message);
+	}
+
 	/**
 	 * Sets up an event listener to listen for messages passed from the webview context and
 	 * executes code based on the message that is recieved.
@@ -142,11 +133,11 @@ export class DesignerPanel {
 
 				switch (command) {
 					case "hello":
-						// Code that should run in response to the hello message command
 						window.showInformationMessage(text);
 						return;
-					// Add more switch case statements here as more webview message commands
-					// are created within the webview context (i.e. inside media/main.js)
+					case "alert":
+						window.showInformationMessage(text);
+						this._panel.webview.postMessage({ command: "alert", data: "Hello from VS Code!" });
 				}
 			},
 			undefined,
