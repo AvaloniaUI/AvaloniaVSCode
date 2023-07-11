@@ -17,7 +17,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
 	// Create the show hello world command
-	const showHelloWorldCommand = vscode.commands.registerCommand("hello-world.showHelloWorld", () => {
+	const showHelloWorldCommand = vscode.commands.registerCommand("avalonia.showCRAPreview", () => {
 		DesignerPanel.render(context.extensionUri);
 	});
 
