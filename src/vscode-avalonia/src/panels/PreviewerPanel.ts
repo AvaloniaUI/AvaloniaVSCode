@@ -77,6 +77,10 @@ export class PreviewerPanel {
 		}
 
 		PreviewerPanel.currentPanel._panel.title = `Preview ${path.basename(fileUri.fsPath)}`;
+		PreviewerPanel.currentPanel._panel.iconPath = {
+			dark: vscode.Uri.joinPath(extensionUri, "media", "preview-dark.svg"),
+			light: vscode.Uri.joinPath(extensionUri, "media", "preview-light.svg"),
+		};
 	}
 
 	/**

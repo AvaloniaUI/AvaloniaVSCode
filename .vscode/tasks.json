@@ -52,6 +52,7 @@
                 "cwd": "${workspaceFolder}/src/vscode-avalonia"
             },
             "dependsOn": [
+                "Build webview",
                 "Build LSP Server"
             ]
         },
