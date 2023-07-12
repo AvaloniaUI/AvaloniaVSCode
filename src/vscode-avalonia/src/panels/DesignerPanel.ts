@@ -1,6 +1,8 @@
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
+import * as vscode from "vscode";
 import { getUri } from "../util/getUri";
 import { getNonce } from "../util/getNouce";
+import { logger } from "../util/constants";
+import { AppConstants } from "../util/AppConstants";
 
 /**
  * This class manages the state and behavior of DesignerPanel webview panels.
@@ -14,8 +16,8 @@ import { getNonce } from "../util/getNouce";
  */
 export class DesignerPanel {
 	public static currentPanel: DesignerPanel | undefined;
-	private readonly _panel: WebviewPanel;
-	private _disposables: Disposable[] = [];
+	private readonly _panel: vscode.WebviewPanel;
+	private _disposables: vscode.Disposable[] = [];
 
 	/**
 	 * The DesignerPanel class private constructor (called only from the render method).
@@ -23,12 +25,16 @@ export class DesignerPanel {
 	 * @param panel A reference to the webview panel
 	 * @param extensionUri The URI of the directory containing the extension
 	 */
-	private constructor(panel: WebviewPanel, extensionUri: Uri) {
+	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
 		this._panel = panel;
 
 		// Set an event listener to listen for when the panel is disposed (i.e. when the user closes
 		// the panel or when the panel is closed programmatically)
 		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+
+		this._panel.onDidChangeViewState((e) => {
+			logger.appendLine(`onDidChangeViewState ${e.webviewPanel.active}`);
+		});
 
 		// Set the HTML content for the webview panel
 		this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
@@ -43,16 +49,20 @@ export class DesignerPanel {
 	 *
 	 * @param extensionUri The URI of the directory containing the extension.
 	 */
-	public static render(extensionUri: Uri, previewColumn: ViewColumn = ViewColumn.Active) {
-		const column = previewColumn || window.activeTextEditor?.viewColumn;
+	public static render(extensionUri: vscode.Uri, previewColumn: vscode.ViewColumn = vscode.ViewColumn.Active) {
+		const column = previewColumn || vscode.window.activeTextEditor?.viewColumn;
 		if (DesignerPanel.currentPanel) {
 			// If the webview panel already exists reveal it
 			DesignerPanel.currentPanel._panel.reveal(column);
 		} else {
 			// If a webview panel does not already exist create and show a new one
-			const panel = window.createWebviewPanel("showDesigner", "Preview", column, {
+			const panel = vscode.window.createWebviewPanel("showDesigner", "Preview", column, {
 				enableScripts: true,
-				localResourceRoots: [Uri.joinPath(extensionUri, "out"), Uri.joinPath(extensionUri, "webview-ui/build")],
+				retainContextWhenHidden: true,
+				localResourceRoots: [
+					vscode.Uri.joinPath(extensionUri, "out"),
+					vscode.Uri.joinPath(extensionUri, "webview-ui/build"),
+				],
 			});
 
 			DesignerPanel.currentPanel = new DesignerPanel(panel, extensionUri);
@@ -64,6 +74,7 @@ export class DesignerPanel {
 	 */
 	public dispose() {
 		DesignerPanel.currentPanel = undefined;
+		logger.appendLine("Previwer panel disposed");
 
 		// Dispose of the current webview panel
 		this._panel.dispose();
@@ -88,7 +99,7 @@ export class DesignerPanel {
 	 * @returns A template string literal containing the HTML that should be
 	 * rendered within the webview panel
 	 */
-	private _getWebviewContent(webview: Webview, extensionUri: Uri) {
+	private _getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
 		// The CSS file from the React build output
 		const stylesUri = getUri(webview, extensionUri, ["webview-ui", "build", "static", "css", "main.css"]);
 		// The JS file from the React build output
@@ -114,7 +125,7 @@ export class DesignerPanel {
     `;
 	}
 
-	public postMessage(message: { command: string }) {
+	public postMessage(message: { command: string; payload?: any }) {
 		this._panel.webview.postMessage(message);
 	}
 
@@ -125,19 +136,22 @@ export class DesignerPanel {
 	 * @param webview A reference to the extension webview
 	 * @param context A reference to the extension context
 	 */
-	private _setWebviewMessageListener(webview: Webview) {
+	private _setWebviewMessageListener(webview: vscode.Webview) {
 		webview.onDidReceiveMessage(
-			(message: any) => {
+			async (message: any) => {
 				const command = message.command;
 				const text = message.text;
-
 				switch (command) {
-					case "hello":
-						window.showInformationMessage(text);
+					case "generateAssetsCommand":
+						vscode.window.showInformationMessage(text);
+						await vscode.window.withProgress(
+							{ location: vscode.ProgressLocation.Window, cancellable: false },
+							async (progress) => {
+								progress.report({ message: "Generating preview assets" });
+								await vscode.commands.executeCommand(AppConstants.previewerAssetsCommandId);
+							}
+						);
 						return;
-					case "alert":
-						window.showInformationMessage(text);
-						this._panel.webview.postMessage({ command: "alert", data: "Hello from VS Code!" });
 				}
 			},
 			undefined,

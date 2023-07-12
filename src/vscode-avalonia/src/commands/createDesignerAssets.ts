@@ -9,7 +9,7 @@ import { PreviewerParams } from "../models/PreviewerParams";
 import { DOMParser, XMLSerializer } from "xmldom";
 
 export class CreateDesignerAssets implements Command {
-	public readonly id = "avalonia.createDesignerAssets";
+	public readonly id = AppConstants.previewerAssetsCommandId;
 	async execute(...args: any[]): Promise<void> {
 		if (!vscode.workspace.workspaceFolders) {
 			logger.appendLine("No active workspace.");
@@ -82,6 +82,7 @@ export class CreateDesignerAssets implements Command {
 			const dotnet = spawn("dotnet", [
 				"build",
 				projectPath,
+				"-nologo",
 				"/t:GeneratePreviewerAssets",
 				"/consoleloggerparameters:NoSummary",
 			]);

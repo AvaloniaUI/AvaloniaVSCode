@@ -67,5 +67,10 @@ function showPreview(
 		// }
 
 		DesignerPanel.render(context.extensionUri, column);
+		if (previewerData.assetsAvailable && previewerData.previewerUrl) {
+			DesignerPanel.currentPanel?.postMessage({ command: "preview", payload: previewerData.file.fsPath });
+		} else {
+			DesignerPanel.currentPanel?.postMessage({ command: "generateAssets", payload: false });
+		}
 	}
 }

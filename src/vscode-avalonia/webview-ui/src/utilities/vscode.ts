@@ -72,6 +72,19 @@ class VSCodeAPIWrapper {
 			return newState;
 		}
 	}
+
+	/**
+	 * Registers a callback function to be called when a message is received from the extension.
+	 *
+	 * @param callback A function to be called when a message is received. The function receives a single argument,
+	 * which is the message payload.
+	 *
+	 * @returns A function that can be called to unregister the callback.
+	 */
+	public onMessage(callback: (message: any) => void): () => void {
+		window.addEventListener("message", callback);
+		return () => window.removeEventListener("message", callback);
+	}
 }
 
 // Exports class singleton to prevent multiple invocations of acquireVsCodeApi.
