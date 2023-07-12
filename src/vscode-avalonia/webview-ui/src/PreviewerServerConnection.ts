@@ -33,6 +33,10 @@ export class PreviewerServerConnection {
 		this.conn.send(message.toString());
 	}
 
+	public closeConnection() {
+		this.conn.close();
+	}
+
 	constructor(uri: string) {
 		this.currentFrame = null;
 		var conn = (this.conn = new WebSocket(uri));

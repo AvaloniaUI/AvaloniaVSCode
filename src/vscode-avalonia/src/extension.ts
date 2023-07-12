@@ -6,7 +6,6 @@ import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
 import { logger } from "./util/constants";
-import { DesignerPanel } from "./panels/DesignerPanel";
 
 let languageClient: lsp.LanguageClient | null = null;
 
@@ -16,13 +15,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
-	// languageClient = await createLanguageService();
-	// try {
-	// 	logger.appendLine("Starting Avalonia Language Server...");
-	// 	await languageClient.start();
-	// } catch (error) {
-	// 	logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
-	// }
+	languageClient = await createLanguageService();
+	try {
+		logger.appendLine("Starting Avalonia Language Server...");
+		await languageClient.start();
+	} catch (error) {
+		logger.appendLine(`Failed to start Avalonia Language Server. ${error}`);
+	}
 }
 
 // This method is called when your extension is deactivated

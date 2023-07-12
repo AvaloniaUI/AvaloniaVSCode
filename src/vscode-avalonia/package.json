@@ -32,8 +32,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "avalonia.createDesignerAssets",
-        "title": "Create designer assets",
+        "command": "avalonia.createPreviewerAssets",
+        "title": "Create previwer assets",
         "category": "Avalonia"
       },
       {

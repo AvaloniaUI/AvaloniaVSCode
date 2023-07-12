@@ -7,5 +7,5 @@ export class AppConstants {
 	static readonly showPreivewMessage: "showPreviewMessage";
 
 	static readonly showPreviewToSideCommand = "avalonia.showPreviewToSide";
-	static readonly previewerAssetsCommandId = "avalonia.createDesignerAssets";
+	static readonly previewerAssetsCommand = "avalonia.createPreviewerAssets";
 }

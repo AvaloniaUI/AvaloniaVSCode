@@ -2,10 +2,15 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { vscode } from "./utilities/vscode";
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { PreviewerServerConnection } from "./PreviewerServerConnection";
+import { PreviewerPresenter } from "./FramePresenter";
 
 function App() {
-	const [fileUrl, setFileUrl] = useState("");
+	const [previewUrl, setPreviewUrl] = useState("");
 	const [assetsAvailable, setAssetsAvailable] = useState(true);
+	const [conn, setConn] = useState<PreviewerServerConnection | null>(null);
+
+	const emptyMethod = () => {};
 
 	useEffect(() => {
 		console.info("onMessage, useEffect");
@@ -13,8 +18,8 @@ function App() {
 			const data: IData = message.data;
 			console.info(data);
 			switch (data.command) {
-				case "preview":
-					setFileUrl(data.payload);
+				case "showPreview":
+					setPreviewUrl(data.payload);
 					break;
 				case "generateAssets":
 					setAssetsAvailable(data.payload);
@@ -23,11 +28,27 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		if (fileUrl !== "") {
-			console.info(`message changed ${fileUrl}`);
+		if (previewUrl === "") {
+			return emptyMethod;
 		}
-		return () => {};
-	}, [fileUrl]);
+		console.info(`onPreviewUrlChanged ${previewUrl}`);
+
+		if (conn !== null) {
+			conn.closeConnection();
+			setConn(null);
+		}
+		setAssetsAvailable(true);
+		new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+			const url = new URL(previewUrl);
+			const ws = `ws://${url.hostname}:${url.port}/ws`;
+			const localConn = new PreviewerServerConnection(ws);
+
+			setAssetsAvailable(true);
+			setConn(localConn);
+		});
+
+		return emptyMethod;
+	}, [previewUrl]);
 
 	return (
 		<div id="designframe">
@@ -46,7 +67,7 @@ function App() {
 					</div>
 				</div>
 			)}
-			<h2>{fileUrl}</h2>
+			{conn !== null && <PreviewerPresenter conn={conn} />}
 		</div>
 	);
 }

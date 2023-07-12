@@ -1,18 +1,17 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { AvaloniaPreviewPanel } from "../preview/previewPanel";
 import { logger } from "../util/constants";
 import { AppConstants } from "../util/AppConstants";
 import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
 import { PreviewProcessManager } from "../previewProcessManager";
-import { DesignerPanel } from "../panels/DesignerPanel";
+import { PreviewerPanel } from "../panels/PreviewerPanel";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
 	public readonly id = "avalonia.showPreview";
 
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
-		DesignerPanel.render(this._context.extensionUri);
+		PreviewerPanel.render(this._context.extensionUri, mainUri!);
 	}
 }
 
@@ -59,18 +58,13 @@ function showPreview(
 			(vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
 		const column = settings.sideBySide ? vscode.ViewColumn.Beside : resourceColumn;
 
-		// AvaloniaPreviewPanel.createOrShow(uri, context, processManager, column);
+		PreviewerPanel.render(context.extensionUri, previewerData.file, column, processManager);
 
-		// const panel = AvaloniaPreviewPanel.currentPanel;
-		// if (panel && panel?.currentUrl !== previewerData.previewerUrl) {
-		// 	panel.update(uri, previewerData);
-		// }
+		const message =
+			previewerData.assetsAvailable && previewerData.previewerUrl
+				? { command: "showPreview", payload: previewerData.previewerUrl }
+				: { command: "generateAssets", payload: false };
 
-		DesignerPanel.render(context.extensionUri, column);
-		if (previewerData.assetsAvailable && previewerData.previewerUrl) {
-			DesignerPanel.currentPanel?.postMessage({ command: "preview", payload: previewerData.file.fsPath });
-		} else {
-			DesignerPanel.currentPanel?.postMessage({ command: "generateAssets", payload: false });
-		}
+		PreviewerPanel.currentPanel?.postMessage(message);
 	}
 }
