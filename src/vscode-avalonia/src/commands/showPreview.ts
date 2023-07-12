@@ -1,21 +1,17 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { AvaloniaPreviewPanel } from "../preview/previewPanel";
 import { logger } from "../util/constants";
 import { AppConstants } from "../util/AppConstants";
 import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
 import { PreviewProcessManager } from "../previewProcessManager";
+import { PreviewerPanel } from "../panels/PreviewerPanel";
 
 export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
 	public readonly id = "avalonia.showPreview";
 
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
-		for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
-			//TODO: enable later
-			// showPreview(this._context, { sideBySide: false }, uri);
-			// vscode.commands.executeCommand(AppConstants.previewProcessCommandId, uri);
-		}
+		PreviewerPanel.render(this._context.extensionUri, mainUri!);
 	}
 }
 
@@ -62,11 +58,13 @@ function showPreview(
 			(vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
 		const column = settings.sideBySide ? vscode.ViewColumn.Beside : resourceColumn;
 
-		AvaloniaPreviewPanel.createOrShow(uri, context, processManager, column);
+		PreviewerPanel.render(context.extensionUri, previewerData.file, column, processManager);
 
-		const panel = AvaloniaPreviewPanel.currentPanel;
-		if (panel && panel?.currentUrl !== previewerData.previewerUrl) {
-			panel.update(uri, previewerData);
-		}
+		const message =
+			previewerData.assetsAvailable && previewerData.previewerUrl
+				? { command: "showPreview", payload: previewerData.previewerUrl }
+				: { command: "generateAssets", payload: false };
+
+		PreviewerPanel.currentPanel?.postMessage(message);
 	}
 }

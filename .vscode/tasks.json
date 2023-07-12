@@ -23,6 +23,21 @@
             "problemMatcher": "$tsc-watch",
             "options": {
                 "cwd": "${workspaceFolder}/src/vscode-avalonia"
+            },
+            "dependsOn": [
+                "Build webview"
+            ]
+        },
+        {
+            "label": "Build webview",
+            "command": "npm",
+            "args": [
+                "run",
+                "build:webview"
+            ],
+            "problemMatcher": "$tsc-watch",
+            "options": {
+                "cwd": "${workspaceFolder}/src/vscode-avalonia"
             }
         },
         {

@@ -8,8 +8,8 @@ import { spawn } from "child_process";
 import { PreviewerParams } from "../models/PreviewerParams";
 import { DOMParser, XMLSerializer } from "xmldom";
 
-export class CreateDesignerAssets implements Command {
-	public readonly id = "avalonia.createDesignerAssets";
+export class CreatePreviewerAssets implements Command {
+	public readonly id = AppConstants.previewerAssetsCommand;
 	async execute(...args: any[]): Promise<void> {
 		if (!vscode.workspace.workspaceFolders) {
 			logger.appendLine("No active workspace.");
@@ -21,7 +21,7 @@ export class CreateDesignerAssets implements Command {
 
 		if (fs.pathExistsSync(projectPath)) {
 			await this.addPreviewerTarget(projectPath, wsPath);
-			const output = await this.generateDesignerAssets(projectPath);
+			const output = await this.generatePreviewerAssets(projectPath);
 			this._context.workspaceState.update(AppConstants.previewerParamState, output);
 			logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
 		}
@@ -77,11 +77,12 @@ export class CreateDesignerAssets implements Command {
 		return updatedXml;
 	}
 
-	generateDesignerAssets(projectPath: string): Promise<PreviewerParams> {
+	generatePreviewerAssets(projectPath: string): Promise<PreviewerParams> {
 		return new Promise((resolve, reject) => {
 			const dotnet = spawn("dotnet", [
 				"build",
 				projectPath,
+				"-nologo",
 				"/t:GeneratePreviewerAssets",
 				"/consoleloggerparameters:NoSummary",
 			]);

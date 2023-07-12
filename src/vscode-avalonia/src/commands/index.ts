@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { CommandManager } from "../commandManager";
 import { ShowPreviewCommand, ShowPreviewToSideCommand } from "./showPreview";
-import { CreateDesignerAssets } from "./createDesignerAssets";
+import { CreatePreviewerAssets } from "./createPreviewerAssets";
 import { PreviewerProcess } from "./previewerProcess";
 import { PreviewProcessManager } from "../previewProcessManager";
 
@@ -14,7 +14,7 @@ export function registerAvaloniaCommands(
 	commandManager.register(new ShowPreviewCommand(context));
 	commandManager.register(new ShowPreviewToSideCommand(context, processManager));
 	//commandManager.register(new ShowSourceCommand());
-	commandManager.register(new CreateDesignerAssets(context));
+	commandManager.register(new CreatePreviewerAssets(context));
 	commandManager.register(new PreviewerProcess(context, processManager));
 
 	return commandManager;

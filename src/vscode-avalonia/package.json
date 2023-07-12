@@ -32,8 +32,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "avalonia.createDesignerAssets",
-        "title": "Create designer assets",
+        "command": "avalonia.createPreviewerAssets",
+        "title": "Create previwer assets",
         "category": "Avalonia"
       },
       {
@@ -110,6 +110,9 @@
     }
   ],
   "scripts": {
+    "install:all": "yarn install && cd webview-ui && npm install",
+    "start:webview": "cd webview-ui && npm run start",
+    "build:webview": "cd webview-ui && npm run build",
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
