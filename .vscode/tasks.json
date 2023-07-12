@@ -75,15 +75,15 @@
             "type": "shell",
             "command": "bash",
             "args": [
-                "${workspaceFolder}/.vscode/package.sh", //package command
-                "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj", //project to build
-                "${workspaceFolder}/src/vscode-avalonia/avaloniaServer", //output directory
+                "${workspaceFolder}/.vscode/package.sh",
                 "${workspaceFolder}/output/" //package directory
             ],
             "options": {
                 "cwd": "${workspaceFolder}/src/vscode-avalonia" //working directory
             },
-            "problemMatcher": []
+            "dependsOn": [
+                "Build Extension"
+            ]
         }
     ]
 }
