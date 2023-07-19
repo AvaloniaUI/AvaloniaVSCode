@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../util/constants";
-import { AppConstants } from "../util/AppConstants";
+import { AppConstants, logger } from "../util/Utilities";
 import { PreviewerParams } from "../models/PreviewerParams";
 import { spawn } from "child_process";
 
@@ -58,7 +57,14 @@ export class PreviewerProcess implements Command {
 
 			previewer.on("spawn", () => {
 				logger.appendLine(`Previewer process started with args: ${previewerArags}`);
-				let previewerData = { file: mainUri, previewerUrl: htmlUrl, assetsAvailable: true, pid: previewer.pid };
+				let wsAddress = AppConstants.webSocketAddress(port);
+				let previewerData = {
+					file: mainUri,
+					previewerUrl: htmlUrl,
+					assetsAvailable: true,
+					pid: previewer.pid,
+					wsAddress: wsAddress,
+				};
 				this._processManager.addProcess(xamlFile, previewerData);
 				resolve(previewerData);
 			});

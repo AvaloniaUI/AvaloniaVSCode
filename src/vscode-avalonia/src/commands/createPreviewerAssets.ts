@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../util/constants";
-import { AppConstants } from "../util/AppConstants";
+import { logger, AppConstants, getProjectPath } from "../util/Utilities";
 import path = require("path");
 import * as fs from "fs-extra";
 import { spawn } from "child_process";
@@ -17,9 +16,9 @@ export class CreatePreviewerAssets implements Command {
 		}
 		const workspaceFolder = vscode.workspace.workspaceFolders[0];
 		const wsPath = workspaceFolder.uri;
-		const projectPath = path.join(wsPath.fsPath, `${workspaceFolder.name}.csproj`);
+		const projectPath = getProjectPath();
 
-		if (fs.pathExistsSync(projectPath)) {
+		if (projectPath && fs.pathExistsSync(projectPath)) {
 			await this.addPreviewerTarget(projectPath, wsPath);
 			const output = await this.generatePreviewerAssets(projectPath);
 			this._context.workspaceState.update(AppConstants.previewerParamState, output);

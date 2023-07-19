@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import { getUri } from "../util/getUri";
 import { getNonce } from "../util/getNouce";
-import { logger } from "../util/constants";
-import { AppConstants } from "../util/AppConstants";
+import { logger, AppConstants } from "../util/Utilities";
 import { PreviewProcessManager } from "../previewProcessManager";
 import path = require("path");
 
@@ -64,7 +63,7 @@ export class PreviewerPanel {
 			PreviewerPanel.currentPanel._panel.reveal(column);
 		} else {
 			// If a webview panel does not already exist create and show a new one
-			const panel = vscode.window.createWebviewPanel("showDesigner", "Preview", column, {
+			const panel = vscode.window.createWebviewPanel(AppConstants.previewerPanelViewType, "Preview", column, {
 				enableScripts: true,
 				retainContextWhenHidden: true,
 				localResourceRoots: [
@@ -77,6 +76,10 @@ export class PreviewerPanel {
 		}
 
 		PreviewerPanel.currentPanel._panel.title = `Preview ${path.basename(fileUri.fsPath)}`;
+		PreviewerPanel.currentPanel._panel.iconPath = {
+			dark: vscode.Uri.joinPath(extensionUri, "media", "preview-dark.svg"),
+			light: vscode.Uri.joinPath(extensionUri, "media", "preview-light.svg"),
+		};
 	}
 
 	/**

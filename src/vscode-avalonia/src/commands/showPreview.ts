@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../util/constants";
-import { AppConstants } from "../util/AppConstants";
+import { logger, AppConstants } from "../util/Utilities";
 import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
 import { PreviewProcessManager } from "../previewProcessManager";
 import { PreviewerPanel } from "../panels/PreviewerPanel";

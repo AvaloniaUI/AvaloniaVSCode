@@ -3,7 +3,7 @@
   "displayName": "Avalonia",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "preview": true,
   "icon": "./media/icon.png",
@@ -52,21 +52,21 @@
     "menus": {
       "editor/title": [
         {
-          "when": "editorLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreviewToSide",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
       ],
       "editor/context": [
         {
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
@@ -74,7 +74,7 @@
       "commandPalette": [
         {
           "command": "avalonia.showPreview",
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "group": "Avalonia"
         }
       ]
