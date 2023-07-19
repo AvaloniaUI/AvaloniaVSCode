@@ -52,21 +52,21 @@
     "menus": {
       "editor/title": [
         {
-          "when": "editorLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreviewToSide",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
       ],
       "editor/context": [
         {
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
@@ -74,7 +74,7 @@
       "commandPalette": [
         {
           "command": "avalonia.showPreview",
-          "when": "resourceLangId == xml",
+          "when": "resourceExtname == .axaml",
           "group": "Avalonia"
         }
       ]
