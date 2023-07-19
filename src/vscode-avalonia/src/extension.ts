@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				.flatMap((tabGroup) => tabGroup.tabs)
 				.find((tab) => {
 					const tabInput = tab.input as { viewType: string | undefined };
-					if (!tabInput.viewType) {
+					if (!tabInput || !tabInput.viewType) {
 						return false;
 					}
 					return tabInput.viewType.endsWith(AppConstants.previewerPanelViewType);
