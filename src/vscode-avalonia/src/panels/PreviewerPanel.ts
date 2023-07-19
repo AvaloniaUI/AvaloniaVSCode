@@ -64,7 +64,7 @@ export class PreviewerPanel {
 			PreviewerPanel.currentPanel._panel.reveal(column);
 		} else {
 			// If a webview panel does not already exist create and show a new one
-			const panel = vscode.window.createWebviewPanel("showDesigner", "Preview", column, {
+			const panel = vscode.window.createWebviewPanel(AppConstants.previewerPanelViewType, "Preview", column, {
 				enableScripts: true,
 				retainContextWhenHidden: true,
 				localResourceRoots: [

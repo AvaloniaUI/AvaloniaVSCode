@@ -1,8 +1,17 @@
+import path = require("path");
 import * as vscode from "vscode";
 
 export const avaloniaFileExtension = "axaml";
 export const avaloniaLanguageId = "axaml";
 export const logger = vscode.window.createOutputChannel("Avalonia Client");
+
+export function isAvaloniaFile(document: vscode.TextDocument): boolean {
+	return path.extname(document.fileName) === `.${avaloniaFileExtension}`;
+}
+
+export function getFileName(filePath: string): string {
+	return path.basename(filePath);
+}
 
 declare global {
 	interface Array<T> {

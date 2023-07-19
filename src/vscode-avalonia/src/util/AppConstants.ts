@@ -8,4 +8,6 @@ export class AppConstants {
 
 	static readonly showPreviewToSideCommand = "avalonia.showPreviewToSide";
 	static readonly previewerAssetsCommand = "avalonia.createPreviewerAssets";
+
+	static readonly previewerPanelViewType = "avaloniaPreviewer";
 }
