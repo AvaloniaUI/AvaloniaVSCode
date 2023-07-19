@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import { getUri } from "../util/getUri";
 import { getNonce } from "../util/getNouce";
-import { logger } from "../util/constants";
-import { AppConstants } from "../util/AppConstants";
+import { logger, AppConstants } from "../util/Utilities";
 import { PreviewProcessManager } from "../previewProcessManager";
 import path = require("path");
 

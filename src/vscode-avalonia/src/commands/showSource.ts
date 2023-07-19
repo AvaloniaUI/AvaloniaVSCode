@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { logger } from "../util/constants";
+import { logger } from "../util/Utilities";
 
 export class ShowSourceCommand implements Command {
 	public readonly id = "avalonia.showSource";

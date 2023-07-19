@@ -8,5 +8,6 @@ export interface PreviewerData {
 	readonly file: vscode.Uri;
 	readonly pid?: number;
 	readonly previewerUrl?: string;
+	readonly wsAddress?: string;
 	readonly assetsAvailable?: boolean;
 }

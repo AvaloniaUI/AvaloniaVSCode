@@ -5,8 +5,7 @@ import * as lsp from "vscode-languageclient/node";
 import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
-import { getFileName, isAvaloniaFile, logger } from "./util/constants";
-import { AppConstants } from "./util/AppConstants";
+import { getFileName, isAvaloniaFile, logger, AppConstants } from "./util/Utilities";
 
 let languageClient: lsp.LanguageClient | null = null;
 
@@ -18,7 +17,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.onDidChangeActiveTextEditor((editor) => {
 		if (editor && isAvaloniaFile(editor.document)) {
-			console.log(vscode.window.tabGroups.all);
 			// get avalonia previewer panel from tab groups
 			const previewTab = vscode.window.tabGroups.all
 				.flatMap((tabGroup) => tabGroup.tabs)
@@ -29,8 +27,6 @@ export async function activate(context: vscode.ExtensionContext) {
 					}
 					return tabInput.viewType.endsWith(AppConstants.previewerPanelViewType);
 				});
-
-			console.log(previewTab);
 
 			if (!previewTab || previewTab?.label.endsWith(getFileName(editor.document.fileName))) {
 				return;
