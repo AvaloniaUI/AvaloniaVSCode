@@ -10,7 +10,8 @@ export class ShowPreviewCommand implements Command {
 	public readonly id = "avalonia.showPreview";
 
 	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]): void {
-		PreviewerPanel.render(this._context.extensionUri, mainUri!);
+		//PreviewerPanel.render(this._context.extensionUri, mainUri!);
+		vscode.window.showInformationMessage("Unavailable! Use preview button in the editor toolbar instead!");
 	}
 }
 

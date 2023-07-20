@@ -30,6 +30,27 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "languages": [
+      {
+        "id": "AXAML",
+        "aliases": [
+          "Avalonia XAML",
+          "axaml",
+          "AXAML"
+        ],
+        "extensions": [
+          ".axaml",
+          ".axml"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "AXAML",
+        "scopeName": "source.AXAML",
+        "path": "./editor/AXAML.tmLanguage.json"
+      }
+    ],
     "commands": [
       {
         "command": "avalonia.createPreviewerAssets",
@@ -52,21 +73,21 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceExtname == .axaml",
+          "when": "editorLangId == AXAML",
           "command": "avalonia.showPreviewToSide",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "when": "resourceExtname == .axaml",
+          "when": "resourceLangId == AXAML",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
       ],
       "editor/context": [
         {
-          "when": "resourceExtname == .axaml",
+          "when": "resourceLangId == AXAML",
           "command": "avalonia.showPreview",
           "group": "1_open"
         }
@@ -74,7 +95,7 @@
       "commandPalette": [
         {
           "command": "avalonia.showPreview",
-          "when": "resourceExtname == .axaml",
+          "when": "resourceLangId == AXAML",
           "group": "Avalonia"
         }
       ]
@@ -96,19 +117,6 @@
       }
     }
   },
-  "languages": [
-    {
-      "id": "axaml",
-      "aliases": [
-        "Avalonia",
-        "axaml",
-        "AXAML"
-      ],
-      "extensions": [
-        ".axaml"
-      ]
-    }
-  ],
   "scripts": {
     "install:all": "yarn install && cd webview-ui && npm install",
     "start:webview": "cd webview-ui && npm run start",
