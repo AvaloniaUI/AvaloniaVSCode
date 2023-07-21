@@ -41,14 +41,15 @@
         "extensions": [
           ".axaml",
           ".axml"
-        ]
+        ],
+        "configuration": "./AXAML.language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "AXAML",
         "scopeName": "source.AXAML",
-        "path": "./editor/AXAML.tmLanguage.json"
+        "path": "./AXAML.tmLanguage.json"
       }
     ],
     "commands": [
