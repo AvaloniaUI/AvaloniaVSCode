@@ -10,13 +10,13 @@ public class CompletionHandler : CompletionHandlerBase
 
     public override Task<CompletionItem> Handle(CompletionItem request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("** Completion Item Handler {Request}", request);
+        _logger.LogInformation("*** Item information: {Request}", request.InsertText);
         return Task.FromResult(request);
     }
 
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("** Inside CompletionHandler: {Request}", request);
+        _logger.LogInformation("*** CompletionHandler: {Request}", request.Context?.TriggerCharacter);
 
         string? text = _workspace.BufferService.GetTextTillPosition(request.TextDocument.Uri, request.Position);
         if (text == null)
@@ -27,19 +27,17 @@ public class CompletionHandler : CompletionHandlerBase
         {
             return new CompletionList(new[]
             {
-                new CompletionItem
-                {
-                    Label = "Build the project",
-                    Documentation = new StringOrMarkupContent("You must build project to populate auto-complete items"),
-                    Kind = CompletionItemKind.Unit
-                }
-            });
+                    new CompletionItem
+                    {
+                        Label = "Build the project",
+                        Documentation = new StringOrMarkupContent("You must build project to populate auto-complete items"),
+                        Kind = CompletionItemKind.Unit
+                    }
+                });
         }
 
 
         var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
-
-        _logger.LogInformation("** COMPLETION SET COUNT: {Set}", set?.Completions.Count);
 
         var completions = set?.
             Completions
@@ -58,6 +56,7 @@ public class CompletionHandler : CompletionHandlerBase
             return new CompletionList(true);
 
         return new CompletionList(completions);
+
     }
 
     protected override CompletionRegistrationOptions CreateRegistrationOptions
@@ -81,9 +80,7 @@ public class CompletionHandler : CompletionHandlerBase
         if (!_workspace.ProjectInfo!.IsAssemblyExist)
             return null;
 
-        string assemblyPath = _workspace.ProjectInfo!.AssemblyPath;
-        _logger.LogCritical("** Assembly Path: {Assembly}", assemblyPath);
-
+        string assemblyPath = _workspace.ProjectInfo!.AssemblyPath();
         var metaDataLoad = await Task.Run(() => _metadataReader.GetForTargetAssembly(assemblyPath));
         return metaDataLoad;
     }

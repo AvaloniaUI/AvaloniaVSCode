@@ -49,10 +49,22 @@ public class ProjectInfo
     /// </summary>
     private string ProjectDirectory { get; }
 
-    public string AssemblyPath =>
-         Path.Combine(ProjectDirectory, "bin", "Debug", "net6.0",
-            Path.GetFileNameWithoutExtension(ProjectPath) + ".dll");
+    public string AssemblyPath()
+    {
+        string debugPath = Path.Combine(ProjectDirectory, "bin", "Debug");
+        string assembly = Path.GetFileNameWithoutExtension(ProjectPath) + ".dll";
+        string? path = Directory.GetFiles(debugPath, assembly, SearchOption.AllDirectories).FirstOrDefault();
 
-    public bool IsAssemblyExist => Path.Exists(AssemblyPath);
+        return path ?? string.Empty;
+    }
+
+    public bool IsAssemblyExist
+    {
+        get
+        {
+            string assemblyPath = AssemblyPath();
+            return !string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath);
+        }
+    }
 
 }
