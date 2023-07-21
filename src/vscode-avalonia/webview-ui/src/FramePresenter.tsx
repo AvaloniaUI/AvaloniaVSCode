@@ -86,6 +86,9 @@ export class PreviewerPresenter extends React.Component<PreviewerPresenterProps>
 	updateZoom(factor: number, reset = false) {
 		if (this.canvasRef.current) {
 			const currentScale = parseFloat(this.canvasRef.current.style.transform.slice(6)) || 1;
+			if (!reset && (currentScale > 2 || currentScale < 0.3)) return;
+
+			console.log(`current scale ${currentScale}`);
 			const newScale = reset ? 1 : currentScale * factor;
 			this.canvasRef.current.style.transform = `scale(${newScale})`;
 		}
