@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Avalonia.Ide.CompletionEngine;
 using Avalonia.Ide.CompletionEngine.AssemblyMetadata;
 using Avalonia.Ide.CompletionEngine.DnlibMetadataProvider;
@@ -36,7 +37,6 @@ public class CompletionHandler : CompletionHandlerBase
                 });
         }
 
-
         var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
 
         var completions = set?.
@@ -46,7 +46,7 @@ public class CompletionHandler : CompletionHandlerBase
             {
                 Label = p.DisplayText,
                 Detail = p.Description,
-                InsertText = p.InsertText,
+                InsertText = GetInsertText(p.InsertText),
                 Kind = GetCompletionItemKind(p.Kind)
 
             });
@@ -65,8 +65,8 @@ public class CompletionHandler : CompletionHandlerBase
         return new()
         {
             DocumentSelector = _documentSelector,
-            TriggerCharacters = new Container<string>("\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/", "{"),
-            AllCommitCharacters = new Container<string>("\n")
+            TriggerCharacters = new Container<string>(_triggerChars),
+            AllCommitCharacters = new Container<string>("\n"),
         };
     }
 
@@ -93,6 +93,11 @@ public class CompletionHandler : CompletionHandlerBase
 
         _completionEngine = new CompletionEngine();
         _metadataReader = new MetadataReader(new DnlibMetadataProvider());
+    }
+
+    string GetInsertText(string text)
+    {
+        return text.Trim('\"', '.');
     }
 
     static CompletionItemKind GetCompletionItemKind(CompletionKind completionKind)
@@ -123,4 +128,6 @@ public class CompletionHandler : CompletionHandlerBase
 
     readonly CompletionEngine _completionEngine;
     readonly MetadataReader _metadataReader;
+
+    readonly string[] _triggerChars = { "\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/", "{" };
 }
