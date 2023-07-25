@@ -2,6 +2,11 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.4] - 25 July 2023
+
+- Code completion will not work for files with `\n` as newline chars [#23](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/23)
+- Set higher/lower limit for previewer [#18](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/18)
+
 ## [0.0.3] - 19 July 2023
 
 - Fixed the issue where `Show preview` command is available for all `xml` files (issue #15)
