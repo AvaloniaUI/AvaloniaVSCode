@@ -17,6 +17,10 @@
     "Avalonia",
     "AvaloniaUI"
   ],
+  "galleryBanner": {
+    "color": "#8B44AC",
+    "theme": "dark"
+  },
   "bugs": {
     "url": "https://github.com/AvaloniaUI/AvaloniaVSCode/issues"
   },

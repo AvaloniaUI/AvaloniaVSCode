@@ -23,7 +23,7 @@ Finally open the MyApp folder in the VS Code, open any axaml file to activate th
 
 ### Enable Previewer
 
-![Previewer](media/PreviewerRM.png)
+![Previewer](https://i.imgur.com/WN86W4B.png)
 
 After you load the project in the VS Code, you can click on Show Preview button on the editor toolbar (1)
 
@@ -37,7 +37,7 @@ The Avalonia XAML in the VS Code is powered by the same code completion engine a
 
 Rich syntax highlighter and contextual code complete will make it lot easier to read and write XAML files
 
-![Code completion](media/AutoCompleteRM.png)
+![Code completion](https://i.imgur.com/QVePVpq.png)
 
 
 ## Limitation/Known Issues
