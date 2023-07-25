@@ -36,7 +36,21 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	const insertCmd = vscode.commands.registerTextEditorCommand(
+		"avalonia.InsertProperty",
+		(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, prop) => {
+			if (prop.endsWith('=""')) {
+				const cursorPos = textEditor.selection.active;
+				const newPos = cursorPos.with(cursorPos.line, cursorPos.character - 1);
+				textEditor.selection = new vscode.Selection(newPos, newPos);
+			}
+			vscode.commands.executeCommand("editor.action.triggerSuggest");
+		}
+	);
+	context.subscriptions.push(insertCmd);
+
 	languageClient = await createLanguageService();
+
 	try {
 		logger.appendLine("Starting Avalonia Language Server...");
 		await languageClient.start();
