@@ -3,7 +3,7 @@
   "displayName": "Avalonia",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "preview": true,
   "icon": "./media/icon.png",
@@ -22,11 +22,11 @@
     "theme": "dark"
   },
   "bugs": {
-    "url": "https://github.com/AvaloniaUI/AvaloniaVSCode/issues"
+    "url": "https://github.com/avaloniaUI/Avalonia-vscode-extension/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AvaloniaUI/AvaloniaVSCode"
+    "url": "https://github.com/avaloniaUI/Avalonia-vscode-extension"
   },
   "activationEvents": [
     "workspaceContains:**/*.axaml",
