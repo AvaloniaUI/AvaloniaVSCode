@@ -1,17 +1,12 @@
 using Avalonia.Ide.CompletionEngine;
-using Avalonia.Ide.CompletionEngine.AssemblyMetadata;
-using Avalonia.Ide.CompletionEngine.DnlibMetadataProvider;
 using AvaloniaLanguageServer.Models;
 
 namespace AvaloniaLanguageServer.Handlers;
 
 public class CompletionHandler : CompletionHandlerBase
 {
-
     public override Task<CompletionItem> Handle(CompletionItem request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("*** Item information: {Request}", request.InsertText);
-
         if (!NeedResolve()) return Task.FromResult(request);
         
         var ci = new CompletionItem
@@ -32,14 +27,12 @@ public class CompletionHandler : CompletionHandlerBase
 
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("*** CompletionHandler: {Request}", request.Context?.TriggerCharacter);
-
         string? text = _workspace.BufferService.GetTextTillPosition(request.TextDocument.Uri, request.Position);
         if (text == null)
             return new CompletionList();
 
-        var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
-        if (metadata == null)
+        _metadata ??= await InitializeCompletionEngineAsync(request.TextDocument.Uri);
+        if (_metadata == null)
         {
             return new CompletionList(new[]
             {
@@ -54,7 +47,7 @@ public class CompletionHandler : CompletionHandlerBase
             });
         }
 
-        var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
+        var set = _completionEngine.GetCompletions(_metadata!, text, text.Length);
 
         var completions = set?.Completions
             .Where(p => !p.DisplayText.Contains('`'))
@@ -92,27 +85,15 @@ public class CompletionHandler : CompletionHandlerBase
             await _workspace.InitializeAsync(uri);
         }
 
-        if (!_workspace.ProjectInfo!.IsAssemblyExist)
-            return null;
-
-        string assemblyPath = _workspace.ProjectInfo!.AssemblyPath();
-        var metaDataLoad = await Task.Run(() => _metadataReader.GetForTargetAssembly(assemblyPath));
-        return metaDataLoad;
+        return _workspace.CompletionMetadata;
     }
 
     public CompletionHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<CompletionHandler> logger)
     {
         _workspace = workspace;
         _documentSelector = documentSelector;
-        _logger = logger;
 
         _completionEngine = new CompletionEngine();
-        _metadataReader = new MetadataReader(new DnlibMetadataProvider());
-    }
-
-    string GetInsertText(string text)
-    {
-        return text.Trim('\"', '.');
     }
 
     static CompletionItemKind GetCompletionItemKind(CompletionKind completionKind)
@@ -139,10 +120,9 @@ public class CompletionHandler : CompletionHandlerBase
 
     readonly Workspace _workspace;
     readonly DocumentSelector _documentSelector;
-    readonly ILogger<CompletionHandler> _logger;
 
     readonly CompletionEngine _completionEngine;
-    readonly MetadataReader _metadataReader;
+    Metadata? _metadata;
 
     readonly string[] _triggerChars = { "\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/", "{" };
 }
