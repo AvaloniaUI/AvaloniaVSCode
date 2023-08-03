@@ -38,7 +38,7 @@ function App() {
 			setConn(null);
 		}
 		setAssetsAvailable(true);
-		new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+		new Promise((resolve) => setTimeout(resolve, 200)).then(() => {
 			const url = new URL(previewUrl);
 			const ws = `ws://${url.hostname}:${url.port}/ws`;
 			const localConn = new PreviewerServerConnection(ws);
