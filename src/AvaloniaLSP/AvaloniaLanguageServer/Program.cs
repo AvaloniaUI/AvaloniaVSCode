@@ -1,14 +1,16 @@
 ﻿using AvaloniaLanguageServer.Handlers;
 using AvaloniaLanguageServer.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace AvaloniaLanguageServer;
 
 public class Program
 {
+    static ILanguageServer server;
     public static async Task Main(string[] args)
     {
         InitializeLogging();
-        var server = await LanguageServer.From(ConfigureOptions);
+        server = await LanguageServer.From(ConfigureOptions);
 
         Log.Logger.Information("Language server initialised");
         await server.WaitForExit;
@@ -20,8 +22,10 @@ public class Program
             .WithInput(Console.OpenStandardInput())
             .WithOutput(Console.OpenStandardOutput())
             .ConfigureLogging(p => p
+                .AddSerilog(Log.Logger)
                 .AddLanguageProtocolLogging()
-                .SetMinimumLevel(LogLevel.Trace))
+                .SetMinimumLevel(LogLevel.Trace)
+            )
             .WithHandler<CompletionHandler>()
             .WithHandler<TextDocumentSyncHandler>()
             .WithServices(ConfigureServices);
@@ -34,11 +38,16 @@ public class Program
             new DocumentFilter { Pattern = "**/*.axaml" }
         ));
         services.AddSingleton<Workspace>();
+        services.AddSingleton(GetServer);
     }
+
+    static ILanguageServer GetServer() => server;
 
     static void InitializeLogging()
     {
+        string logFilePath = Path.Combine(Path.GetTempPath(), "avalonia.log");
         Log.Logger = new LoggerConfiguration()
+            .WriteTo.File(logFilePath)
             .Enrich.FromLogContext()
             .MinimumLevel.Verbose()
             .CreateLogger();

@@ -1,4 +1,5 @@
 using AvaloniaLanguageServer.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace AvaloniaLanguageServer.Handlers;
 
@@ -33,15 +34,22 @@ public sealed class HoverHandler : HoverHandlerBase
                 })
         };
 
+        var server = _getServer();
+        _logger.LogInformation("*** Server: {Server}", server.Client.ClientSettings.RootPath);
+
         return hover;
     }
 
-    public HoverHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<HoverHandler> logger)
+    public HoverHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<HoverHandler> logger
+    , Func<ILanguageServer> getServer)
     {
         _workspace = workspace;
         _documentSelector = documentSelector;
         _logger = logger;
+        _getServer = getServer;
     }
+
+    Func<ILanguageServer> _getServer;
 
     readonly DocumentSelector _documentSelector;
     readonly ILogger<HoverHandler> _logger;

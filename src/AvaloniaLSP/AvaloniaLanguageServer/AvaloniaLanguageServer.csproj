@@ -12,12 +12,16 @@
         <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.7" />
         <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.7" />
         <PackageReference Include="serilog" Version="3.0.1" />
-        
+        <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CompletionEngine\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider.csproj" />
-      <ProjectReference Include="..\CompletionEngine\Avalonia.Ide.CompletionEngine\Avalonia.Ide.CompletionEngine.csproj" />
+        <ProjectReference
+            Include="..\CompletionEngine\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider.csproj" />
+        <ProjectReference
+            Include="..\CompletionEngine\Avalonia.Ide.CompletionEngine\Avalonia.Ide.CompletionEngine.csproj" />
     </ItemGroup>
 
 </Project>

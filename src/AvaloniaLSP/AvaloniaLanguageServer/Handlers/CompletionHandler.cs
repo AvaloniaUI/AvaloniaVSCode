@@ -80,7 +80,8 @@ public class CompletionHandler : CompletionHandlerBase
 
     async Task<Metadata?> InitializeCompletionEngineAsync(DocumentUri uri)
     {
-        if (_workspace.ProjectInfo == null)
+        if (_workspace.ProjectInfo == null || (_workspace.ProjectInfo.IsAssemblyExist 
+                                               && _workspace.CompletionMetadata == null))
         {
             await _workspace.InitializeAsync(uri);
         }
