@@ -46,7 +46,11 @@
           ".axaml",
           ".axml"
         ],
-        "configuration": "./AXAML.language-configuration.json"
+        "configuration": "./AXAML.language-configuration.json",
+        "icon": {
+          "dark": "./media/xaml-dark.svg",
+          "light": "./media/xaml-light.svg"
+        }
       }
     ],
     "grammars": [
