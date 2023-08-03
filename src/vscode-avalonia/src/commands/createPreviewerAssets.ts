@@ -9,7 +9,8 @@ import { DOMParser, XMLSerializer } from "xmldom";
 
 export class CreatePreviewerAssets implements Command {
 	public readonly id = AppConstants.previewerAssetsCommand;
-	async execute(...args: any[]): Promise<void> {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	async execute(args: { triggerCodeComplete: boolean } | undefined): Promise<void> {
 		if (!vscode.workspace.workspaceFolders) {
 			logger.appendLine("No active workspace.");
 			return;
@@ -19,10 +20,20 @@ export class CreatePreviewerAssets implements Command {
 		const projectPath = getProjectPath();
 
 		if (projectPath && fs.pathExistsSync(projectPath)) {
-			await this.addPreviewerTarget(projectPath, wsPath);
-			const output = await this.generatePreviewerAssets(projectPath);
-			this._context.workspaceState.update(AppConstants.previewerParamState, output);
-			logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
+			await vscode.window.withProgress(
+				{ location: vscode.ProgressLocation.Window, cancellable: false },
+				async (progress) => {
+					progress.report({ message: "Generating preview assets" });
+					await this.addPreviewerTarget(projectPath, wsPath);
+					const output = await this.generatePreviewerAssets(projectPath);
+					this._context.workspaceState.update(AppConstants.previewerParamState, output);
+					logger.appendLine(`Previewer assets generated at ${output.previewerPath}`);
+				}
+			);
+		}
+
+		if (args?.triggerCodeComplete) {
+			vscode.commands.executeCommand("avalonia.InsertProperty", { repositionCaret: true });
 		}
 	}
 

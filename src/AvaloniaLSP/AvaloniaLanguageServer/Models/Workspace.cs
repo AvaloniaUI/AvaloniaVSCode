@@ -9,13 +9,8 @@ namespace AvaloniaLanguageServer.Models;
 
 public class Workspace
 {
-    public Workspace()
-    {
-        _metadataReader = new MetadataReader(new DnlibMetadataProvider());
-    }
-    
     public ProjectInfo? ProjectInfo { get; private set; }
-    public BufferService BufferService { get; } = new BufferService();
+    public BufferService BufferService { get; } = new();
 
     public async Task InitializeAsync(DocumentUri uri)
     {
@@ -24,5 +19,5 @@ public class Workspace
     }
 
     public Metadata? CompletionMetadata { get; private set; }
-    readonly MetadataReader _metadataReader;
+    readonly MetadataReader _metadataReader = new(new DnlibMetadataProvider());
 }

@@ -7,22 +7,21 @@ public class CompletionHandler : CompletionHandlerBase
 {
     public override Task<CompletionItem> Handle(CompletionItem request, CancellationToken cancellationToken)
     {
-        if (!NeedResolve()) return Task.FromResult(request);
-        
+        if (request.InsertText == null || !NeedResolve())
+            return Task.FromResult(request);
+
         var ci = new CompletionItem
         {
             Label = request.Label,
             Kind = request.Kind,
             InsertText = request.InsertText,
-            Command = Command.Create("avalonia.InsertProperty", request.InsertText!)
+            Command = Command.Create("avalonia.InsertProperty", new { repositionCaret = RepositionCaret() })
         };
 
         return Task.FromResult(ci);
 
-        bool NeedResolve()
-        {
-            return request.InsertText!.EndsWith(".") || request.InsertText!.EndsWith("\"");
-        }
+        bool NeedResolve() => request.InsertText!.EndsWith(".") || request.InsertText!.EndsWith("\"");
+        bool RepositionCaret() => request.InsertText!.EndsWith("\"\"");
     }
 
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
@@ -31,8 +30,8 @@ public class CompletionHandler : CompletionHandlerBase
         if (text == null)
             return new CompletionList();
 
-        _metadata ??= await InitializeCompletionEngineAsync(request.TextDocument.Uri);
-        if (_metadata == null)
+        var metadata = await InitializeCompletionEngineAsync(request.TextDocument.Uri);
+        if (metadata == null)
         {
             return new CompletionList(new[]
             {
@@ -41,13 +40,13 @@ public class CompletionHandler : CompletionHandlerBase
                     Label = "Build the project",
                     Documentation = new StringOrMarkupContent("Build the project to enable code completion"),
                     Kind = CompletionItemKind.Event,
-                    Command = Command.Create("avalonia.createPreviewerAssets"),
+                    Command = Command.Create("avalonia.createPreviewerAssets", new {triggerCodeComplete = true}),
                     InsertText = " "
                 }
             });
         }
 
-        var set = _completionEngine.GetCompletions(_metadata!, text, text.Length);
+        var set = _completionEngine.GetCompletions(metadata!, text, text.Length);
 
         var completions = set?.Completions
             .Where(p => !p.DisplayText.Contains('`'))
@@ -80,8 +79,10 @@ public class CompletionHandler : CompletionHandlerBase
 
     async Task<Metadata?> InitializeCompletionEngineAsync(DocumentUri uri)
     {
-        if (_workspace.ProjectInfo == null || (_workspace.ProjectInfo.IsAssemblyExist 
-                                               && _workspace.CompletionMetadata == null))
+        if (_workspace.ProjectInfo is not { IsAssemblyExist: true })
+            return null;
+
+        if (_workspace.ProjectInfo.IsAssemblyExist && _workspace.CompletionMetadata == null)
         {
             await _workspace.InitializeAsync(uri);
         }
@@ -89,7 +90,7 @@ public class CompletionHandler : CompletionHandlerBase
         return _workspace.CompletionMetadata;
     }
 
-    public CompletionHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<CompletionHandler> logger)
+    public CompletionHandler(Workspace workspace, DocumentSelector documentSelector)
     {
         _workspace = workspace;
         _documentSelector = documentSelector;
@@ -123,7 +124,6 @@ public class CompletionHandler : CompletionHandlerBase
     readonly DocumentSelector _documentSelector;
 
     readonly CompletionEngine _completionEngine;
-    Metadata? _metadata;
 
     readonly string[] _triggerChars = { "\'", "\"", " ", "<", ".", "[", "(", "#", "|", "/", "{" };
 }
