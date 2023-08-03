@@ -38,8 +38,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const insertCmd = vscode.commands.registerTextEditorCommand(
 		"avalonia.InsertProperty",
-		(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, prop) => {
-			if (prop.endsWith('=""')) {
+		(
+			textEditor: vscode.TextEditor,
+			edit: vscode.TextEditorEdit,
+			prop: { repositionCaret: boolean } | undefined
+		) => {
+			if (prop?.repositionCaret) {
 				const cursorPos = textEditor.selection.active;
 				const newPos = cursorPos.with(cursorPos.line, cursorPos.character - 1);
 				textEditor.selection = new vscode.Selection(newPos, newPos);

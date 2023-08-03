@@ -157,18 +157,8 @@ export class PreviewerPanel {
 				const text = message.text;
 				switch (command) {
 					case "generateAssetsCommand":
-						await vscode.window.withProgress(
-							{ location: vscode.ProgressLocation.Window, cancellable: false },
-							async (progress) => {
-								progress.report({ message: "Generating preview assets" });
-								await vscode.commands.executeCommand(AppConstants.previewerAssetsCommand);
-								await vscode.commands.executeCommand(
-									AppConstants.showPreviewToSideCommand,
-									this._fileUri
-								);
-							}
-						);
-						return;
+						await vscode.commands.executeCommand(AppConstants.previewerAssetsCommand);
+						await vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, this._fileUri);
 				}
 			},
 			undefined,
