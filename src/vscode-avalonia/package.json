@@ -3,7 +3,7 @@
   "displayName": "Avalonia",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "preview": true,
   "icon": "./media/icon.png",

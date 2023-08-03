@@ -2,6 +2,10 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.6] - 03 August 2023
+
+- Improved code completion
+
 ## [0.0.4] - 25 July 2023
 
 - Code completion will not work for files with `\n` as newline chars [#23](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/23)
