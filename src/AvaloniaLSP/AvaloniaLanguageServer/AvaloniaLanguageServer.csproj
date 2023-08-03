@@ -16,4 +16,9 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\AvaloniaVS\CompletionEngine\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider.csproj" />
+      <ProjectReference Include="..\..\AvaloniaVS\CompletionEngine\Avalonia.Ide.CompletionEngine\Avalonia.Ide.CompletionEngine.csproj" />
+    </ItemGroup>
 </Project>

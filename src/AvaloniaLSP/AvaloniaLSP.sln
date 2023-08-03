@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaLanguageServer", "AvaloniaLanguageServer\AvaloniaLanguageServer.csproj", "{0DAE7CA7-F8E8-46FB-94D6-4D7B4E19637D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Ide.CompletionEngine", "..\AvaloniaVS\CompletionEngine\Avalonia.Ide.CompletionEngine\Avalonia.Ide.CompletionEngine.csproj", "{8CC4DD56-849C-432A-9811-A1FA7A50C869}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Ide.CompletionEngine.DnlibMetadataProvider", "..\AvaloniaVS\CompletionEngine\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider\Avalonia.Ide.CompletionEngine.DnlibMetadataProvider.csproj", "{156F9284-BA3A-419E-A532-F0E5A9122EB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +17,13 @@ Global
 		{0DAE7CA7-F8E8-46FB-94D6-4D7B4E19637D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DAE7CA7-F8E8-46FB-94D6-4D7B4E19637D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DAE7CA7-F8E8-46FB-94D6-4D7B4E19637D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC4DD56-849C-432A-9811-A1FA7A50C869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC4DD56-849C-432A-9811-A1FA7A50C869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC4DD56-849C-432A-9811-A1FA7A50C869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC4DD56-849C-432A-9811-A1FA7A50C869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{156F9284-BA3A-419E-A532-F0E5A9122EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156F9284-BA3A-419E-A532-F0E5A9122EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156F9284-BA3A-419E-A532-F0E5A9122EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156F9284-BA3A-419E-A532-F0E5A9122EB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
