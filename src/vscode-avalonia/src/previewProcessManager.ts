@@ -1,4 +1,5 @@
 import { PreviewerData } from "./models/previewerSettings";
+var kill = require('tree-kill');
 
 /**
  * Manages preview processes for files.
@@ -34,7 +35,11 @@ export class PreviewProcessManager {
 		const { pid } = this._processes.get(file) ?? {};
 		if (pid) {
 			// Remove the process from the map and kill the process
-			process.kill(pid);
+			kill(pid, 'SIGKILL', (err: any) => {
+				if (err) {
+					console.error(err);
+				}
+			});
 			this._processes.delete(file);
 		}
 	}
