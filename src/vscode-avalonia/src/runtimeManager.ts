@@ -15,13 +15,6 @@ export async function getDotnetRuntimePath(): Promise<string> {
 	if (!dotnetPath) {
 		throw new Error("Could not resolve the dotnet path!");
 	}
-	const serverLocation = getLanguageServerPath();
-
-	// This will install any missing dependencies
-	await vscode.commands.executeCommand("dotnet.ensureDotnetDependencies", {
-		command: dotnetPath,
-		arguments: [serverLocation],
-	});
 
 	return dotnetPath;
 }
