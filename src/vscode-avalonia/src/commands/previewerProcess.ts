@@ -37,7 +37,7 @@ export class PreviewerProcess implements Command {
 
 		const port = await portfinder.getPortPromise();
 		const htmlUrl = `${AppConstants.localhost}:${port}`;
-		const xamlFile = mainUri.toString();
+		const xamlFile = mainUri.fsPath;
 
 		const previewerArags = [
 			"exec",
