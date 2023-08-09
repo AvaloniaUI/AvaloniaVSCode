@@ -22,9 +22,10 @@ export function getProjectPath() {
 
 	const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
-	let projSyncPath = path.join(workspaceFolder.uri.fsPath, "**/*.csproj")
-	if (process.platform == "win32")
-		projSyncPath = projSyncPath.replace(/\\/g, '/');
+	let projSyncPath = path.join(workspaceFolder.uri.fsPath, "**/*.csproj");
+	if (process.platform === "win32") {
+		projSyncPath = projSyncPath.replace(/\\/g, "/");
+	}
 
 	const csprojFiles = glob.sync(projSyncPath);
 	if (csprojFiles.length === 0) {

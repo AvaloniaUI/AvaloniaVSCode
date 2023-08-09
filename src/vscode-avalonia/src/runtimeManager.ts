@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
-const dotnetRuntimeVersion = "6.0";
+const dotnetRuntimeVersion = "7.0";
 
 export async function getDotnetRuntimePath(): Promise<string> {
 	await vscode.commands.executeCommand("dotnet.showAcquisitionLog");
