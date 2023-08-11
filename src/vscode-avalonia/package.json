@@ -164,7 +164,6 @@
     "xpath": "^0.0.32"
   },
   "extensionDependencies": [
-    "ms-dotnettools.csharp",
     "ms-dotnettools.vscode-dotnet-runtime"
   ]
 }
