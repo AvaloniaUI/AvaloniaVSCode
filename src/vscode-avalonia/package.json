@@ -83,7 +83,7 @@
       "editor/title": [
         {
           "when": "editorLangId == AXAML",
-          "command": "avalonia.showPreviewToSide",
+          "command": "avalonia.showPreview",
           "group": "navigation"
         }
       ],
