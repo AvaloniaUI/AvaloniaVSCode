@@ -1,6 +1,8 @@
 import glob = require("glob");
 import path = require("path");
 import * as vscode from "vscode";
+import { DOMParser } from "xmldom";
+import * as fs from "fs-extra";
 
 export const avaloniaFileExtension = "axaml";
 export const avaloniaLanguageId = "axaml";
@@ -14,7 +16,7 @@ export function getFileName(filePath: string): string {
 	return path.basename(filePath);
 }
 
-export function getProjectPath() {
+export async function getProjectPath() {
 	if (!vscode.workspace.workspaceFolders) {
 		logger.appendLine("No active workspace.");
 		return;
@@ -32,7 +34,22 @@ export function getProjectPath() {
 		return undefined;
 	}
 
+	for (let i = 0; i < csprojFiles.length; i++) {
+		const element = csprojFiles[i];
+		if (await isWinExeProject(element)) {
+			return element;
+		}
+	}
+
 	return csprojFiles[0];
+}
+
+async function isWinExeProject(fileName: string): Promise<boolean> {
+	var data = await fs.readFile(fileName, "utf8");
+	const parser = new DOMParser();
+	const xmlDoc = parser.parseFromString(data, "text/xml");
+	const value = xmlDoc.getElementsByTagName("OutputType")[0].textContent;
+	return value === "WinExe";
 }
 
 declare global {
@@ -58,4 +75,5 @@ export class AppConstants {
 	static readonly previewerAssetsCommand = "avalonia.createPreviewerAssets";
 
 	static readonly previewerPanelViewType = "avaloniaPreviewer";
+	static readonly winExe = "WinExe";
 }

@@ -17,7 +17,7 @@ export class CreatePreviewerAssets implements Command {
 		}
 		const workspaceFolder = vscode.workspace.workspaceFolders[0];
 		const wsPath = workspaceFolder.uri;
-		const projectPath = getProjectPath();
+		const projectPath = await getProjectPath();
 
 		if (projectPath && fs.pathExistsSync(projectPath)) {
 			await vscode.window.withProgress(
@@ -51,7 +51,8 @@ export class CreatePreviewerAssets implements Command {
 			fs.copyFileSync(previewerAssetPath.fsPath, targetFile.fsPath, fs.constants.COPYFILE_EXCL);
 		}
 
-		const relativeTargetPath = path.relative(wsPath.fsPath, targetFile.fsPath);
+		const projDir = path.dirname(projectPath);
+		const relativeTargetPath = path.relative(projDir, targetFile.fsPath);
 		await this.updateProjectFile(projectPath, relativeTargetPath);
 		logger.appendLine(`Created a new file: ${relativeTargetPath}`);
 	}
