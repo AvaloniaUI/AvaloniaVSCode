@@ -1,8 +1,12 @@
 import * as net from "net";
 import * as portfinder from "portfinder";
 import { logger } from "../util/Utilities";
+import { EventDispatcher, IEvent } from "strongly-typed-events";
 
-export class PreviewServer {
+export interface IPreviewServer {
+	sendData(data: Buffer): void;
+}
+export class PreviewServer implements IPreviewServer {
 	public async start() {
 		logger.appendLine(`PreviewServer.start ${this._assemblyName}`);
 
@@ -17,14 +21,16 @@ export class PreviewServer {
 
 	handleSocketEvents(socket: net.Socket) {
 		logger.appendLine(`Preview server connected on port ${socket.localPort}`);
+		this._socket = socket;
 
 		socket.on("data", (data) => {
-			logger.appendLine(`Preview server received data: ${data}`);
+			this._onMessage.dispatch(this, data);
 		});
 
 		socket.on("close", () => {
 			logger.appendLine(`Preview server closed for ${this._assemblyName}`);
 			this._server.close();
+			this._socket?.destroy();
 		});
 
 		socket.on("error", (error) => {
@@ -54,10 +60,20 @@ export class PreviewServer {
 	private constructor(private _assemblyName: string) {
 		this._server = net.createServer();
 	}
+	sendData(data: Buffer): void {
+		logger.appendLine("In PreviewServer.sendData");
+	}
+
+	public get onMessage(): IEvent<IPreviewServer, Buffer> {
+		return this._onMessage.asEvent();
+	}
+
+	_onMessage = new EventDispatcher<IPreviewServer, Buffer>();
 
 	_server: net.Server;
-	_port: number | undefined;
+	_socket: net.Socket | undefined;
 	_host = "127.0.0.1";
+	_port: number | undefined;
 
 	static _instance: PreviewServer;
 }
