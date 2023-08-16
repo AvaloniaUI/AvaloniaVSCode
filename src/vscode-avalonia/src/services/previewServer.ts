@@ -2,6 +2,7 @@ import * as net from "net";
 import * as portfinder from "portfinder";
 import { logger } from "../util/Utilities";
 import { EventDispatcher, IEvent } from "strongly-typed-events";
+import { Messages } from "./messageParser";
 
 export interface IPreviewServer {
 	sendData(data: Buffer): void;
@@ -25,6 +26,7 @@ export class PreviewServer implements IPreviewServer {
 
 		socket.on("data", (data) => {
 			this._onMessage.dispatch(this, data);
+			Messages.parseIncomingMessage(data);
 		});
 
 		socket.on("close", () => {

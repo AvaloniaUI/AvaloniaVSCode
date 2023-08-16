@@ -9,14 +9,9 @@ export class ShowPreviewCommand implements Command {
 
 	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
 		const previewServer = PreviewServer.getInstance(mainUri!.fsPath);
-
-		previewServer.onMessage.subscribe((server, message) => {
-			console.log("In command", message);
-			server.sendData(message);
-		});
-
 		if (!previewServer.isRunnig) {
 			await previewServer.start();
+			vscode.window.showInformationMessage("Preview server started.");
 		}
 	}
 }
