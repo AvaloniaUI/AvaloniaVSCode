@@ -1,5 +1,4 @@
 import * as net from "net";
-import * as portfinder from "portfinder";
 import { logger } from "../util/Utilities";
 import { EventDispatcher, IEvent } from "strongly-typed-events";
 import { Messages } from "./messageParser";
@@ -11,12 +10,9 @@ export class PreviewServer implements IPreviewServer {
 	public async start() {
 		logger.appendLine(`PreviewServer.start ${this._assemblyName}`);
 
-		const port = await this.port();
-		if (!port) {
-			throw new Error("Could not find a free port for the preview server.");
-		}
-
-		this._server.listen(port, this._host, () => logger.appendLine(`Preview server listening on port ${port}`));
+		this._server.listen(this._port, this._host, () =>
+			logger.appendLine(`Preview server listening on port ${this._port}`)
+		);
 		this._server.on("connection", this.handleSocketEvents.bind(this));
 	}
 
@@ -26,7 +22,16 @@ export class PreviewServer implements IPreviewServer {
 
 		socket.on("data", (data) => {
 			this._onMessage.dispatch(this, data);
-			Messages.parseIncomingMessage(data);
+			const msg = Messages.parseIncomingMessage(data);
+			logger.appendLine(JSON.stringify(msg.message));
+			if (msg.type === Messages.startDesignerSessionMessageId) {
+				logger.appendLine("Start designer session message received.");
+				const pixelFormat = Messages.clientSupportedPixelFormatsMessage();
+				socket.write(pixelFormat);
+
+				const xaml = Messages.updateXaml();
+				socket.write(xaml);
+			}
 		});
 
 		socket.on("close", () => {
@@ -45,21 +50,16 @@ export class PreviewServer implements IPreviewServer {
 		this._server.close();
 	}
 
-	public async port(): Promise<number | undefined> {
-		this._port ??= await portfinder.getPortPromise();
-		return this._port;
-	}
-
 	public get isRunnig() {
 		return this._server?.listening;
 	}
 
-	public static getInstance(assemblyName: string): PreviewServer {
-		PreviewServer._instance ??= new PreviewServer(assemblyName);
+	public static getInstance(assemblyName: string, port: number): PreviewServer {
+		PreviewServer._instance ??= new PreviewServer(assemblyName, port);
 		return PreviewServer._instance;
 	}
 
-	private constructor(private _assemblyName: string) {
+	private constructor(private _assemblyName: string, private _port: number) {
 		this._server = net.createServer();
 	}
 	sendData(data: Buffer): void {
@@ -75,7 +75,6 @@ export class PreviewServer implements IPreviewServer {
 	_server: net.Server;
 	_socket: net.Socket | undefined;
 	_host = "127.0.0.1";
-	_port: number | undefined;
 
-	static _instance: PreviewServer;
+	private static _instance: PreviewServer;
 }

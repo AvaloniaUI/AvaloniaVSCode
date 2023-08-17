@@ -65,8 +65,10 @@ Array.prototype.getValue = function (this: string[], property: string): string {
 export class AppConstants {
 	static readonly previewerParamState = "previewerParams";
 	static readonly previewProcessCommandId = "avalonia.previewProcess";
-	static readonly localhost = "http://127.0.0.1";
-	static webSocketAddress = (port: number) => `ws://127.0.0.1:${port}/ws`;
+	static readonly localhost = "127.0.0.1";
+	static readonly htmlUrl = `http://${AppConstants.localhost}`;
+
+	static webSocketAddress = (port: number) => `ws://${AppConstants.localhost}:${port}/ws`;
 
 	static readonly updateAssetsMessages: "updateAssetsMessage";
 	static readonly showPreivewMessage: "showPreviewMessage";

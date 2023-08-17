@@ -8,6 +8,7 @@ import * as portfinder from "portfinder";
 import * as fs from "fs";
 import { PreviewerData } from "../models/previewerSettings";
 import { PreviewProcessManager } from "../previewProcessManager";
+import { PreviewServer } from "../services/previewServer";
 
 export class PreviewerProcess implements Command {
 	id: string = AppConstants.previewProcessCommandId;
@@ -35,15 +36,23 @@ export class PreviewerProcess implements Command {
 			return previewerData;
 		}
 
-		const port = await portfinder.getPortPromise();
-		const htmlUrl = `${AppConstants.localhost}:${port}`;
+		const httpPort = await portfinder.getPortPromise();
+		const bsonPort = httpPort + 1; //await portfinder.getPortPromise({ startPort: 9000 });
+		const htmlUrl = `${AppConstants.htmlUrl}:${httpPort}`;
 		const xamlFile = mainUri.fsPath;
+
+		const server = PreviewServer.getInstance(xamlFile, bsonPort);
+		if (!server.isRunnig) {
+			await server.start();
+			console.log(`Preview server started on port ${bsonPort}`);
+		}
 
 		const previewerArags = [
 			"exec",
 			`--runtimeconfig ${previewParams.projectRuntimeConfigFilePath}`,
 			`--depsfile ${previewParams.projectDepsFilePath} ${previewParams.previewerPath}`,
-			`--transport ${xamlFile}`,
+			"--method avalonia-remote",
+			`--transport tcp-bson://${AppConstants.localhost}:${bsonPort}/`,
 			"--method html",
 			`--html-url ${htmlUrl}`,
 			previewParams.targetPath,
@@ -57,7 +66,7 @@ export class PreviewerProcess implements Command {
 
 			previewer.on("spawn", () => {
 				logger.appendLine(`Previewer process started with args: ${previewerArags}`);
-				let wsAddress = AppConstants.webSocketAddress(port);
+				let wsAddress = AppConstants.webSocketAddress(httpPort);
 				let previewerData = {
 					file: mainUri,
 					previewerUrl: htmlUrl,
