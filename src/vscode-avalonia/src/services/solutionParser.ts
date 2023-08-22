@@ -33,8 +33,10 @@ export async function buildSolutionModel(): Promise<sln.Solution | undefined> {
 }
 
 export function getSolutionModel(): sln.Solution | undefined {
-	const dd = vscode.workspace.getConfiguration().get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
-	const serialized = JSON.stringify(dd);
+	const solutionData = vscode.workspace
+		.getConfiguration()
+		.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
+	const serialized = JSON.stringify(solutionData);
 	const deserialized = JSON.parse(serialized);
 
 	return deserialized;

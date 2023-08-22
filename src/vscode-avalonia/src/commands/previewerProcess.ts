@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Command } from "../commandManager";
-import { AppConstants, logger } from "../util/Utilities";
+import * as util from "../util/Utilities";
 import { PreviewerParams } from "../models/PreviewerParams";
 import { spawn } from "child_process";
 
@@ -11,12 +11,12 @@ import { PreviewProcessManager } from "../previewProcessManager";
 import { PreviewServer } from "../services/previewServer";
 
 export class PreviewerProcess implements Command {
-	id: string = AppConstants.previewProcessCommandId;
+	id: string = util.AppConstants.previewProcessCommandId;
 
 	async execute(mainUri?: vscode.Uri): Promise<PreviewerData> {
-		logger.appendLine(`Command ${this.id}, ${mainUri}`);
+		util.logger.appendLine(`Command ${this.id}, ${mainUri}`);
 		let result: PreviewerData = { file: mainUri! };
-		const previewParams = this._context.workspaceState.get<PreviewerParams>(AppConstants.previewerParamState);
+		const previewParams = this._context.workspaceState.get<PreviewerParams>(util.AppConstants.previewerParamState);
 		if (previewParams && mainUri) {
 			result = await this.startPreviewerProcess(previewParams, mainUri);
 		}
@@ -26,22 +26,28 @@ export class PreviewerProcess implements Command {
 
 	async startPreviewerProcess(previewParams: PreviewerParams, mainUri: vscode.Uri): Promise<PreviewerData> {
 		if (!this.canStartPreviewerProcess(previewParams)) {
-			logger.appendLine(`Previewer path not found: ${previewParams.previewerPath}`);
+			util.logger.appendLine(`Previewer path not found: ${previewParams.previewerPath}`);
 			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
 		}
 
-		const previewerData = this._processManager.getPreviewerData(mainUri.toString());
+		const fileData = util.getFileDetails(mainUri.fsPath);
+
+		if (!fileData) {
+			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
+		}
+
+		const previewerData = this._processManager.getPreviewerData(fileData.targetPath);
 		if (previewerData) {
-			logger.appendLine(`Previewer process already started: ${previewerData.pid}`);
+			util.logger.appendLine(`Previewer process already started: ${previewerData.pid}`);
 			return previewerData;
 		}
 
 		const httpPort = await portfinder.getPortPromise();
 		const bsonPort = httpPort + 1; //await portfinder.getPortPromise({ startPort: 9000 });
-		const htmlUrl = `${AppConstants.htmlUrl}:${httpPort}`;
-		const xamlFile = mainUri.fsPath;
+		const htmlUrl = `${util.AppConstants.htmlUrl}:${httpPort}`;
+		const assemblyPath = fileData.targetPath;
 
-		const server = PreviewServer.getInstance(xamlFile, bsonPort);
+		const server = PreviewServer.getInstance(assemblyPath, bsonPort);
 		if (!server.isRunnig) {
 			await server.start();
 			console.log(`Preview server started on port ${bsonPort}`);
@@ -52,7 +58,7 @@ export class PreviewerProcess implements Command {
 			`--runtimeconfig ${previewParams.projectRuntimeConfigFilePath}`,
 			`--depsfile ${previewParams.projectDepsFilePath} ${previewParams.previewerPath}`,
 			"--method avalonia-remote",
-			`--transport tcp-bson://${AppConstants.localhost}:${bsonPort}/`,
+			`--transport tcp-bson://${util.AppConstants.localhost}:${bsonPort}/`,
 			"--method html",
 			`--html-url ${htmlUrl}`,
 			previewParams.targetPath,
@@ -65,8 +71,8 @@ export class PreviewerProcess implements Command {
 			});
 
 			previewer.on("spawn", () => {
-				logger.appendLine(`Previewer process started with args: ${previewerArags}`);
-				let wsAddress = AppConstants.webSocketAddress(httpPort);
+				util.logger.appendLine(`Previewer process started with args: ${previewerArags}`);
+				let wsAddress = util.AppConstants.webSocketAddress(httpPort);
 				let previewerData = {
 					file: mainUri,
 					previewerUrl: htmlUrl,
@@ -74,21 +80,21 @@ export class PreviewerProcess implements Command {
 					pid: previewer.pid,
 					wsAddress: wsAddress,
 				};
-				this._processManager.addProcess(xamlFile, previewerData);
+				this._processManager.addProcess(assemblyPath, previewerData);
 				resolve(previewerData);
 			});
 
 			previewer.stdout.on("data", (data) => {
-				logger.appendLine(data.toString());
+				util.logger.appendLine(data.toString());
 			});
 
 			previewer.stderr.on("data", (data) => {
-				logger.appendLine(data.toString());
+				util.logger.appendLine(data.toString());
 				reject(data.toString());
 			});
 
 			previewer.on("close", (code) => {
-				logger.appendLine(`Previewer process exited with code ${code}`);
+				util.logger.appendLine(`Previewer process exited with code ${code}`);
 			});
 		});
 	}

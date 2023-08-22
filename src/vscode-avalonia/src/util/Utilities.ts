@@ -1,8 +1,7 @@
-import glob = require("glob");
 import path = require("path");
 import * as vscode from "vscode";
-import { DOMParser } from "xmldom";
-import * as fs from "fs-extra";
+import * as sm from "../models/solutionModel";
+import { getSolutionModel } from "../services/solutionParser";
 
 export const avaloniaFileExtension = "axaml";
 export const avaloniaLanguageId = "axaml";
@@ -16,40 +15,17 @@ export function getFileName(filePath: string): string {
 	return path.basename(filePath);
 }
 
-export async function getProjectPath() {
-	if (!vscode.workspace.workspaceFolders) {
-		logger.appendLine("No active workspace.");
-		return;
-	}
+export function getExecutableProject(solution: sm.Solution): sm.Project | undefined {
+	const projs = solution.projects.filter((p) => p.outputType === "WinExe");
+	const proj = projs.length > 0 ? projs[0] : undefined;
 
-	const workspaceFolder = vscode.workspace.workspaceFolders[0];
-
-	let projSyncPath = path.join(workspaceFolder.uri.fsPath, "**/*.csproj");
-	if (process.platform === "win32") {
-		projSyncPath = projSyncPath.replace(/\\/g, "/");
-	}
-
-	const csprojFiles = glob.sync(projSyncPath);
-	if (csprojFiles.length === 0) {
-		return undefined;
-	}
-
-	for (let i = 0; i < csprojFiles.length; i++) {
-		const element = csprojFiles[i];
-		if (await isWinExeProject(element)) {
-			return element;
-		}
-	}
-
-	return csprojFiles[0];
+	return proj;
 }
 
-async function isWinExeProject(fileName: string): Promise<boolean> {
-	var data = await fs.readFile(fileName, "utf8");
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(data, "text/xml");
-	const value = xmlDoc.getElementsByTagName("OutputType")[0].textContent;
-	return value === "WinExe";
+export function getFileDetails(file: string): sm.File | undefined {
+	const solution = getSolutionModel();
+	const fileData = solution?.files.find((f) => f.path === file);
+	return fileData;
 }
 
 declare global {
