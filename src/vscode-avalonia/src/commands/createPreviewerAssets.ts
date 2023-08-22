@@ -16,10 +16,10 @@ export class CreatePreviewerAssets implements Command {
 			return;
 		}
 
-		const solutionData = sln.getSolutionModel();
+		const solutionData = sln.getSolutionModel(this._context);
 		if (!solutionData) {
 			logger.appendLine("No solution data found.");
-			sln.buildSolutionModel();
+			sln.buildSolutionModel(this._context);
 			return;
 		}
 

@@ -125,17 +125,6 @@
             "description": "Traces the communication between VS Code and the language server."
           }
         }
-      },
-      {
-        "title": "Solution Configuration",
-        "type": "object",
-        "properties": {
-          "avalonia.solutionData": {
-            "type": "object",
-            "description": "Avalonia solution data",
-            "ignoreSync": true
-          }
-        }
       }
     ]
   },

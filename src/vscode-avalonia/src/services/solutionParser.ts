@@ -11,7 +11,7 @@ import { AppConstants, logger } from "../util/Utilities";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
-export async function buildSolutionModel(): Promise<sln.Solution | undefined> {
+export async function buildSolutionModel(context: vscode.ExtensionContext): Promise<sln.Solution | undefined> {
 	const solutionPath = await getSolutionFile();
 	if (!solutionPath) {
 		logger.appendLine("Could not find solution file.");
@@ -26,16 +26,12 @@ export async function buildSolutionModel(): Promise<sln.Solution | undefined> {
 
 	const fileContent = await fs.readFile(outputPath!, "utf-8"); // add ! to assert outputPath is not undefined
 	const data = JSON.parse(fileContent);
-
-	vscode.workspace.getConfiguration().update(AppConstants.solutionData, data, vscode.ConfigurationTarget.Global);
-
+	context.workspaceState.update(AppConstants.solutionData, data);
 	return data;
 }
 
-export function getSolutionModel(): sln.Solution | undefined {
-	const solutionData = vscode.workspace
-		.getConfiguration()
-		.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
+export function getSolutionModel(context: vscode.ExtensionContext): sln.Solution | undefined {
+	const solutionData = context.workspaceState.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
 	const serialized = JSON.stringify(solutionData);
 	const deserialized = JSON.parse(serialized);
 

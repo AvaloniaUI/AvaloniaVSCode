@@ -16,7 +16,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const commandManager = new CommandManager();
 
 	//TODO: remove this
-	await buildSolutionModel();
+	await buildSolutionModel(context);
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 

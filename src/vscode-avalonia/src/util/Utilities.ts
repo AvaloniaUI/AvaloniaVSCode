@@ -22,8 +22,8 @@ export function getExecutableProject(solution: sm.Solution): sm.Project | undefi
 	return proj;
 }
 
-export function getFileDetails(file: string): sm.File | undefined {
-	const solution = getSolutionModel();
+export function getFileDetails(file: string, context: vscode.ExtensionContext): sm.File | undefined {
+	const solution = getSolutionModel(context);
 	const fileData = solution?.files.find((f) => f.path === file);
 	return fileData;
 }

@@ -30,7 +30,7 @@ export class PreviewerProcess implements Command {
 			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
 		}
 
-		const fileData = util.getFileDetails(mainUri.fsPath);
+		const fileData = util.getFileDetails(mainUri.fsPath, this._context);
 
 		if (!fileData) {
 			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
