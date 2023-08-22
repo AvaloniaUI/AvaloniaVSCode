@@ -19,9 +19,9 @@ export class Messages {
 		return createMessage(message, Messages.clientSupportedPixelFormats);
 	}
 
-	public static updateXaml(): Buffer {
+	public static updateXaml(assemblyPath: string, xamlText: string): Buffer {
 		const message = {
-			assemblyPath: "/Users/prashantvc/repos/MyAppX/MyAppX/bin/Debug/net7.0/MyAppX.dll",
+			assemblyPath: assemblyPath,
 			xaml: xamlText,
 		};
 		return createMessage(message, Messages.updateXamlId);
@@ -29,7 +29,6 @@ export class Messages {
 }
 
 function createMessage(message: any, messageType: string) {
-	console.log("message", message);
 	const bson = BSON.serialize(message);
 	const dataLength = bson.length; // 20 is the length of the header
 	const total = getLengthBytes(dataLength) + getByString(typeInfo(messageType)) + getByString(bson);
@@ -70,23 +69,6 @@ export function adjustGuidBytes(byteArray: Buffer) {
 
 	return byteArray;
 }
-
-const xamlText = `<UserControl xmlns="https://github.com/avaloniaui"
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-xmlns:vm="clr-namespace:MyAppX.ViewModels"
-mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-x:Class="MyAppX.Views.MainView"
-x:DataType="vm:MainViewModel">
-<Design.DataContext>
-<!-- This only sets the DataContext for the previewer in an IDE,
-to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-<vm:MainViewModel />
-</Design.DataContext>
-
-<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-</UserControl>`;
 
 declare global {
 	interface Buffer {

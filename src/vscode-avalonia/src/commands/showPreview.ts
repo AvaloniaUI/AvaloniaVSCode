@@ -7,11 +7,5 @@ export class ShowPreviewCommand implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
 	public readonly id = AppConstants.showPreviewCommand;
 
-	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
-		const previewServer = PreviewServer.getInstance(mainUri!.fsPath, 9000);
-		if (!previewServer.isRunnig) {
-			await previewServer.start();
-			vscode.window.showInformationMessage("Preview server started.");
-		}
-	}
+	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {}
 }

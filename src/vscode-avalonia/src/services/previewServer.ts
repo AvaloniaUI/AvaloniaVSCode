@@ -3,8 +3,11 @@ import { logger } from "../util/Utilities";
 import { EventDispatcher, IEvent } from "strongly-typed-events";
 import { Messages } from "./messageParser";
 
+import * as sm from "../models/solutionModel";
+
 export interface IPreviewServer {
 	sendData(data: Buffer): void;
+	updateXaml(fileData: sm.File, xamlText: string): void;
 }
 export class PreviewServer implements IPreviewServer {
 	public async start() {
@@ -28,9 +31,6 @@ export class PreviewServer implements IPreviewServer {
 				logger.appendLine("Start designer session message received.");
 				const pixelFormat = Messages.clientSupportedPixelFormatsMessage();
 				socket.write(pixelFormat);
-
-				const xaml = Messages.updateXaml();
-				socket.write(xaml);
 			}
 		});
 
@@ -55,13 +55,30 @@ export class PreviewServer implements IPreviewServer {
 	}
 
 	public static getInstance(assemblyName: string, port: number): PreviewServer {
+		var instance = PreviewServer.getInstanceByAssemblyName(assemblyName);
+		if (instance) {
+			return instance;
+		}
+
 		PreviewServer._instance ??= new PreviewServer(assemblyName, port);
+		PreviewServer._servers.set(assemblyName, PreviewServer._instance);
 		return PreviewServer._instance;
+	}
+
+	public static getInstanceByAssemblyName(assemblyName: string): PreviewServer | undefined {
+		var instance = PreviewServer._servers.get(assemblyName);
+		return instance;
 	}
 
 	private constructor(private _assemblyName: string, private _port: number) {
 		this._server = net.createServer();
 	}
+
+	updateXaml(fileData: sm.File, xamlText: string): void {
+		const updateXamlMessage = Messages.updateXaml(fileData.targetPath, xamlText);
+		this._socket?.write(updateXamlMessage);
+	}
+
 	sendData(data: Buffer): void {
 		logger.appendLine("In PreviewServer.sendData");
 	}
@@ -77,4 +94,6 @@ export class PreviewServer implements IPreviewServer {
 	_host = "127.0.0.1";
 
 	private static _instance: PreviewServer;
+
+	private static _servers = new Map<string, PreviewServer>();
 }

@@ -11,7 +11,7 @@ import { AppConstants, logger } from "../util/Utilities";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
-export async function buildSolutionModel(context: vscode.ExtensionContext): Promise<sln.Solution | undefined> {
+export async function buildSolutionModel(context: vscode.ExtensionContext) {
 	const solutionPath = await getSolutionFile();
 	if (!solutionPath) {
 		logger.appendLine("Could not find solution file.");
@@ -21,21 +21,22 @@ export async function buildSolutionModel(context: vscode.ExtensionContext): Prom
 	var { outputPath, isExist } = isOutputExists(solutionPath);
 
 	if (!isExist) {
-		outputPath = await parseSolution(solutionPath);
+		await parseSolution(solutionPath, context);
+		return;
 	}
 
-	const fileContent = await fs.readFile(outputPath!, "utf-8"); // add ! to assert outputPath is not undefined
-	const data = JSON.parse(fileContent);
-	context.workspaceState.update(AppConstants.solutionData, data);
-	return data;
+	const fileContent = await fs.readFile(outputPath!, "utf-8");
+	updateSolutionModel(context, fileContent);
 }
 
 export function getSolutionModel(context: vscode.ExtensionContext): sln.Solution | undefined {
 	const solutionData = context.workspaceState.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
-	const serialized = JSON.stringify(solutionData);
-	const deserialized = JSON.parse(serialized);
+	return solutionData;
+}
 
-	return deserialized;
+function updateSolutionModel(context: vscode.ExtensionContext, jsonContect: string) {
+	const data = JSON.parse(jsonContect);
+	context.workspaceState.update(AppConstants.solutionData, data);
 }
 
 async function getSolutionFile(): Promise<string | undefined> {
@@ -54,7 +55,7 @@ function isOutputExists(solutionPath: string) {
 	return { outputPath, isExist: fs.pathExistsSync(outputPath) };
 }
 
-async function parseSolution(solutionPath: string) {
+async function parseSolution(solutionPath: string, context: vscode.ExtensionContext): Promise<string> {
 	const avaloniaExtn = vscode.extensions.getExtension(extensionId);
 	if (!avaloniaExtn) {
 		throw new Error("Could not find sample extension.");
@@ -73,7 +74,9 @@ async function parseSolution(solutionPath: string) {
 		});
 
 		previewer.stdout.on("data", (data) => {
-			resolve(data.toString());
+			const jsonContent = data.toString();
+			updateSolutionModel(context, jsonContent);
+			resolve(jsonContent);
 		});
 
 		previewer.stderr.on("data", (data) => {
