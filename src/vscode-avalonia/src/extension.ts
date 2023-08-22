@@ -6,12 +6,17 @@ import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
 import { getFileName, isAvaloniaFile, logger, AppConstants } from "./util/Utilities";
+import { parseSolution } from "./services/solutionParser";
 
 let languageClient: lsp.LanguageClient | null = null;
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "Avalonia UI" is now active!');
+
 	const commandManager = new CommandManager();
+
+	const slnData = await parseSolution();
+	console.log(slnData);
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
@@ -33,6 +38,12 @@ export async function activate(context: vscode.ExtensionContext) {
 			}
 
 			vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, editor.document.uri);
+		}
+	});
+
+	vscode.workspace.onDidSaveTextDocument((document) => {
+		if (isAvaloniaFile(document)) {
+			vscode.window.showInformationMessage("Avalonia UI: File saved");
 		}
 	});
 
