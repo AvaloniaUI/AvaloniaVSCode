@@ -68,6 +68,20 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Build Solution Parser",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/SolutionParser/SolutionParser.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "--output",
+                "${workspaceFolder}/src/vscode-avalonia/solutionParserTool"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "Package Extension",
             "type": "shell",
             "command": "bash",

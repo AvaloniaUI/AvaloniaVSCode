@@ -79,4 +79,6 @@ export class AppConstants {
 
 	static readonly previewerPanelViewType = "avaloniaPreviewer";
 	static readonly winExe = "WinExe";
+
+	static readonly solutionData = "avalonia.solutionData";
 }

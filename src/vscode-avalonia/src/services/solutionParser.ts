@@ -11,16 +11,61 @@ import { AppConstants, logger } from "../util/Utilities";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
-export async function parseSolution(solutionPath: string = "/Users/prashantvc/repos/MyAppX/MyAppX.sln") {
+export async function buildSolutionModel(): Promise<sln.Solution | undefined> {
+	const solutionPath = await getSolutionFile();
+	if (!solutionPath) {
+		logger.appendLine("Could not find solution file.");
+		return;
+	}
+
+	var { outputPath, isExist } = isOutputExists(solutionPath);
+
+	if (!isExist) {
+		outputPath = await parseSolution(solutionPath);
+	}
+
+	const fileContent = await fs.readFile(outputPath!, "utf-8"); // add ! to assert outputPath is not undefined
+	const data = JSON.parse(fileContent);
+
+	vscode.workspace.getConfiguration().update(AppConstants.solutionData, data, vscode.ConfigurationTarget.Global);
+
+	return data;
+}
+
+export function getSolutionModel(): sln.Solution | undefined {
+	const dd = vscode.workspace.getConfiguration().get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
+	const serialized = JSON.stringify(dd);
+	const deserialized = JSON.parse(serialized);
+
+	return deserialized;
+}
+
+async function getSolutionFile(): Promise<string | undefined> {
+	const filePattern = "**/*.sln";
+	const files = await vscode.workspace.findFiles(filePattern);
+
+	if (files.length > 0) {
+		return files[0].fsPath;
+	}
+
+	return undefined;
+}
+
+function isOutputExists(solutionPath: string) {
+	const outputPath = path.join(os.tmpdir(), path.basename(solutionPath) + ".json");
+	return { outputPath, isExist: fs.pathExistsSync(outputPath) };
+}
+
+async function parseSolution(solutionPath: string) {
 	const avaloniaExtn = vscode.extensions.getExtension(extensionId);
 	if (!avaloniaExtn) {
 		throw new Error("Could not find sample extension.");
 	}
 
-	const parserLocation = path.join(avaloniaExtn.extensionPath, "solutionParserTool", "SolutionParser");
+	const parserLocation = path.join(avaloniaExtn.extensionPath, "solutionParserTool", "SolutionParser.dll");
 
-	return new Promise((resolve, reject) => {
-		const previewer = spawn(parserLocation, [solutionPath], {
+	return new Promise<string>((resolve, reject) => {
+		const previewer = spawn(`dotnet ${parserLocation}`, [solutionPath], {
 			env: process.env,
 			shell: true,
 		});
@@ -30,7 +75,7 @@ export async function parseSolution(solutionPath: string = "/Users/prashantvc/re
 		});
 
 		previewer.stdout.on("data", (data) => {
-			logger.appendLine(data.toString());
+			resolve(data.toString());
 		});
 
 		previewer.stderr.on("data", (data) => {
@@ -42,11 +87,4 @@ export async function parseSolution(solutionPath: string = "/Users/prashantvc/re
 			logger.appendLine(`Previewer process exited with code ${code}`);
 		});
 	});
-}
-
-export async function getSolutionData(): Promise<sln.Solution> {
-	const tmpDirPath = os.tmpdir();
-	const filePath = path.join(tmpDirPath, "MyAppX.sln.json");
-	const fileContent = await fs.readFile(filePath, "utf-8");
-	return JSON.parse(fileContent);
 }
