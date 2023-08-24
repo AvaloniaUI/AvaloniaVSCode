@@ -391,6 +391,11 @@ browser-stdout@1.3.1:
   resolved "https://registry.yarnpkg.com/browser-stdout/-/browser-stdout-1.3.1.tgz#baa559ee14ced73452229bad7326467c61fabd60"
   integrity sha512-qhAVI1+Av2X7qelOfAIYwXONood6XlZE/fXaBSmW/T5SzLAmCgzi+eiWE7fUvbHaeNBQH13UftjpXxsfLkMpgw==
 
+bson@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-5.4.0.tgz#0eea77276d490953ad8616b483298dbff07384c6"
+  integrity sha512-WRZ5SQI5GfUuKnPTNmAYPiKIof3ORXAF4IRU5UcgmivNIon01rWQlw5RUH954dpu8yGL8T59YShVddIPaU/gFA==
+
 callsites@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
@@ -1315,6 +1320,53 @@ slash@^3.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
+ste-core@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-core/-/ste-core-3.0.11.tgz#a2f0d0cd23a33b7aafd5a6c83e8e209ef3d8fabe"
+  integrity sha512-ivkRENMh0mdGoPlZ4xVcEaC8rXQfTEfvonRw5m8VDKV7kgcbZbaNd1TnKl08wXbcLdT7okSc63HNP8cVhy95zg==
+
+ste-events@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-events/-/ste-events-3.0.11.tgz#eb8972329486b10a019b23687b34887746fe6bf2"
+  integrity sha512-eahsf3+KARhBOtsdQZvRgzVO/vg8M3wBRbKaQIIFGRIZ2BtAQFr7t0cU94xVW2qh1rA+b4QxrjHc1N9NxKc90w==
+  dependencies:
+    ste-core "^3.0.11"
+
+ste-promise-events@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-promise-events/-/ste-promise-events-3.0.11.tgz#4a89b481418989d7f2c3ad79d8b89cfba3632ac8"
+  integrity sha512-LTYTsYSpcNlNRFc/vmviHJ38hB8QTjUYoKVcfjhDnGU2vhnnbAqvsjaY0IMRAlHH6kPMysdgNWfr+1I99BWy9Q==
+  dependencies:
+    ste-core "^3.0.11"
+
+ste-promise-signals@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-promise-signals/-/ste-promise-signals-3.0.11.tgz#d83d81f3193972f1f5e064f39b2befbc0f8d338d"
+  integrity sha512-idDK24bBAeVILzP3/7EEcIoZC1kSYBZE8uW8HassdmPv28vfoME2PQG5GQFWgVGGx88Ag4Nor8qHk88lVQvWhQ==
+  dependencies:
+    ste-core "^3.0.11"
+
+ste-promise-simple-events@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-promise-simple-events/-/ste-promise-simple-events-3.0.11.tgz#4ddc197308f702e42ff3ee102e3c3227975686af"
+  integrity sha512-xrM7scATyrV/cgwdSlegH+fpWGrRqq6hnykgzTye3M85HnFgAIrYINOut2Hg7b0LHP+vhFQ9x2EMCHpZyT3ktQ==
+  dependencies:
+    ste-core "^3.0.11"
+
+ste-signals@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-signals/-/ste-signals-3.0.11.tgz#22a9f85e7196515436bb6b235aa0e307e8a75f38"
+  integrity sha512-Thc4Z/jYH5DWKxrbV+EtMX7mJLjtjgD2K/sxcK355uJKklg+vlVhCO1JSOJoHlwRfp+hxANMSZQv2JCxFLnjnw==
+  dependencies:
+    ste-core "^3.0.11"
+
+ste-simple-events@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/ste-simple-events/-/ste-simple-events-3.0.11.tgz#1963a446f901a3b7157fcda7fc59c9d6f572b764"
+  integrity sha512-PDoQajqiTtJLNDWfJCihzACiTVZyFsXi6hNAVNelNJoNmqj+BaWuhJ/NHaAHxzfSRoMbL+hFgfPqFmxiHhAQSQ==
+  dependencies:
+    ste-core "^3.0.11"
+
 string-width@^4.1.0, string-width@^4.2.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
@@ -1342,6 +1394,19 @@ strip-json-comments@3.1.1, strip-json-comments@^3.1.0, strip-json-comments@^3.1.
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+strongly-typed-events@^3.0.11:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/strongly-typed-events/-/strongly-typed-events-3.0.11.tgz#8b156b572ef15a21136cc35383a5d2465048a05c"
+  integrity sha512-k7871A9tGgikRriVCARnb8+tlF/x6kFd8+KidcFcN6EG/3DcOMPnNBfRH712PGXlj2zhmy/VDvOFND1TYp2JdQ==
+  dependencies:
+    ste-core "^3.0.11"
+    ste-events "^3.0.11"
+    ste-promise-events "^3.0.11"
+    ste-promise-signals "^3.0.11"
+    ste-promise-simple-events "^3.0.11"
+    ste-signals "^3.0.11"
+    ste-simple-events "^3.0.11"
 
 supports-color@8.1.1:
   version "8.1.1"

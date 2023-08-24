@@ -5,18 +5,25 @@ import * as lsp from "vscode-languageclient/node";
 import { createLanguageService } from "./client";
 import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
-import { getFileName, isAvaloniaFile, logger, AppConstants } from "./util/Utilities";
+import * as util from "./util/Utilities";
+import { AppConstants, logger } from "./util/Utilities";
+import { buildSolutionModel } from "./services/solutionParser";
+import { PreviewServer } from "./services/previewServer";
 
 let languageClient: lsp.LanguageClient | null = null;
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "Avalonia UI" is now active!');
+
 	const commandManager = new CommandManager();
+
+	//TODO: remove this
+	await buildSolutionModel(context);
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
 	vscode.window.onDidChangeActiveTextEditor((editor) => {
-		if (editor && isAvaloniaFile(editor.document)) {
+		if (editor && util.isAvaloniaFile(editor.document)) {
 			// get avalonia previewer panel from tab groups
 			const previewTab = vscode.window.tabGroups.all
 				.flatMap((tabGroup) => tabGroup.tabs)
@@ -28,11 +35,17 @@ export async function activate(context: vscode.ExtensionContext) {
 					return tabInput.viewType.endsWith(AppConstants.previewerPanelViewType);
 				});
 
-			if (!previewTab || previewTab?.label.endsWith(getFileName(editor.document.fileName))) {
+			vscode.commands.executeCommand(AppConstants.updatePreviewerContent, editor.document.uri);
+
+			if (!previewTab || previewTab?.label.endsWith(util.getFileName(editor.document.fileName))) {
 				return;
 			}
+		}
+	});
 
-			vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, editor.document.uri);
+	vscode.workspace.onDidSaveTextDocument((document) => {
+		if (util.isAvaloniaFile(document)) {
+			vscode.commands.executeCommand(AppConstants.updatePreviewerContent, document.uri);
 		}
 	});
 

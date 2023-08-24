@@ -24,9 +24,6 @@
             "options": {
                 "cwd": "${workspaceFolder}/src/vscode-avalonia"
             },
-            "dependsOn": [
-                "Build webview"
-            ]
         },
         {
             "label": "Build webview",
@@ -53,7 +50,8 @@
             },
             "dependsOn": [
                 "Build webview",
-                "Build LSP Server"
+                "Build LSP Server",
+                "Build Solution Parser"
             ]
         },
         {
@@ -65,8 +63,24 @@
                 "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
+                // "/property:Configuration=Release",
                 "--output",
                 "${workspaceFolder}/src/vscode-avalonia/avaloniaServer"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build Solution Parser",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/SolutionParser/SolutionParser.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                // "/property:Configuration=Release",
+                "--output",
+                "${workspaceFolder}/src/vscode-avalonia/solutionParserTool"
             ],
             "problemMatcher": "$msCompile"
         },
