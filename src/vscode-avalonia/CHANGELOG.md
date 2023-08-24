@@ -2,6 +2,17 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.11] - 24 August 2023
+
+- Improve the XAML previewer performace
+- Support Avalonia xplat solution
+
+### Known issues
+
+1. Previewer may take up to 10 seconds to activate for the first time if you’re using Avalonia `v0.10.*`
+2. You must build the project before using the preivewer
+3. Previewer may not be visible first time; switch to XAML code tab or save the file
+
 ## [0.0.6] - 03 August 2023
 
 - Improved code completion
