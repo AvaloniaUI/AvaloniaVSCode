@@ -47,7 +47,7 @@ public class ProjectInfo
     /// <summary>
     /// Project directory path
     /// </summary>
-    private string ProjectDirectory { get; }
+    public string ProjectDirectory { get; }
 
     public string AssemblyPath()
     {

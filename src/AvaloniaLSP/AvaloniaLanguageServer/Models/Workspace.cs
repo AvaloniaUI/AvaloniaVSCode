@@ -22,11 +22,16 @@ public class Workspace
 
     Metadata? BuildCompletionMetadata(DocumentUri uri)
     {
-        var slnFile = SolutionName(uri);
+        var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
+
         if (slnFile == null)
             return null;
+
         
         var slnFilePath = Path.Combine(Path.GetTempPath(), $"{slnFile}.json");
+
+        if (!File.Exists(slnFilePath))
+            return null;
         
         string content = File.ReadAllText(slnFilePath);
         var package = JsonSerializer.Deserialize<SolutionData>(content);

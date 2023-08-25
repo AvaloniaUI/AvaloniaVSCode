@@ -59,7 +59,7 @@ async function getSolutionFile(): Promise<string | undefined> {
 		return files[0].fsPath;
 	}
 
-	return undefined;
+	return vscode.workspace.workspaceFolders?.[0].uri.fsPath;
 }
 
 async function isOutputExists() {
@@ -102,7 +102,7 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 		});
 
 		previewer.on("close", (code) => {
-			logger.appendLine(`Previewer process exited with code ${code}`);
+			logger.appendLine(`parser process exited ${code}`);
 		});
 	});
 }
