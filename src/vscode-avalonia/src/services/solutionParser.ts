@@ -87,7 +87,7 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 		});
 
 		previewer.on("spawn", () => {
-			logger.appendLine(`Previewer process started with args: ${previewer.spawnargs}`);
+			logger.appendLine(`parser process args: ${previewer.spawnargs}`);
 		});
 
 		previewer.stdout.on("data", (data) => {
