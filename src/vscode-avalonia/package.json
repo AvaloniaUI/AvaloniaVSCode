@@ -3,7 +3,7 @@
   "displayName": "Avalonia",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "license": "MIT",
   "preview": true,
   "icon": "./media/icon.png",
@@ -121,7 +121,7 @@
               "messages",
               "verbose"
             ],
-            "default": "verbose",
+            "default": "messages",
             "description": "Traces the communication between VS Code and the language server."
           }
         }

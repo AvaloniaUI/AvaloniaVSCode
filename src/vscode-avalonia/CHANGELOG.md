@@ -2,6 +2,10 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.13] - 25 August 2023
+
+- Fixes the issue where extension fails to work when on .NET preview releases
+
 ## [0.0.11] - 24 August 2023
 
 - Improve the XAML previewer performace

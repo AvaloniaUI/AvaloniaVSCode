@@ -63,7 +63,7 @@
                 "${workspaceFolder}/src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
-                // "/property:Configuration=Release",
+                "/property:Configuration=Release",
                 "--output",
                 "${workspaceFolder}/src/vscode-avalonia/avaloniaServer"
             ],
@@ -78,7 +78,7 @@
                 "${workspaceFolder}/src/SolutionParser/SolutionParser.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
-                // "/property:Configuration=Release",
+                "/property:Configuration=Release",
                 "--output",
                 "${workspaceFolder}/src/vscode-avalonia/solutionParserTool"
             ],
