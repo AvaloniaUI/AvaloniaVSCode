@@ -11,17 +11,11 @@ import { AppConstants, logger } from "../util/Utilities";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
-export async function buildSolutionModel(context: vscode.ExtensionContext) {
-	const solutionPath = await getSolutionFile();
-	if (!solutionPath) {
-		logger.appendLine("Could not find solution file.");
-		return;
-	}
+export async function buildSolutionModel(context: vscode.ExtensionContext, force: boolean = false) {
+	var { outputPath, isExist } = await isOutputExists();
 
-	var { outputPath, isExist } = isOutputExists(solutionPath);
-
-	if (!isExist) {
-		await parseSolution(solutionPath, context);
+	if (!isExist || force) {
+		await parseSolution(context);
 		return;
 	}
 
@@ -32,6 +26,24 @@ export async function buildSolutionModel(context: vscode.ExtensionContext) {
 export function getSolutionModel(context: vscode.ExtensionContext): sln.Solution | undefined {
 	const solutionData = context.workspaceState.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
 	return solutionData;
+}
+
+export async function getSolutionDataFile() {
+	const slnFile = await getSolutionFile();
+	if (!slnFile) {
+		logger.appendLine("Could not find solution file.");
+		return;
+	}
+
+	return path.join(os.tmpdir(), path.basename(slnFile) + ".json");
+}
+
+export async function purgeSolutionDataFile() {
+	const solutionDataFile = await getSolutionDataFile();
+	if (!solutionDataFile) {
+		return;
+	}
+	fs.removeSync(solutionDataFile);
 }
 
 function updateSolutionModel(context: vscode.ExtensionContext, jsonContect: string) {
@@ -50,15 +62,20 @@ async function getSolutionFile(): Promise<string | undefined> {
 	return undefined;
 }
 
-function isOutputExists(solutionPath: string) {
-	const outputPath = path.join(os.tmpdir(), path.basename(solutionPath) + ".json");
-	return { outputPath, isExist: fs.pathExistsSync(outputPath) };
+async function isOutputExists() {
+	const outputPath = await getSolutionDataFile();
+	logger.appendLine(`[EXT - INFO] Solution data path path: ${outputPath}`);
+	return { outputPath, isExist: fs.pathExistsSync(outputPath!) };
 }
 
-async function parseSolution(solutionPath: string, context: vscode.ExtensionContext): Promise<string> {
+async function parseSolution(context: vscode.ExtensionContext): Promise<string> {
 	const avaloniaExtn = vscode.extensions.getExtension(extensionId);
 	if (!avaloniaExtn) {
 		throw new Error("Could not find sample extension.");
+	}
+	const solutionPath = await getSolutionFile();
+	if (!solutionPath) {
+		throw new Error("Could not find solution file.");
 	}
 
 	const parserLocation = path.join(avaloniaExtn.extensionPath, "solutionParserTool", "SolutionParser.dll");

@@ -5,7 +5,7 @@ import { getSolutionModel } from "../services/solutionParser";
 
 export const avaloniaFileExtension = "axaml";
 export const avaloniaLanguageId = "axaml";
-export const logger = vscode.window.createOutputChannel("Avalonia Client");
+export const logger = vscode.window.createOutputChannel("Avalonia Client", { log: true });
 
 export function isAvaloniaFile(document: vscode.TextDocument): boolean {
 	return path.extname(document.fileName) === `.${avaloniaFileExtension}`;

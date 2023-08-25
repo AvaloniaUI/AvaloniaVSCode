@@ -26,7 +26,7 @@ export class PreviewerProcess implements Command {
 
 	async startPreviewerProcess(previewParams: PreviewerParams, mainUri: vscode.Uri): Promise<PreviewerData> {
 		if (!this.canStartPreviewerProcess(previewParams)) {
-			util.logger.appendLine(`Previewer path not found: ${previewParams.previewerPath}`);
+			util.logger.appendLine(`Previewer assets are not available.`);
 			return { file: mainUri, previewerUrl: "", assetsAvailable: false };
 		}
 

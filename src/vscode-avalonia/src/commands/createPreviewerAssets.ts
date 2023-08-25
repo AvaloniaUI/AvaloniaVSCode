@@ -54,17 +54,36 @@ export class CreatePreviewerAssets implements Command {
 	generatePreviewerAssets(projectPath: string, project: sm.Project): Promise<PreviewerParams> {
 		return new Promise((resolve, reject) => {
 			const dotnet = spawn("dotnet", ["build", projectPath, "-nologo", "/consoleloggerparameters:NoSummary"]);
-
-			dotnet.on("close", (code) => {
+			dotnet.stderr.on("data", (data) => {
+				logger.appendLine(`[ERROR]  dotnet build error: ${data}`);
+			});
+			dotnet.on("close", async (code) => {
 				if (code === 0) {
+					if (!project.designerHostPath || project.designerHostPath === "") {
+						await sln.buildSolutionModel(this._context, true);
+					}
+
+					const solution = sln.getSolutionModel(this._context);
+					if (!solution) {
+						reject("Solution data not found.");
+						return;
+					}
+
+					const prj = getExecutableProject(solution);
+					if (!prj) {
+						reject("Executable project not found.");
+						return;
+					}
+
 					const previewParams = {
-						previewerPath: project.designerHostPath,
-						targetPath: project.targetPath,
-						projectRuntimeConfigFilePath: project.runtimeConfigFilePath,
-						projectDepsFilePath: project.depsFilePath,
+						previewerPath: prj.designerHostPath,
+						targetPath: prj.targetPath,
+						projectRuntimeConfigFilePath: prj.runtimeConfigFilePath,
+						projectDepsFilePath: prj.depsFilePath,
 					};
 					resolve(previewParams);
 				} else {
+					logger.appendLine(`[ERROR] dotnet build exited with code ${code}`);
 					reject(`dotnet build exited with code ${code}`);
 				}
 			});

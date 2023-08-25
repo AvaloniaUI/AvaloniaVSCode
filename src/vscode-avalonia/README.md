@@ -50,3 +50,17 @@ Rich syntax highlighter and contextual code complete will make it lot easier to 
 1. Previewer may take up to 10 seconds to activate for the first time if you’re using Avalonia `v0.10.*`
 2. You must build the project before using the preivewer
 3. Previewer may not be visible first time; switch to XAML code tab or save the file
+
+## Troubleshooting guide
+
+Common issues
+
+**The previewer is stuck on `Generate Assets` message**
+
+Close the VS Code, build you solution or project manually from a terminal. Use `dotnet build` command.
+
+Reopen the VS Code and load your project folder
+
+**My solution does not have an executable project**
+
+The extension does not work with workspace with only library project. Please use `avalonia.xplat` template or create an Avalonia app and add your library project to the app 

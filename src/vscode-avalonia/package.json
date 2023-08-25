@@ -3,7 +3,7 @@
   "displayName": "Avalonia",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "license": "MIT",
   "preview": true,
   "icon": "./media/icon.png",
@@ -111,7 +111,7 @@
     },
     "configuration": [
       {
-        "title": "Avalonia LSP configuration",
+        "title": "Avalonia",
         "type": "object",
         "properties": {
           "axaml.trace.server": {
@@ -121,7 +121,7 @@
               "messages",
               "verbose"
             ],
-            "default": "messages",
+            "default": "verbose",
             "description": "Traces the communication between VS Code and the language server."
           }
         }

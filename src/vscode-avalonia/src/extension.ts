@@ -7,8 +7,7 @@ import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
 import * as util from "./util/Utilities";
 import { AppConstants, logger } from "./util/Utilities";
-import { buildSolutionModel } from "./services/solutionParser";
-import { PreviewServer } from "./services/previewServer";
+import * as sln from "./services/solutionParser";
 
 let languageClient: lsp.LanguageClient | null = null;
 
@@ -18,7 +17,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const commandManager = new CommandManager();
 
 	//TODO: remove this
-	await buildSolutionModel(context);
+	await sln.buildSolutionModel(context, true);
 
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
 
