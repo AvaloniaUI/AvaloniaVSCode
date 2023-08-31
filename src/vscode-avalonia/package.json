@@ -1,11 +1,15 @@
 {
   "name": "vscode-avalonia",
-  "displayName": "Avalonia",
+  "displayName": "Avalonia for VSCode",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.13",
+  "version": "0.0.16",
   "license": "MIT",
   "preview": true,
+  "qna": "false",
+  "sponsor": {
+    "url": "https://github.com/sponsors/AvaloniaUI"
+  },
   "icon": "./media/icon.png",
   "engines": {
     "vscode": "^1.79.0"

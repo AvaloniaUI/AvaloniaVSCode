@@ -53,14 +53,20 @@ Rich syntax highlighter and contextual code complete will make it lot easier to 
 
 ## Troubleshooting guide
 
-Common issues
+### Common issues
 
-**The previewer is stuck on `Generate Assets` message**
+1. **The previewer tab is blank**
+
+Switch focus to XAML code tab or save the XAML file
+
+2. **The previewer is stuck on `Generate Assets` message**
 
 Close the VS Code, build you solution or project manually from a terminal. Use `dotnet build` command.
 
 Reopen the VS Code and load your project folder
 
-**My solution does not have an executable project**
+3. **My solution does not have an executable project**
 
 The extension does not work with workspace with only library project. Please use `avalonia.xplat` template or create an Avalonia app and add your library project to the app 
+
+Generally, like everything with computers problems, restarting the VS Code resolves them.

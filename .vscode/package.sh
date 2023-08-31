@@ -20,7 +20,7 @@ else
     echo "Packaging extension to $1"
 
     # Package the extension
-    vsce package --pre-release -o "$1"
+    vsce package -o "$1"
 fi
 
 # Remove LICENSE file from local directory
