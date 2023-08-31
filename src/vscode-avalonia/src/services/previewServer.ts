@@ -31,6 +31,10 @@ export class PreviewServer implements IPreviewServer {
 				logger.appendLine("Start designer session message received.");
 				const pixelFormat = Messages.clientSupportedPixelFormatsMessage();
 				socket.write(pixelFormat);
+
+				// TODO: Investigate this oddity
+				// const renderInfo = Messages.clientRenderInfoMessage();
+				// socket.write(renderInfo);
 			}
 		});
 

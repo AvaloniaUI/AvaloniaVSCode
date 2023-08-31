@@ -14,6 +14,12 @@ export class Messages {
 		return { type: type, message: msg, length: length };
 	}
 
+	public static clientRenderInfoMessage(): Buffer {
+		const message = { dpiX: 192.0, dpiY: 192.0 };
+		const messageBuffer = createMessage(message, Messages.clientRenderInfoMessageId);
+		return messageBuffer;
+	}
+
 	public static clientSupportedPixelFormatsMessage(): Buffer {
 		const message = { formats: [1] };
 		return createMessage(message, Messages.clientSupportedPixelFormats);
