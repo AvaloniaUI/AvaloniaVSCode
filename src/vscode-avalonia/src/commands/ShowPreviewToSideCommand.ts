@@ -13,12 +13,14 @@ export class ShowPreviewToSideCommand implements Command {
 	public readonly id = AppConstants.showPreviewToSideCommand;
 
 	public async execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
-		let previewerData = this._processManager.getPreviewerData(mainUri?.toString() ?? "");
+		const activeFile = mainUri ?? vscode.window.activeTextEditor?.document.uri;
+
+		let previewerData = this._processManager.getPreviewerData(activeFile?.toString() ?? "");
 
 		if (!previewerData) {
 			previewerData = await vscode.commands.executeCommand<PreviewerData>(
 				AppConstants.previewProcessCommandId,
-				mainUri
+				activeFile
 			);
 		}
 

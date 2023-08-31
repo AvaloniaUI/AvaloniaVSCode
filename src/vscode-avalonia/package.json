@@ -71,14 +71,8 @@
         "category": "Avalonia"
       },
       {
-        "command": "avalonia.showPreview",
-        "title": "Show preview",
-        "category": "Avalonia",
-        "icon": "$(preview)"
-      },
-      {
         "command": "avalonia.showPreviewToSide",
-        "title": "Show preview to the side",
+        "title": "Show preview",
         "category": "Avalonia",
         "icon": "$(open-preview)"
       }
@@ -91,23 +85,9 @@
           "group": "navigation"
         }
       ],
-      "editor/title/context": [
-        {
-          "when": "resourceLangId == AXAML",
-          "command": "avalonia.showPreview",
-          "group": "1_open"
-        }
-      ],
-      "editor/context": [
-        {
-          "when": "resourceLangId == AXAML",
-          "command": "avalonia.showPreview",
-          "group": "1_open"
-        }
-      ],
       "commandPalette": [
         {
-          "command": "avalonia.showPreview",
+          "command": "avalonia.showPreviewToSide",
           "when": "resourceLangId == AXAML",
           "group": "Avalonia"
         }
