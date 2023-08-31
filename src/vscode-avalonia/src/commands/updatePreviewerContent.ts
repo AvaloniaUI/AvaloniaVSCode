@@ -17,7 +17,13 @@ export class UpdatePreviewerContext implements Command {
 		if (!fileData) {
 			return;
 		}
-		const xamlText = vscode.window.activeTextEditor?.document.getText() ?? "";
+
+		const xamlText = await this.getTextFromUri(mainUri);
 		PreviewServer.getInstanceByAssemblyName(fileData.targetPath)?.updateXaml(fileData, xamlText);
+	}
+
+	async getTextFromUri(uri: vscode.Uri): Promise<string> {
+		const buffer = await vscode.workspace.fs.readFile(uri);
+		return buffer.toString();
 	}
 }
