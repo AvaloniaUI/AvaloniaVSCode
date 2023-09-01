@@ -2,6 +2,13 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.17] - 01 September 2023
+
+### Fixes
+
+- Previewer is blank, it does not get update until focus change. [Issue #8](https://github.com/AvaloniaUI/Avalonia-VSCode-Extension/issues/8)
+- Previewer doesn't work when opened from command palette. [Issue #5](https://github.com/AvaloniaUI/Avalonia-VSCode-Extension/issues/5)
+
 ## [0.0.13] - 25 August 2023
 
 - Fixes the issue where extension fails to work when on .NET preview releases

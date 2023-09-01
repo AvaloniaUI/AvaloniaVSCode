@@ -54,15 +54,15 @@ function App() {
 		<div id="designframe">
 			{!assetsAvailable && (
 				<div id="assetsMessage">
-					<b>Previewer is unavailable. Please build the project to enable it.</b>
+					<b>Please build the project to enable previewer</b>
 					<div id="actions">
 						<VSCodeButton
 							onClick={() => {
 								console.info("executing generateAssetsCommand");
-								vscode.postMessage({ command: "generateAssetsCommand", text: "Generate Assets" });
+								vscode.postMessage({ command: "generateAssetsCommand", text: "Build" });
 							}}
 						>
-							Generate Assets
+							Build Project
 						</VSCodeButton>
 					</div>
 				</div>

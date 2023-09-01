@@ -11,6 +11,12 @@ import { AppConstants, logger } from "../util/Utilities";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
+/**
+ * Builds the solution model by parsing the solution file and updating the workspace state.
+ * If the output file already exists and `force` is false, the function does nothing.
+ * @param context The extension context.
+ * @param force Whether to force the parsing of the solution file even if the output file already exists.
+ */
 export async function buildSolutionModel(context: vscode.ExtensionContext, force: boolean = false) {
 	var { outputPath, isExist } = await isOutputExists();
 
@@ -23,11 +29,20 @@ export async function buildSolutionModel(context: vscode.ExtensionContext, force
 	updateSolutionModel(context, fileContent);
 }
 
+/**
+ * Returns the solution model from the workspace state.
+ * @param context The extension context.
+ * @returns The solution model, or undefined if it doesn't exist.
+ */
 export function getSolutionModel(context: vscode.ExtensionContext): sln.Solution | undefined {
 	const solutionData = context.workspaceState.get<sln.Solution | undefined>(AppConstants.solutionData, undefined);
 	return solutionData;
 }
 
+/**
+ * Returns the path to the solution data file.
+ * @returns The path to the solution data file, or undefined if it doesn't exist.
+ */
 export async function getSolutionDataFile() {
 	const slnFile = await getSolutionFile();
 	if (!slnFile) {
@@ -38,6 +53,9 @@ export async function getSolutionDataFile() {
 	return path.join(os.tmpdir(), path.basename(slnFile) + ".json");
 }
 
+/**
+ * Deletes the solution data file.
+ */
 export async function purgeSolutionDataFile() {
 	const solutionDataFile = await getSolutionDataFile();
 	if (!solutionDataFile) {

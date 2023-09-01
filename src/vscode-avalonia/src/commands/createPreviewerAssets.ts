@@ -47,7 +47,7 @@ export class CreatePreviewerAssets implements Command {
 			);
 		}
 		if (args?.triggerCodeComplete) {
-			vscode.commands.executeCommand("avalonia.InsertProperty", { repositionCaret: true });
+			vscode.commands.executeCommand(AppConstants.insertPropertyCommandId, { repositionCaret: true });
 		}
 	}
 

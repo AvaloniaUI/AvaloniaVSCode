@@ -5,11 +5,21 @@ import { Messages } from "./messageParser";
 
 import * as sm from "../models/solutionModel";
 
+/**
+ * Represents a preview server that can send data and update XAML files.
+ */
 export interface IPreviewServer {
 	sendData(data: Buffer): void;
 	updateXaml(fileData: sm.File, xamlText: string): void;
 }
+
+/**
+ * Represents a preview server that can send data and update XAML files.
+ */
 export class PreviewServer implements IPreviewServer {
+	/**
+	 * Starts the preview server.
+	 */
 	public async start() {
 		logger.appendLine(`PreviewServer.start ${this._assemblyName}`);
 
@@ -49,15 +59,26 @@ export class PreviewServer implements IPreviewServer {
 		});
 	}
 
+	/**
+	 * Stops the preview server.
+	 */
 	public stop() {
 		logger.appendLine(`PreviewServer.stop ${this._assemblyName}`);
 		this._server.close();
 	}
 
+	/**
+	 * Gets whether the preview server is running.
+	 */
 	public get isRunnig() {
 		return this._server?.listening;
 	}
 
+	/**
+	 * Gets an instance of the preview server for the specified assembly name and port.
+	 * @param assemblyName The name of the assembly.
+	 * @param port The port to use for the preview server.
+	 */
 	public static getInstance(assemblyName: string, port: number): PreviewServer {
 		var instance = PreviewServer.getInstanceByAssemblyName(assemblyName);
 		if (instance) {
@@ -69,6 +90,10 @@ export class PreviewServer implements IPreviewServer {
 		return PreviewServer._instance;
 	}
 
+	/**
+	 * Gets an instance of the preview server for the specified assembly name
+	 * @param assemblyName The name of the assembly.
+	 */
 	public static getInstanceByAssemblyName(assemblyName: string): PreviewServer | undefined {
 		var instance = PreviewServer._servers.get(assemblyName);
 		return instance;

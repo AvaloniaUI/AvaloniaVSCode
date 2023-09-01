@@ -26,7 +26,7 @@ export class ShowPreviewToSideCommand implements Command {
 
 		showPreview(this._context, { sideBySide: true }, previewerData, this._processManager);
 
-		new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
+		new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
 			vscode.commands.executeCommand(AppConstants.updatePreviewerContent, activeFile);
 		});
 	}

@@ -49,7 +49,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	const insertCmd = vscode.commands.registerTextEditorCommand(
-		"avalonia.InsertProperty",
+		AppConstants.insertPropertyCommandId,
 		(
 			textEditor: vscode.TextEditor,
 			edit: vscode.TextEditorEdit,
