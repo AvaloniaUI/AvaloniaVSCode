@@ -53,7 +53,12 @@ export class CreatePreviewerAssets implements Command {
 
 	generatePreviewerAssets(projectPath: string, project: sm.Project): Promise<PreviewerParams> {
 		return new Promise((resolve, reject) => {
-			const dotnet = spawn("dotnet", ["build", projectPath, "-nologo", "/consoleloggerparameters:NoSummary"]);
+			const dotnet = spawn("dotnet", [
+				"build",
+				projectPath.putInQuotes(),
+				"-nologo",
+				"/consoleloggerparameters:NoSummary",
+			]);
 			dotnet.stderr.on("data", (data) => {
 				logger.appendLine(`[ERROR]  dotnet build error: ${data}`);
 			});

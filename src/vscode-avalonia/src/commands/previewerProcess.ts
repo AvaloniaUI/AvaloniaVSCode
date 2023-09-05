@@ -55,13 +55,13 @@ export class PreviewerProcess implements Command {
 
 		const previewerArags = [
 			"exec",
-			`--runtimeconfig ${previewParams.projectRuntimeConfigFilePath}`,
-			`--depsfile ${previewParams.projectDepsFilePath} ${previewParams.previewerPath}`,
+			`--runtimeconfig "${previewParams.projectRuntimeConfigFilePath}"`,
+			`--depsfile "${previewParams.projectDepsFilePath}" "${previewParams.previewerPath}"`,
 			"--method avalonia-remote",
 			`--transport tcp-bson://${util.AppConstants.localhost}:${bsonPort}/`,
 			"--method html",
 			`--html-url ${htmlUrl}`,
-			previewParams.targetPath,
+			previewParams.targetPath.putInQuotes(),
 		];
 
 		return new Promise((resolve, reject) => {

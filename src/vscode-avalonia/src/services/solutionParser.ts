@@ -99,7 +99,8 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 	const parserLocation = path.join(avaloniaExtn.extensionPath, "solutionParserTool", "SolutionParser.dll");
 
 	return new Promise<string>((resolve, reject) => {
-		const previewer = spawn(`dotnet ${parserLocation}`, [solutionPath], {
+		const previewer = spawn(`dotnet`, [parserLocation.putInQuotes(), solutionPath.putInQuotes()], {
+			windowsVerbatimArguments: false,
 			env: process.env,
 			shell: true,
 		});

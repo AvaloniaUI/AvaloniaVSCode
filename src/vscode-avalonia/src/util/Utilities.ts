@@ -52,10 +52,18 @@ declare global {
 	interface Array<T> {
 		getValue(property: string): string;
 	}
+
+	interface String {
+		putInQuotes(): string;
+	}
 }
 Array.prototype.getValue = function (this: string[], property: string): string {
 	const value = this.find((line) => line.includes(property));
 	return value ? value.split("=")[1].trim() : "";
+};
+
+String.prototype.putInQuotes = function (this: string): string {
+	return `"${this}"`;
 };
 
 /**
