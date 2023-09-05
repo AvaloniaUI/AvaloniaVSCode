@@ -26,11 +26,11 @@
     "theme": "dark"
   },
   "bugs": {
-    "url": "https://github.com/avaloniaUI/Avalonia-vscode-extension/issues"
+    "url": "https://github.com/AvaloniaUI/AvaloniaVSCode/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/avaloniaUI/Avalonia-vscode-extension"
+    "url": "https://github.com/AvaloniaUI/AvaloniaVSCode"
   },
   "activationEvents": [
     "workspaceContains:**/*.axaml",

@@ -4,7 +4,10 @@ Avalonia is a cross-platform XAML-based UI framework providing a flexible stylin
 
 The Avalonia for Visual Studio Code Extension contains support for Avalonia XAML autocomplete and previewer.
 
+Follow the [contribution guide](CONTRIBUTION.md) if you want to help us build the extension
+
 ## Getting Started
+
 ### Create a new Avalonia project
 
 You need to create a new Avalonia project from the command line, the extension does not have a way to create a new project from the VS Code yet.
