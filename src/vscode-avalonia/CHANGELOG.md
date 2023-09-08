@@ -2,6 +2,13 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.18] - 08 September 2023
+### Fixes
+
+- Extenstion not activating #39
+- Extension fails to launch child process if VS Code path has spaces #41
+
+
 ## [0.0.17] - 01 September 2023
 
 ### Fixes
