@@ -7,7 +7,6 @@ import { registerAvaloniaCommands } from "./commands";
 import { CommandManager } from "./commandManager";
 import * as util from "./util/Utilities";
 import { AppConstants, logger } from "./util/Utilities";
-import * as sln from "./services/solutionParser";
 
 let languageClient: lsp.LanguageClient | null = null;
 
@@ -15,11 +14,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "Avalonia UI" is now active!');
 
 	const commandManager = new CommandManager();
-
-	//TODO: remove this
-	await sln.buildSolutionModel(context, true);
-
 	context.subscriptions.push(registerAvaloniaCommands(commandManager, context));
+
+	if (!vscode.workspace.workspaceFolders) {
+		return;
+	}
 
 	vscode.window.onDidChangeActiveTextEditor((editor) => {
 		if (editor && util.isAvaloniaFile(editor.document)) {

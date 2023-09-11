@@ -38,6 +38,12 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "explorer",
+        "contents": "[Open a folder](command:vscode.openFolder) containing Avalonia Project, or create a new one.\n[Create Avalonia Project](command:avalonia.newProject)"
+      }
+    ],
     "languages": [
       {
         "id": "AXAML",
@@ -75,6 +81,11 @@
         "title": "Show preview",
         "category": "Avalonia",
         "icon": "$(open-preview)"
+      },
+      {
+        "command": "avalonia.newProject",
+        "title": "Create a new Avalonia Project",
+        "category": "Avalonia"
       }
     ],
     "menus": {
