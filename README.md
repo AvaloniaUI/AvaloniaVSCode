@@ -50,4 +50,4 @@ Rich syntax highlighter and contextual code complete will make it lot easier to 
 3. Previewer may take up to 10 seconds to activate for the first time if you’re using Avalonia `v0.10.*`
 4. Code completion may not work/fail on large or complicated xaml files
 5. Code completion is slow to show list of items
-6. Carrot will not reset between quotes when you add property in the `xaml` file
+6. Caret will not reset between quotes when you add property in the `xaml` file
