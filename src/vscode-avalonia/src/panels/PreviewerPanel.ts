@@ -75,11 +75,18 @@ export class PreviewerPanel {
 			PreviewerPanel.currentPanel = new PreviewerPanel(panel, extensionUri, fileUri, processManager);
 		}
 
-		PreviewerPanel.currentPanel._panel.title = `Preview ${path.basename(fileUri.fsPath)}`;
+		this.updateTitle(fileUri);
 		PreviewerPanel.currentPanel._panel.iconPath = {
 			dark: vscode.Uri.joinPath(extensionUri, "media", "preview-dark.svg"),
 			light: vscode.Uri.joinPath(extensionUri, "media", "preview-light.svg"),
 		};
+	}
+
+	public static updateTitle(file: vscode.Uri) {
+		const currentPanel = PreviewerPanel.currentPanel;
+		if (currentPanel) {
+			currentPanel._panel.title = `Preview ${path.basename(file.fsPath)}`;
+		}
 	}
 
 	/**
