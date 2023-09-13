@@ -2,6 +2,13 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.19] - 13 September 2023
+### What's Changed
+* Allow users to create a new project from VSCode by @prashantvc in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/47
+* Previewer Window Title does not update on tab switch by @prashantvc in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/50
+
+
+**Full Changelog**: https://github.com/AvaloniaUI/AvaloniaVSCode/compare/v0.0.18...v0.0.19
 ## [0.0.18] - 08 September 2023
 ### Fixes
 

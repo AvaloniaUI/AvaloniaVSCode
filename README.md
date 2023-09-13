@@ -4,15 +4,17 @@ Avalonia is a cross-platform XAML-based UI framework providing a flexible stylin
 
 The Avalonia for Visual Studio Code Extension contains support for Avalonia XAML autocomplete and previewer.
 
-Follow the [contribution guide](CONTRIBUTION.md) if you want to help us build the extension
+Follow the [contribution guide](CONTRIBUTING.md) if you want to help us build the extension
 
 ## Getting Started
 
 ### Create a new Avalonia project
 
-You need to create a new Avalonia project from the command line, the extension does not have a way to create a new project from the VS Code yet.
+You can create a new Avalonia project directly from the Visual Studio Code
 
-You can create a new Avalonia application by running the following command:
+![New Project](media/NewProject.png)
+
+Additionally, you can create a project from the command line too, with the command:
 
     $ dotnet new avalonia.app -o MyApp
 
@@ -41,13 +43,3 @@ The Avalonia XAML in the VS Code is powered by the same code completion engine a
 Rich syntax highlighter and contextual code complete will make it lot easier to read and write XAML files
 
 ![Code completion](media/AutoCompleteRM.png)
-
-
-## Limitation/Known Issues
-
-1. Extension may not work if there are multiple `csprojs` in the workspace folder. Make sure to load just the single Avalonia project in the workspace for now.
-2. You must build the project to activate the code-completion
-3. Previewer may take up to 10 seconds to activate for the first time if you’re using Avalonia `v0.10.*`
-4. Code completion may not work/fail on large or complicated xaml files
-5. Code completion is slow to show list of items
-6. Caret will not reset between quotes when you add property in the `xaml` file

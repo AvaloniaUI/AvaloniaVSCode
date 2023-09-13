@@ -3,7 +3,7 @@
   "displayName": "Avalonia for VSCode",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "license": "MIT",
   "preview": true,
   "qna": "false",
@@ -22,7 +22,7 @@
     "AvaloniaUI"
   ],
   "galleryBanner": {
-    "color": "#8B44AC",
+    "color": "#161C2D",
     "theme": "dark"
   },
   "bugs": {
@@ -41,7 +41,7 @@
     "viewsWelcome": [
       {
         "view": "explorer",
-        "contents": "[Open a folder](command:vscode.openFolder) containing Avalonia Project, or create a new one.\n[Create Avalonia Project](command:avalonia.newProject)"
+        "contents": "[Open a folder](command:vscode.openFolder) containing an Avalonia project, or create a new one.\n[Create Avalonia Project](command:avalonia.newProject)"
       }
     ],
     "languages": [
