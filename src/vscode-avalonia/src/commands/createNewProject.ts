@@ -22,17 +22,18 @@ export class CreateNewProject implements Command {
 			{ location: vscode.ProgressLocation.Notification, cancellable: false },
 			async (progress) => {
 				progress.report({ message: `Creating a new project: ${projectName}` });
-				const path = await this.createProject(projectName, selection.key);
-				if (!path) {
-					vscode.window.showErrorMessage("Failed to create project");
+				try {
+					return (await this.createProject(projectName, selection.key)) ?? "";
+				} catch (error) {
 					return "";
 				}
-				return path;
 			}
 		);
 
-		if (projectPath === "") {
-			vscode.window.showErrorMessage("Failed to create project");
+		if (projectPath.trim() === "") {
+			vscode.window.showErrorMessage(
+				"Failed to create project. Make sure you have Avalonia Project Templates installed. [Learn More](https://docs.avaloniaui.net/docs/next/get-started/install)"
+			);
 			return;
 		}
 
@@ -67,7 +68,7 @@ export class CreateNewProject implements Command {
 		return new Promise((resolve, reject) => {
 			const dotnet = spawn("dotnet", ["new", template, "-n", projectName, "-o", projectPath]);
 			dotnet.stderr.on("data", (data) => {
-				logger.appendLine(`[ERROR]  dotnet new error: ${data}`);
+				logger.error(data.toString());
 			});
 			dotnet.on("close", (code) => {
 				if (code === 0) {
