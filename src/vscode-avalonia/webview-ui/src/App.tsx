@@ -13,16 +13,18 @@ function App() {
 	const emptyMethod = () => {};
 
 	useEffect(() => {
-		console.info("onMessage, useEffect");
 		return vscode.onMessage((message: any) => {
 			const data: IData = message.data;
-			console.info(data);
 			switch (data.command) {
 				case "showPreview":
 					setPreviewUrl(data.payload);
 					break;
 				case "generateAssets":
 					setAssetsAvailable(data.payload);
+					break;
+				case "enableBuildButton":
+					document.getElementById("buildButton")?.removeAttribute("disabled");
+					break;
 			}
 		});
 	}, []);
@@ -57,9 +59,11 @@ function App() {
 					<b>Please build the project to enable previewer</b>
 					<div id="actions">
 						<VSCodeButton
+							id="buildButton"
 							onClick={() => {
 								console.info("executing generateAssetsCommand");
 								vscode.postMessage({ command: "generateAssetsCommand", text: "Build" });
+								document.getElementById("buildButton")?.setAttribute("disabled", "true");
 							}}
 						>
 							Build Project

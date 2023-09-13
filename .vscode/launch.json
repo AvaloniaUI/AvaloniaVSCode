@@ -25,6 +25,19 @@
             ],
             "preLaunchTask": "Only Extension",
             "sourceMaps": true,
+        },
+        {
+            "name": "Extension+Previewer",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/src/vscode-avalonia"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/src/vscode-avalonia/out/**/*.js"
+            ],
+            "preLaunchTask": "Build webview",
+            "sourceMaps": true,
         }
     ]
 }
