@@ -2,6 +2,15 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.20] - 9 October 2023
+
+## What's Changed
+* Fix the mouse interaction in previewer by @prashantvc in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/56
+* Improve indentation by @prashantvc in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/57
+
+
+**Full Changelog**: https://github.com/AvaloniaUI/AvaloniaVSCode/compare/v0.0.19...v0.0.20
+
 ## [0.0.19] - 13 September 2023
 ### What's Changed
 * Allow users to create a new project from VSCode by @prashantvc in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/47
