@@ -102,5 +102,27 @@
 	},
 	"wordPattern": {
 		"pattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)"
-	}
+	},
+	"indentationRules": {
+		"increaseIndentPattern": "(<((?:([-_a-zA-Z0-9]+)(:))?([-_a-zA-Z0-9:]+))(?=(\\s[^>]*)?></\\2>))",
+		"decreaseIndentPattern": "(</((?:([-_a-zA-Z0-9]+)(:))?([-_a-zA-Z0-9:]+))(>)"
+	},
+	"onEnterRules": [
+		{
+			"beforeText": "<([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$",
+			"action": {
+				"indent": "indent"
+			}
+		},
+		{
+			"beforeText": "<([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$",
+			"afterText": {
+				"pattern": "<\\/([_:\\w][_:\\w-.\\d]*)>",
+				"flags": "i"
+			},
+			"action": {
+				"indent": "indentOutdent"
+			}
+		}
+	],
 }
