@@ -12,6 +12,8 @@ interface PreviewerPresenterProps {
 
 export class PreviewerPresenter extends React.Component<PreviewerPresenterProps> {
 	private canvasRef: React.RefObject<HTMLCanvasElement>;
+	canvasX = 0;
+	cancasY = 0;
 
 	constructor(props: PreviewerPresenterProps) {
 		super(props);
@@ -29,10 +31,25 @@ export class PreviewerPresenter extends React.Component<PreviewerPresenterProps>
 		this.handleMouseMove = this.handleMouseMove.bind(this);
 		this.handleWheel = this.handleWheel.bind(this);
 		this.updateZoom = this.updateZoom.bind(this);
+		this.updateCanvasPosition = this.updateCanvasPosition.bind(this);
+	}
+
+	updateCanvasPosition() {
+		if (this.canvasRef.current) {
+			const rect = this.canvasRef.current.getBoundingClientRect();
+			this.canvasX = rect.left;
+			this.cancasY = rect.top;
+			console.log(`The position of the designcanvas element is (${this.canvasX}, ${this.cancasY})`);
+		}
 	}
 
 	componentDidMount(): void {
 		this.updateCanvas(this.canvasRef.current, this.props.conn.currentFrame);
+		window.addEventListener("resize", this.updateCanvasPosition);
+	}
+
+	componentWillUnmount(): void {
+		window.removeEventListener("resize", this.updateCanvasPosition);
 	}
 
 	componentDidUpdate(prevProps: Readonly<PreviewerPresenterProps>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -56,24 +73,25 @@ export class PreviewerPresenter extends React.Component<PreviewerPresenterProps>
 			canvas.height = frame.data.height;
 			const ctx = canvas.getContext("2d")!;
 			ctx.putImageData(frame.data, 0, 0);
+			this.updateCanvasPosition();
 		}
 	}
 
 	handleMouseDown(e: React.MouseEvent) {
 		e.preventDefault();
-		const pointerPressedEventMessage = new PointerPressedEventMessage(e);
+		const pointerPressedEventMessage = new PointerPressedEventMessage(e, { x: this.canvasX, y: this.cancasY });
 		this.props.conn.sendMouseEvent(pointerPressedEventMessage);
 	}
 
 	handleMouseUp(e: React.MouseEvent) {
 		e.preventDefault();
-		const pointerReleasedEventMessage = new PointerReleasedEventMessage(e);
+		const pointerReleasedEventMessage = new PointerReleasedEventMessage(e, { x: this.canvasX, y: this.cancasY });
 		this.props.conn.sendMouseEvent(pointerReleasedEventMessage);
 	}
 
 	handleMouseMove(e: React.MouseEvent) {
 		e.preventDefault();
-		const pointerMovedEventMessage = new PointerMovedEventMessage(e);
+		const pointerMovedEventMessage = new PointerMovedEventMessage(e, { x: this.canvasX, y: this.cancasY });
 		this.props.conn.sendMouseEvent(pointerMovedEventMessage);
 	}
 
