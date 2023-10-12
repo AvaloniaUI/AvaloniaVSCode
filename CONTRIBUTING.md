@@ -25,3 +25,11 @@ Welcome to Avalonia Extension for VS Code! We appreciate your interest in contri
 ## Run and Debug
 
 Hit `F5`
+
+## Package Extension
+
+Make sure you run the `build.sh` before packaging
+
+1. Open command palette (shift + cmd + p)
+2. Select `Task: Run Task`
+3. Select `Package Extension`
