@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { InputEventMessageBase } from "./InputEventMessageBase";
 
 export abstract class PointerEventMessageBase extends InputEventMessageBase {

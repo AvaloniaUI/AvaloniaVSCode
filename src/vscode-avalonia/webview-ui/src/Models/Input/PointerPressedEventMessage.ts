@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { PointerEventMessageBase } from "./PointerEventMessageBase";
 import { MouseButton } from "./MouseButton";
 import { getMouseButton } from "./MouseEventHelpers";
