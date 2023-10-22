@@ -121,7 +121,12 @@
           }
         }
       }
-    ]
+    ],
+    "snippets": [
+      {
+        "language": "csharp",
+        "path": "./src/snippets/csharp.json"
+      }]
   },
   "scripts": {
     "install:all": "yarn install && cd webview-ui && npm install",
