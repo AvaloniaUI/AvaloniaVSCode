@@ -1,4 +1,4 @@
-﻿export enum InputModifiers {
+export enum InputModifiers {
     Alt,
     Control,
     Shift,

@@ -56,7 +56,7 @@ export class PreviewerServerConnection {
 	private onMessage = (msg: MessageEvent) => {
 		if (typeof msg.data == "string" || msg.data instanceof String) {
 			const parts = msg.data.split(":");
-			if (parts[0] == "frame") {
+			if (parts[0] === "frame") {
 				this.nextFrame = {
 					sequenceId: parts[1],
 					width: parseInt(parts[2]),

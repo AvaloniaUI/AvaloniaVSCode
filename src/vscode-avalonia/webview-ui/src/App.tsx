@@ -50,7 +50,7 @@ function App() {
 		});
 
 		return emptyMethod;
-	}, [previewUrl]);
+	}, [previewUrl,conn]);
 
 	return (
 		<div id="designframe">
