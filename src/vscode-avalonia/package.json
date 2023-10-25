@@ -3,7 +3,7 @@
   "displayName": "Avalonia for VSCode",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "license": "MIT",
   "preview": true,
   "qna": "false",
@@ -126,7 +126,8 @@
       {
         "language": "csharp",
         "path": "./src/snippets/csharp.json"
-      }]
+      }
+    ]
   },
   "scripts": {
     "install:all": "yarn install && cd webview-ui && npm install",

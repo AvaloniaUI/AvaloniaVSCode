@@ -2,6 +2,17 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.21] - 25 October 2023
+
+## What's Changed
+* feat: Add C# snippet for Avalonia AttachedProperty, DirectProperty, S… by @workgroupengineering in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/59
+* Fixes warnings by @workgroupengineering in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/60
+
+## New Contributors
+* @workgroupengineering made their first contribution in https://github.com/AvaloniaUI/AvaloniaVSCode/pull/59
+
+**Full Changelog**: https://github.com/AvaloniaUI/AvaloniaVSCode/compare/v0.0.20...v0.0.21
+
 ## [0.0.20] - 9 October 2023
 
 ## What's Changed
