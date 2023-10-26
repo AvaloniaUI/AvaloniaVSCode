@@ -50,7 +50,7 @@ function App() {
 		});
 
 		return emptyMethod;
-	}, [previewUrl,conn]);
+	}, [previewUrl]); //DO NOT ADD conn to the dependencies, it will cause infinite loop
 
 	return (
 		<div id="designframe">

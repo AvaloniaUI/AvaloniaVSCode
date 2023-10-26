@@ -2,6 +2,11 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.22] - 25 October 2023
+
+## What's Changed
+* fixes: Previewer does not work in the v0.0.21 [#63](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/63)
+
 ## [0.0.21] - 25 October 2023
 
 ## What's Changed
