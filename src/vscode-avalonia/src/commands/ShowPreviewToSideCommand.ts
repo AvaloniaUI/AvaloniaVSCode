@@ -3,7 +3,7 @@ import { Command } from "../commandManager";
 import { AppConstants, logger } from "../util/Utilities";
 import { PreviewerData, ShowPreviewSettings } from "../models/previewerSettings";
 import { PreviewProcessManager } from "../previewProcessManager";
-import { PreviewerPanel } from "../panels/PreviewerPanel";
+import { WebPreviewerPanel } from "../panels/WebPreviwerPanel";
 
 export class ShowPreviewToSideCommand implements Command {
 	constructor(
@@ -22,6 +22,21 @@ export class ShowPreviewToSideCommand implements Command {
 				AppConstants.previewProcessCommandId,
 				activeFile
 			);
+		}
+
+		if (!previewerData.assetsAvailable) {
+			const result = await vscode.window.showInformationMessage(
+				"Previewer is not available. Build the project first.",
+				"Build",
+				"Close"
+			);
+
+			if (result === "Build") {
+				await vscode.commands.executeCommand(AppConstants.previewerAssetsCommand);
+				await vscode.commands.executeCommand(AppConstants.showPreviewToSideCommand, previewerData.file);
+			}
+
+			return;
 		}
 
 		showPreview(this._context, { sideBySide: true }, previewerData, this._processManager);
@@ -54,13 +69,12 @@ export function showPreview(
 			(vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
 		const column = settings.sideBySide ? vscode.ViewColumn.Beside : resourceColumn;
 
-		PreviewerPanel.render(context.extensionUri, previewerData.file, column, processManager);
-
-		const message =
-			previewerData.assetsAvailable && previewerData.previewerUrl
-				? { command: "showPreview", payload: previewerData.previewerUrl }
-				: { command: "generateAssets", payload: false };
-
-		PreviewerPanel.currentPanel?.postMessage(message);
+		WebPreviewerPanel.createOrShow(
+			previewerData.previewerUrl!,
+			previewerData.file,
+			context.extensionUri,
+			processManager,
+			column
+		);
 	}
 }
