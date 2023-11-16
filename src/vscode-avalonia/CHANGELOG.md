@@ -2,6 +2,10 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.24] - 16 November 2023
+
+Fixed the blocker issue [#65](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/65)
+
 ## [0.0.22] - 25 October 2023
 
 ## What's Changed
