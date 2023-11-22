@@ -17,14 +17,10 @@ export class CreatePreviewerAssets implements Command {
 			return;
 		}
 
+		await sln.buildSolutionModel(this._context, true);
 		const solutionData = sln.getSolutionModel(this._context);
-		if (!solutionData) {
-			logger.appendLine("No solution data found.");
-			sln.buildSolutionModel(this._context);
-			return;
-		}
 
-		const project = getExecutableProject(solutionData);
+		const project = getExecutableProject(solutionData!);
 
 		if (!project) {
 			logger.appendLine("No executable project found.");
@@ -54,15 +50,13 @@ export class CreatePreviewerAssets implements Command {
 
 	generatePreviewerAssets(projectPath: string, project: sm.Project): Promise<PreviewerParams> {
 		return new Promise((resolve, reject) => {
-			const dotnet = spawn("dotnet", [
-				"build",
-				projectPath.putInQuotes(),
-				"-nologo",
-				"/consoleloggerparameters:NoSummary",
-			]);
+			const dotnet = spawn("dotnet", ["build", projectPath.putInQuotes(), "-nologo"]);
 			dotnet.stderr.on("data", (data) => {
 				logger.appendLine(`[ERROR]  dotnet build error: ${data}`);
 				PreviewerPanel.currentPanel?.postMessage({ command: "enableBuildButton", payload: data.toString() });
+			});
+			dotnet.stdout.on("data", (data) => {
+				logger.appendLine(`${data}`);
 			});
 			dotnet.on("close", async (code) => {
 				if (code === 0) {
