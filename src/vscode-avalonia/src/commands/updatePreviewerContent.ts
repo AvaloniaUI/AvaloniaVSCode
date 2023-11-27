@@ -3,7 +3,7 @@ import { Command } from "../commandManager";
 import { AppConstants } from "../util/Utilities";
 import * as util from "../util/Utilities";
 import { PreviewServer } from "../services/previewServer";
-import { PreviewerPanel } from "../panels/PreviewerPanel";
+import { WebPreviewerPanel } from "../panels/WebPreviwerPanel";
 
 export class UpdatePreviewerContext implements Command {
 	constructor(private readonly _context: vscode.ExtensionContext) {}
@@ -21,7 +21,7 @@ export class UpdatePreviewerContext implements Command {
 
 		const xamlText = await this.getTextFromUri(mainUri);
 		PreviewServer.getInstanceByAssemblyName(fileData.targetPath)?.updateXaml(fileData, xamlText);
-		PreviewerPanel.updateTitle(mainUri);
+		WebPreviewerPanel.updateTitle(mainUri);
 	}
 
 	async getTextFromUri(uri: vscode.Uri): Promise<string> {

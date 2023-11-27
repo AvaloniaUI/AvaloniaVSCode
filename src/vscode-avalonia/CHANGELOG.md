@@ -2,6 +2,16 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.25] - 27 November 2023
+
+Fixes: 
+
+- AXAML intellisense in VS Code broken [#66](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/66)
+- ALWAYS: Previewer is not available. Build the project first. [#72](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/72)
+- [ERROR] dotnet build exited with code 1 [#68](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/68)
+- Preview not working, vscode Linux [#58](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/58)
+- Previewer not working in Linux. [#61](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/61)
+
 ## [0.0.24] - 16 November 2023
 
 Fixed the blocker issue [#65](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/65)
