@@ -3,11 +3,6 @@
 cd ./src/vscode-avalonia
 yarn install
 
-cd ./src/vscode-avalonia/webview-ui
-npm i
-
-cd ..
-
 echo $PWD
 
 # Build Avalonia LSP

@@ -130,9 +130,7 @@
     ]
   },
   "scripts": {
-    "install:all": "yarn install && cd webview-ui && npm install",
-    "start:webview": "cd webview-ui && npm run start",
-    "build:webview": "cd webview-ui && npm run build",
+    "install:all": "yarn install",
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",

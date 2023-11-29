@@ -26,18 +26,6 @@
             },
         },
         {
-            "label": "Build webview",
-            "command": "npm",
-            "args": [
-                "run",
-                "build:webview"
-            ],
-            "problemMatcher": "$tsc-watch",
-            "options": {
-                "cwd": "${workspaceFolder}/src/vscode-avalonia"
-            }
-        },
-        {
             "label": "Build Extension",
             "command": "yarn",
             "args": [
@@ -49,7 +37,6 @@
                 "cwd": "${workspaceFolder}/src/vscode-avalonia"
             },
             "dependsOn": [
-                "Build webview",
                 "Build LSP Server",
                 "Build Solution Parser"
             ]

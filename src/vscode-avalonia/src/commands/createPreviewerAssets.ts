@@ -6,7 +6,6 @@ import { spawn } from "child_process";
 import { PreviewerParams } from "../models/PreviewerParams";
 import * as sln from "../services/solutionParser";
 import * as sm from "../models/solutionModel";
-import { PreviewerPanel } from "../panels/PreviewerPanel";
 
 export class CreatePreviewerAssets implements Command {
 	public readonly id = AppConstants.previewerAssetsCommand;
@@ -53,7 +52,6 @@ export class CreatePreviewerAssets implements Command {
 			const dotnet = spawn("dotnet", ["build", projectPath.putInQuotes(), "-nologo"]);
 			dotnet.stderr.on("data", (data) => {
 				logger.appendLine(`[ERROR]  dotnet build error: ${data}`);
-				PreviewerPanel.currentPanel?.postMessage({ command: "enableBuildButton", payload: data.toString() });
 			});
 			dotnet.stdout.on("data", (data) => {
 				logger.appendLine(`${data}`);
