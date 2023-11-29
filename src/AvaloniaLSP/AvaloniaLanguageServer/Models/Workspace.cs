@@ -16,28 +16,44 @@ public class Workspace
 
     public async Task InitializeAsync(DocumentUri uri)
     {
-        ProjectInfo = await ProjectInfo.GetProjectInfoAsync(uri);
-        CompletionMetadata = BuildCompletionMetadata(uri);
+        try
+        {
+            ProjectInfo = await ProjectInfo.GetProjectInfoAsync(uri);
+            CompletionMetadata = BuildCompletionMetadata(uri);
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Failed to initialize workspace: {uri}", e);
+        }
     }
 
     Metadata? BuildCompletionMetadata(DocumentUri uri)
     {
-        var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
+        string intermediateOutputPath = "";
+        try
+        {
+            var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
 
-        if (slnFile == null)
-            return null;
+            if (slnFile == null)
+                return null;
 
-        
-        var slnFilePath = Path.Combine(Path.GetTempPath(), $"{slnFile}.json");
 
-        if (!File.Exists(slnFilePath))
-            return null;
-        
-        string content = File.ReadAllText(slnFilePath);
-        var package = JsonSerializer.Deserialize<SolutionData>(content);
-        var exeProj = package!.GetExecutableProject();
-        
-        return _metadataReader.GetForTargetAssembly(exeProj?.TargetPath??"");
+            var slnFilePath = Path.Combine(Path.GetTempPath(), $"{slnFile}.json");
+
+            if (!File.Exists(slnFilePath))
+                return null;
+
+            string content = File.ReadAllText(slnFilePath);
+            var package = JsonSerializer.Deserialize<SolutionData>(content);
+            var exeProj = package!.GetExecutableProject();
+            intermediateOutputPath = exeProj?.IntermediateOutputPath ?? "";
+
+            return _metadataReader.GetForTargetAssembly(new AvaloniaCompilationAssemblyProvider(intermediateOutputPath));
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Failed to build completion metadata: {intermediateOutputPath}", e);
+        }
     }
 
     string? SolutionName(DocumentUri uri)
@@ -50,7 +66,7 @@ public class Workspace
             return null;
 
         var files = Array.Empty<FileInfo>();
-    
+
         while (root != current && files.Length == 0)
         {
             var directory = new DirectoryInfo(current!);

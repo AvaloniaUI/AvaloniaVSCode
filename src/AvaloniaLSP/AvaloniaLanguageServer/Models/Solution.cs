@@ -61,6 +61,10 @@ namespace AvaloniaLanguageServer.Models
 
         [JsonPropertyName("directoryPath")]
         public string DirectoryPath { get; set; }
+
+
+        [JsonPropertyName("intermediateOutputPath")]
+        public string IntermediateOutputPath { get; set; }
     }
 
 }
