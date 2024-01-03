@@ -5,7 +5,7 @@ import { AppConstants } from "./util/Utilities";
 /**
  * The version of the .NET runtime to acquire.
  */
-const dotnetRuntimeVersion = "7.0";
+const dotnetRuntimeVersion = "8.0";
 
 /**
  * Gets the path to the .NET runtime.
