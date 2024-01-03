@@ -2,6 +2,14 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.26] - 03 January 2024
+
+Fixes:
+
+- Can't get past "Build the project first." [#81](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/81)
+- Problem with dotnet version dependency [#77](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/77)
+
+
 ## [0.0.25] - 27 November 2023
 
 Fixes: 
