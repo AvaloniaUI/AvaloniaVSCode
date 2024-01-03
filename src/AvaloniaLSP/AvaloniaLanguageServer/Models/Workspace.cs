@@ -29,31 +29,22 @@ public class Workspace
 
     Metadata? BuildCompletionMetadata(DocumentUri uri)
     {
-        string intermediateOutputPath = "";
-        try
-        {
-            var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
+        var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
 
-            if (slnFile == null)
-                return null;
+        if (slnFile == null)
+            return null;
 
 
-            var slnFilePath = Path.Combine(Path.GetTempPath(), $"{slnFile}.json");
+        var slnFilePath = Path.Combine(Path.GetTempPath(), $"{slnFile}.json");
 
-            if (!File.Exists(slnFilePath))
-                return null;
+        if (!File.Exists(slnFilePath))
+            return null;
 
-            string content = File.ReadAllText(slnFilePath);
-            var package = JsonSerializer.Deserialize<SolutionData>(content);
-            var exeProj = package!.GetExecutableProject();
-            intermediateOutputPath = exeProj?.IntermediateOutputPath ?? "";
+        string content = File.ReadAllText(slnFilePath);
+        var package = JsonSerializer.Deserialize<SolutionData>(content);
+        var exeProj = package!.GetExecutableProject();
 
-            return _metadataReader.GetForTargetAssembly(new AvaloniaCompilationAssemblyProvider(intermediateOutputPath));
-        }
-        catch (Exception e)
-        {
-            throw new Exception($"Failed to build completion metadata: {intermediateOutputPath}", e);
-        }
+        return _metadataReader.GetForTargetAssembly(exeProj?.TargetPath ?? "");
     }
 
     string? SolutionName(DocumentUri uri)

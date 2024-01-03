@@ -3,6 +3,8 @@
 cd ./src/vscode-avalonia
 yarn install
 
+cd ..
+
 echo $PWD
 
 # Build Avalonia LSP
