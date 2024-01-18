@@ -2,6 +2,13 @@
 
 All notable changes to the "vscode-avalonia" extension will be documented in this file.
 
+## [0.0.27] - 18 January 2024
+
+Fixes:
+
+- VSCode Extension v0.0.26 still not working [#89](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/89)
+- SolutionParser is crashed and previewer is not loaded correctly [#86](https://github.com/AvaloniaUI/AvaloniaVSCode/issues/86)
+
 ## [0.0.26] - 03 January 2024
 
 Fixes:
