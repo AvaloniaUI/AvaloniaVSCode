@@ -3,7 +3,7 @@
   "displayName": "Avalonia for VSCode",
   "description": "Avalonia tools for Visual Studio Code",
   "publisher": "AvaloniaTeam",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "license": "MIT",
   "preview": true,
   "qna": "false",
@@ -15,7 +15,8 @@
     "vscode": "^1.79.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Snippets"
   ],
   "keywords": [
     "Avalonia",
@@ -125,7 +126,7 @@
     "snippets": [
       {
         "language": "csharp",
-        "path": "./src/snippets/csharp.json"
+        "path": "./csharp.json"
       }
     ]
   },
