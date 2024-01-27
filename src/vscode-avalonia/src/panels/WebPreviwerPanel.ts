@@ -93,16 +93,20 @@ export class WebPreviewerPanel {
 
 	private _getHtmlForWebview(url: string) {
 		return `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Web Previewer</title>
-            </head>
-            <body>
-                <iframe src="${url}" frameborder="0" style="width:100%; height:100vh;"></iframe>
-            </body>
-            </html>`;
+			<!DOCTYPE html>
+			<html>
+		  		<head>
+					<meta charset="utf-8"/>
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<title>Avalonia Previewer Page</title>
+					<style>
+						body {display: flex; justify-content: center; overflow: hidden; background-size: 15px 15px; background-image: linear-gradient(to right, royalblue 0.1px, transparent 1px), linear-gradient(to bottom, royalblue 0.1px, transparent 1px);}
+						#preview {min-width: 100vw; min-height: 100vh;}
+					</style>
+		  		</head>
+		  		<body>
+					<iframe src="${url}" id="preview" frameborder="0"/>
+		  		</body>
+			</html>`;
 	}
 }
