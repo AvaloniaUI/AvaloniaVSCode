@@ -101,11 +101,10 @@ export class WebPreviewerPanel {
             <title>Web Previewer</title>
             <style>
                 .background {display: flex; justify-content: center; background-size: 15px 15px; background-image: linear-gradient(to right, royalblue 0.1px, transparent 1px), linear-gradient(to bottom, royalblue 0.1px, transparent 1px);}
-                .preview {min-height: 100vh; min-width: 100vw;}
             </style>
         </head>
         <body class="background">
-            <iframe class="preview" src="${url}" marginheight="0" marginwidth="0" frameborder="0"/>
+            <iframe class="preview" src="${url}" style="width:100%; height:100vh;" frameborder="0"/>
         </body>
         </html>`;
 	}
