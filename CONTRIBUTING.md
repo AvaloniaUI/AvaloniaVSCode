@@ -18,7 +18,7 @@ Welcome to Avalonia Extension for VS Code! We appreciate your interest in contri
 
 ## How to contribute
 
-1. Create a new issues or use the existing to contribute
+1. Create a new issues or use the existing to contribute (assign it yourself)
 2. Create a new brach for the issue
 3. Send the PR with description
 
