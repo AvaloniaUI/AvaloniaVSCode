@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace AvaloniaLanguageServer.Services;
 
 public sealed class Buffer
@@ -7,17 +5,16 @@ public sealed class Buffer
 
     public string? GetTextTillLine(Position position)
     {
-        string[] lines = _text.Split(NewLine);
+        string[] lines = _text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
         var linesRange = string.Join(string.Empty, lines[0..position.Line]);
         string lastLine = lines[position.Line];
 
-        string rangeText = linesRange.Replace(NewLine, string.Empty);
-        return rangeText + lastLine.Substring(0, position.Character);
+        return linesRange + lastLine.Substring(0, position.Character);
     }
 
     public string? GetLine(Position position)
     {
-        string[] lines = _text.Split(NewLine);
+        string[] lines = _text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
         return lines[position.Line];
     }
 
@@ -29,5 +26,5 @@ public sealed class Buffer
     }
 
     readonly string _text;
-    string NewLine = Environment.NewLine;
+    private static readonly string[] separator = ["\n", "\r\n"];
 }
