@@ -3,6 +3,7 @@ import * as os from "os";
 import * as path from "path";
 
 import * as vscode from "vscode";
+//import "vscode"; // required for 'using' statement. Type 'Disposable' must be in global namespace.
 
 import * as sln from "../models/solutionModel";
 import { spawn } from "child_process";
@@ -69,11 +70,33 @@ function updateSolutionModel(context: vscode.ExtensionContext, jsonContect: stri
 	context.workspaceState.update(AppConstants.solutionData, data);
 }
 
+/**TODO: Try getting 'current' solution file from exports (or language servers) of
+ * ms-dotnettools.csharp (CSharpExtensionExports | OmnisharpExtensionExports),
+ * Ionide.Ionide-fsharp (prefers OmniSharp when available),
+ * ms-dotnettools.csdevkit (basically Roslyn LSP with VS features)
+ */
 async function getSolutionFile(): Promise<string | undefined> {
 	const filePattern = "**/*.sln";
 	const files = await vscode.workspace.findFiles(filePattern);
 
 	if (files.length > 0) {
+		if (files.length > 1) {
+			// todo: refactor try-catch-finally to `using` statement when electron and vscode support [ECMAScript Explicit Resource Management](https://github.com/tc39/proposal-explicit-resource-management)
+			const tokenSource = new (class extends vscode.CancellationTokenSource { /* [Symbol.dispose] = () => { this.dispose(); }; */ });
+			try {
+				return await vscode.window.showQuickPick(
+					files.map((uri) => uri.fsPath),
+					{
+						title: 'Choose Solution File',
+						canPickMany: false
+					} as vscode.QuickPickOptions,
+					tokenSource.token
+				); // may be `undefined`. Why? User cancellation?
+			} catch { }
+			finally {
+				tokenSource.dispose();
+			}
+		}
 		return files[0].fsPath;
 	}
 
