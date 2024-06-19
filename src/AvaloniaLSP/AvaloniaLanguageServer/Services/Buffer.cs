@@ -5,16 +5,15 @@ public sealed class Buffer
 
     public string? GetTextTillLine(Position position)
     {
-        string[] lines = _text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-        var linesRange = string.Join(string.Empty, lines[0..position.Line]);
-        string lastLine = lines[position.Line];
-
-        return linesRange + lastLine.Substring(0, position.Character);
+        string[] lines = _text.Split(separator, StringSplitOptions.None);
+        string text = string.Join("\n", lines[..position.Line]);
+        string line = lines[position.Line][..position.Character];
+        return text + line;
     }
 
     public string? GetLine(Position position)
     {
-        string[] lines = _text.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+        string[] lines = _text.Split(separator, StringSplitOptions.None);
         return lines[position.Line];
     }
 
