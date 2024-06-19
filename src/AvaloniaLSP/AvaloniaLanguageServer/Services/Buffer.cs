@@ -8,7 +8,7 @@ public sealed class Buffer
         string[] lines = _text.Split(separator, StringSplitOptions.None);
         string text = string.Join("\n", lines[..position.Line]);
         string line = lines[position.Line][..position.Character];
-        return text + line;
+        return $"{text}\n{line}";
     }
 
     public string? GetLine(Position position)
