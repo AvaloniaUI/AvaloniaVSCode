@@ -122,7 +122,12 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 
 		previewer.on("close", (code) => {
 			if (code === 0) {
-				updateSolutionModel(context, jsonContent);
+				try {
+					updateSolutionModel(context, jsonContent);
+				}
+				catch (error) {
+					reject(error);
+				}
 				resolve(jsonContent);
 			}
 			logger.appendLine(`parser process exited ${code}`);
