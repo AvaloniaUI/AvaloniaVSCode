@@ -74,7 +74,7 @@
     "commands": [
       {
         "command": "avalonia.createPreviewerAssets",
-        "title": "Create previwer assets",
+        "title": "Create previewer assets",
         "category": "Avalonia"
       },
       {
