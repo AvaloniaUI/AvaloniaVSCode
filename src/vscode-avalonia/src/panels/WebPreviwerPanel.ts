@@ -100,7 +100,7 @@ export class WebPreviewerPanel {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Web Previewer</title>
             <style>
-                .background {display: flex; justify-content: center; background-size: 15px 15px; background-image: linear-gradient(to right, royalblue 0.1px, transparent 1px), linear-gradient(to bottom, royalblue 0.1px, transparent 1px);}
+                .background {display: flex; justify-content: center; background-size: 15px 15px; background-image: linear-gradient(to right, var(--vscode-focusBorder) 0.1px, transparent 1px), linear-gradient(to bottom, var(--vscode-focusBorder) 0.1px, transparent 1px);}
             </style>
         </head>
         <body class="background">
