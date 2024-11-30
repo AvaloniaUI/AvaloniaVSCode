@@ -118,7 +118,7 @@ export class WebPreviewerPanel {
 					border-radius: 100px;
 					border: none;
 					background: var(--vscode-button-background);
-					foreground: var(--vscode-button-foreground);
+					color: var(--vscode-button-foreground);
 					min-width: 22px;
 					font-size: 18px;
 				}
