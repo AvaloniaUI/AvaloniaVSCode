@@ -8,6 +8,7 @@ import * as sln from "../models/solutionModel";
 import { spawn } from "child_process";
 
 import { AppConstants, logger } from "../util/Utilities";
+import { getDotnetRuntimePath } from "../runtimeManager";
 
 const extensionId = "AvaloniaTeam.vscode-avalonia";
 
@@ -98,9 +99,18 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 
 	const parserLocation = path.join(avaloniaExtn.extensionPath, "solutionParserTool", "SolutionParser.dll");
 
-	return new Promise<string>((resolve, reject) => {
-		var jsonContent = "";
-		const previewer = spawn(`dotnet`, [parserLocation.putInQuotes(), solutionPath.putInQuotes()], {
+	return new Promise<string>(async (resolve, reject) => {
+		let dotnetCommandPath: string;
+		try {
+			dotnetCommandPath = await getDotnetRuntimePath();
+		}
+		catch (error) {
+			reject(error);
+			return;
+		}
+
+		let jsonContent = "";
+		const previewer = spawn(dotnetCommandPath.putInQuotes(), [parserLocation.putInQuotes(), solutionPath.putInQuotes()], {
 			windowsVerbatimArguments: false,
 			env: process.env,
 			shell: true,
@@ -115,12 +125,16 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 			jsonContent += data.toString();
 		});
 
+		let errorData = "";
+
 		previewer.stderr.on("data", (data) => {
 			logger.appendLine(data.toString());
-			reject(data.toString());
+			errorData += data.toString();
 		});
 
 		previewer.on("close", (code) => {
+			logger.appendLine(`parser process exited with code ${code}`);
+
 			if (code === 0) {
 				try {
 					updateSolutionModel(context, jsonContent);
@@ -129,8 +143,13 @@ async function parseSolution(context: vscode.ExtensionContext): Promise<string> 
 					reject(error);
 				}
 				resolve(jsonContent);
+			}			
+			else {
+				if (errorData.length === 0)
+					errorData = `Solution parser process exited with code ${code}`;
+
+				reject(new Error(errorData));
 			}
-			logger.appendLine(`parser process exited ${code}`);
 		});
 	});
 }
