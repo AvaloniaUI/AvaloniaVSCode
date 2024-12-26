@@ -30,7 +30,7 @@ This extension uses git submodules to pull in the Solution Parser and the Avalon
 
     `git submodule update --init --recursive`
 
-3. Run the `build.sh`, currently repo does not have build script for Windows
+3. Run the `build.sh` or `build.ps1`
 
 ## How to contribute
 
@@ -44,7 +44,7 @@ Hit `F5` this will a new vscode window with the dev extension running. Open an a
 
 ## Package Extension
 
-Make sure you run the `build.sh` before packaging
+Make sure you run the `build.sh` or `build.ps1` before packaging
 
 1. Open command palette (shift + cmd + p)
 2. Select `Task: Run Task`
