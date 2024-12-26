@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { AppConstants } from "./util/Utilities";
+import { AppConstants, logger } from "./util/Utilities";
 
 /**
  * The version of the .NET runtime to acquire.
  */
-const dotnetRuntimeVersion = "8.0";
+const dotnetRuntimeVersion = "9.0";
 
 interface IDotnetAcquireResult {
     dotnetPath: string;
@@ -18,7 +18,6 @@ interface IDotnetAcquireResult {
  */
 export async function getDotnetRuntimePath(): Promise<string> {
 	const path = await vscode.commands.executeCommand<IDotnetAcquireResult>("dotnet.findPath", {
-		
 		acquireContext: {
 			version: dotnetRuntimeVersion,
 			requestingExtensionId: AppConstants.extensionId,
@@ -28,8 +27,11 @@ export async function getDotnetRuntimePath(): Promise<string> {
 		},
 		versionSpecRequirement: 'greater_than_or_equal'
 	});
+
 	if (!path) {
-		throw new Error("Could not resolve the dotnet path!");
+		const message = `.NET ${dotnetRuntimeVersion} was not found. Please make sure it's installed globally.`;
+		logger.error(message);
+		throw new Error(message);
 	}
 
 	return path.dotnetPath;

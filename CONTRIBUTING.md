@@ -4,7 +4,7 @@ Welcome to Avalonia Extension for VS Code! We appreciate your interest in contri
 
 ## System Requirements
 
-1. dotnet 8.0, you can download it from [here](https://dotnet.microsoft.com/en-us/download)
+1. dotnet 9.0, you can download it from [here](https://dotnet.microsoft.com/en-us/download)
 2. NodeJS, npm 
    You can get NodeJS and npm using NVM (Node Version Manager) by running the following command:
    
