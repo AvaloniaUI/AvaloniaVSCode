@@ -44,7 +44,11 @@ Hit `F5` this will a new vscode window with the dev extension running. Open an a
 
 ## Package Extension
 
-Make sure you run the `build.sh` or `build.ps1` before packaging
+Make sure you run the `build.sh` or `build.ps1` before packaging and you have `vsce` installed. If you do not, run the following command: 
+
+```bash
+npm install -g @vscode/vsce
+```
 
 1. Open command palette (shift + cmd + p)
 2. Select `Task: Run Task`
