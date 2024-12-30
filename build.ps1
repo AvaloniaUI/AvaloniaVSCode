@@ -8,7 +8,7 @@ try {
     npm install --global yarn tsc typescript @vscode/vsce
 }
 catch {
-    Write-Host "Error: `"npm install --global yarn tsc typescript`""
+    Write-Host "Error: `"npm install --global yarn tsc typescript @vscode/vsce`""
     break;
 }
 
