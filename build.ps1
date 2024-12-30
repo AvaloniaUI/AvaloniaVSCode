@@ -5,7 +5,7 @@ $avalonia_sp = "$(Get-Location)\src\SolutionParser\SolutionParser.csproj"
 
 # yarn install
 try {
-    npm install --global yarn tsc typescript
+    npm install --global yarn tsc typescript @vscode/vsce
 }
 catch {
     Write-Host "Error: `"npm install --global yarn tsc typescript`""
