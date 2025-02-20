@@ -20,7 +20,7 @@ public class ProjectInfo
             {
                 var directory = new DirectoryInfo(current!);
                 files = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
-
+                files = files.Concat(directory.GetFiles("*.fsproj",SearchOption.TopDirectoryOnly)).ToArray();
                 if (files.Length != 0)
                     break;
 
