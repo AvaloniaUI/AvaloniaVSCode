@@ -12,7 +12,8 @@ public class TextDocumentSyncHandler: TextDocumentSyncHandlerBase
     private readonly ILanguageServerConfiguration _configuration;
     private readonly DocumentSelector _documentSelector;
     private readonly Workspace _workspace;
-    
+    private readonly Func<ILanguageServer?> _getServer;
+
 
     public override async Task<Unit> Handle(DidOpenTextDocumentParams request, CancellationToken cancellationToken)
     {
@@ -24,7 +25,7 @@ public class TextDocumentSyncHandler: TextDocumentSyncHandlerBase
         conf.GetSection("Avalonia").Bind(options);
 
         string text = request.TextDocument.Text;
-        await _workspace.InitializeAsync(uri);
+        await _workspace.InitializeAsync(uri, _getServer()?.Client.ClientSettings.RootPath);
         _workspace.BufferService.Add(uri, text);
         
         _logger.LogInformation("** DidOpenText: {Uri}", uri);
@@ -90,12 +91,14 @@ public class TextDocumentSyncHandler: TextDocumentSyncHandlerBase
         ILogger<TextDocumentSyncHandler> logger, 
         ILanguageServerConfiguration configuration,
         DocumentSelector documentSelector,
-        Workspace workspace)
+        Workspace workspace,
+        Func<ILanguageServer?> getServer)
     {
         _logger = logger;
         _configuration = configuration;
         _documentSelector = documentSelector;
         _workspace = workspace;
+        _getServer = getServer;
     }
     
     public class ServerOptions

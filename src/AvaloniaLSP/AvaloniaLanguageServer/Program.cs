@@ -6,7 +6,7 @@ namespace AvaloniaLanguageServer;
 
 public class Program
 {
-    static ILanguageServer server;
+    static ILanguageServer? server;
     public static async Task Main(string[] args)
     {
         InitializeLogging();
@@ -28,7 +28,12 @@ public class Program
             )
             .WithHandler<CompletionHandler>()
             .WithHandler<TextDocumentSyncHandler>()
-            .WithServices(ConfigureServices);
+            .WithServices(ConfigureServices)
+            .OnInitialize((init_server, request, token) =>
+            {
+                server = init_server;
+                return Task.CompletedTask;
+            });
     }
 
     static void ConfigureServices(IServiceCollection services)
@@ -41,7 +46,7 @@ public class Program
         services.AddSingleton(GetServer);
     }
 
-    static ILanguageServer GetServer() => server;
+    static ILanguageServer? GetServer() => server;
 
     static void InitializeLogging()
     {
