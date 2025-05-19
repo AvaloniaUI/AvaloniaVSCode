@@ -21,7 +21,7 @@ public sealed class HoverHandler : HoverHandlerBase
     {
         if (_workspace.ProjectInfo == null)
         {
-            await _workspace.InitializeAsync(request.TextDocument.Uri);
+            await _workspace.InitializeAsync(request.TextDocument.Uri, _getServer()?.Client.ClientSettings.RootPath);
         }
 
         var hover = new Hover
@@ -35,13 +35,13 @@ public sealed class HoverHandler : HoverHandlerBase
         };
 
         var server = _getServer();
-        _logger.LogInformation("*** Server: {Server}", server.Client.ClientSettings.RootPath);
+        _logger.LogInformation("*** Server: {Server}", server?.Client.ClientSettings.RootPath);
 
         return hover;
     }
 
     public HoverHandler(Workspace workspace, DocumentSelector documentSelector, ILogger<HoverHandler> logger
-    , Func<ILanguageServer> getServer)
+    , Func<ILanguageServer?> getServer)
     {
         _workspace = workspace;
         _documentSelector = documentSelector;
@@ -49,7 +49,7 @@ public sealed class HoverHandler : HoverHandlerBase
         _getServer = getServer;
     }
 
-    Func<ILanguageServer> _getServer;
+    Func<ILanguageServer?> _getServer;
 
     readonly DocumentSelector _documentSelector;
     readonly ILogger<HoverHandler> _logger;

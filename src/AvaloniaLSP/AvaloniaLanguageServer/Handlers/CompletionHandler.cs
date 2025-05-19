@@ -1,5 +1,6 @@
 using Avalonia.Ide.CompletionEngine;
 using AvaloniaLanguageServer.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace AvaloniaLanguageServer.Handlers;
 
@@ -84,16 +85,17 @@ public class CompletionHandler : CompletionHandlerBase
 
         if (_workspace.ProjectInfo.IsAssemblyExist && _workspace.CompletionMetadata == null)
         {
-            await _workspace.InitializeAsync(uri);
+            await _workspace.InitializeAsync(uri, _getServer()?.Client.ClientSettings.RootPath);
         }
 
         return _workspace.CompletionMetadata;
     }
 
-    public CompletionHandler(Workspace workspace, DocumentSelector documentSelector)
+    public CompletionHandler(Workspace workspace, DocumentSelector documentSelector, Func<ILanguageServer?> getServer)
     {
         _workspace = workspace;
         _documentSelector = documentSelector;
+        _getServer = getServer;
 
         _completionEngine = new CompletionEngine();
     }
@@ -122,6 +124,7 @@ public class CompletionHandler : CompletionHandlerBase
 
     readonly Workspace _workspace;
     readonly DocumentSelector _documentSelector;
+    readonly Func<ILanguageServer?> _getServer;
 
     readonly CompletionEngine _completionEngine;
 
