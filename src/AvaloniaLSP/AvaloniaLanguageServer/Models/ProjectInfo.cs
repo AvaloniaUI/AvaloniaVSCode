@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using AvaloniaLanguageServer.Utilities;
 
 namespace AvaloniaLanguageServer.Models;
@@ -20,7 +21,7 @@ public class ProjectInfo
             {
                 var directory = new DirectoryInfo(current!);
                 files = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
-                files = files.Concat(directory.GetFiles("*.fsproj",SearchOption.TopDirectoryOnly)).ToArray();
+                files = files.Concat(directory.GetFiles("*.fsproj", SearchOption.TopDirectoryOnly)).ToArray();
                 if (files.Length != 0)
                     break;
 
@@ -53,12 +54,17 @@ public class ProjectInfo
     {
         string? path = string.Empty;
 
-        string debugPath = Path.Combine(ProjectDirectory, "bin", "Debug");
-        string assembly = Path.GetFileNameWithoutExtension(ProjectPath) + ".dll";
+        XDocument project = XDocument.Load(ProjectPath);
+        XElement? outDirElement = project.Descendants("PropertyGroup").Descendants("OutDir").FirstOrDefault();
+        string outDir = outDirElement?.Value ?? Path.Combine("bin", "Debug");
+        string debugPath = Path.Combine(ProjectDirectory, outDir);
+
+        XElement? assemblyNameElement = project.Descendants("PropertyGroup").Descendants("AssemblyName").FirstOrDefault();
+        string assemblyName = assemblyNameElement?.Value ?? Path.GetFileNameWithoutExtension(ProjectPath);
 
         if (Directory.Exists(debugPath))
         {
-            path = Directory.GetFiles(debugPath, assembly, SearchOption.AllDirectories).FirstOrDefault();
+            path = Directory.GetFiles(debugPath, assemblyName + ".dll", SearchOption.AllDirectories).FirstOrDefault();
         }
 
         return path ?? string.Empty;
