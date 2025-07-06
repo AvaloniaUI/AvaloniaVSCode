@@ -130,10 +130,8 @@ export class WebPreviewerPanel {
 
 			#menubar {
 				background: var(--vscode-tab-activeBackground);
+				position: sticky;
 				padding: 5px;
-				position: fixed;
-				top: 0;
-				z-index: 1;
 				width: 100%;
 			}
 
