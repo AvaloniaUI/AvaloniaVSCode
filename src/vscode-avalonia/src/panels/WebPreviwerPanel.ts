@@ -91,80 +91,95 @@ export class WebPreviewerPanel {
 		this._panel.webview.html = this._getHtmlForWebview(url);
 	}
 
-	private _getHtmlForWebview(url: string) {
-		return `
-		<!DOCTYPE html>
-		<html>
+	private _getHtmlForWebview(url: string): string {
+	return `
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Web Previewer</title>
+		<style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+			}
 
-		<head>
-			<meta charset="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Web Previewer</title>
-			<style>
-				html,
-				body,
-				iframe {
-					margin: 0;
-					padding: 0;
-				}
+			body {
+				background-size: 15px 15px;
+				background-image:
+					linear-gradient(to right, var(--vscode-focusBorder) 0.1px, transparent 1px),
+					linear-gradient(to bottom, var(--vscode-focusBorder) 0.1px, transparent 1px);
+			}
 
-				body {
-					background-size: 15px 15px;
-					background-image: linear-gradient(to right, var(--vscode-focusBorder) 0.1px, transparent 1px), linear-gradient(to bottom, var(--vscode-focusBorder) 0.1px, transparent 1px);
-				}
+			button {
+				transition-duration: 0.2s;
+				border-radius: 100px;
+				border: none;
+				background: var(--vscode-button-background);
+				color: var(--vscode-button-foreground);
+				min-width: 22px;
+				font-size: 18px;
+			}
+			button:hover {
+				background: var(--vscode-button-hoverBackground);
+			}
 
-				button {
-					transition-duration: 0.2s;
-					border-radius: 100px;
-					border: none;
-					background: var(--vscode-button-background);
-					color: var(--vscode-button-foreground);
-					min-width: 22px;
-					font-size: 18px;
-				}
-				button:hover {
-					background: var(--vscode-button-hoverBackground);
-				}
+			#menubar {
+				background: var(--vscode-tab-activeBackground);
+				padding: 5px;
+				position: fixed;
+				top: 0;
+				z-index: 1;
+				width: 100%;
+			}
 
-				#menubar {
-					background: var(--vscode-tab-activeBackground);
-					padding: 5px;
-				}
+			#scalable {
+				transform-origin: top left;
+				transform: scale(1);
+				width: max-content;
+				height: max-content;
+			}
 
-				#preview {
-					position: fixed;
-					height: 100%;
-					width: 100%;
-				}
-			</style>
-		</head>
+			iframe {
+				width: 7680px;
+				height: 4320px;
+				border: none;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="menubar">
+			<button onclick="scaleContent(-1)">-</button>
+			<button onclick="scaleContent(1)">+</button>
+			<button onclick="scaleContent(0)" id="scaleBtn"></button>
+		</div>
 
-		<body>
-			<div id="menubar">
-				<button onclick="Scale(-1)">-</button>
-				<button onclick="Scale(1)">+</button>
-				<button onclick="Scale(0)" id="scaleBtn"></button>
-			</div>
-			<iframe src="${url}" frameborder="0" id="preview"></iframe>
-			<script>
-				var preview = document.getElementById('preview');
-				var scaleBtn = document.getElementById('scaleBtn');
-				var scale = 1.0;
+		<div id="scalable">
+			<iframe src="${url}" id="preview" scrolling="no"></iframe>
+		</div>
+
+		<script>
+			const scaleBtn = document.getElementById('scaleBtn');
+			const scalable = document.getElementById('scalable');
+			let scale = 1.0;
+
+			scaleBtn.textContent = scale;
+
+			function scaleContent(direction) {
+				if (direction === -1 && scale > 0.25) scale -= 0.25;
+				if (direction === 0) scale = 1.0;
+				if (direction === 1 && scale < 2) scale += 0.25;
 
 				scaleBtn.textContent = scale;
-
-				function Scale(direction) {
-					if (direction == -1 && scale > 0.25) scale -= 0.25;
-					if (direction == 0) scale = 1.0;
-					if (direction == 1 && scale < 2) scale += 0.25;
-
-					scaleBtn.textContent = scale;
-					preview.style.transformOrigin = 'top left';
-					preview.style.scale = scale;
-				}
-			</script>
-		</body>
-
-		</html>`;
+				scalable.style.transform = \`scale(\${scale})\`;
+			}
+		</script>
+	</body>
+	</html>`;
 	}
 }
