@@ -130,16 +130,19 @@ export class WebPreviewerPanel {
 
 			#menubar {
 				background: var(--vscode-tab-activeBackground);
-				position: sticky;
+				position: fixed;
 				padding: 5px;
 				width: 100%;
+				z-index: 1;
 			}
 
 			#scalable {
+				margin-top: 3%;
 				transform-origin: top left;
 				transform: scale(1);
 				width: max-content;
 				height: max-content;
+				z-index: 2;
 			}
 
 			iframe {
