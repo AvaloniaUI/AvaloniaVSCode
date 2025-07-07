@@ -133,11 +133,12 @@ export class WebPreviewerPanel {
 				position: fixed;
 				padding: 5px;
 				width: 100%;
+				height: 20px;
 				z-index: 1;
 			}
 
 			#scalable {
-				margin-top: 3%;
+				margin-top: 25px;
 				transform-origin: top left;
 				transform: scale(1);
 				width: max-content;
