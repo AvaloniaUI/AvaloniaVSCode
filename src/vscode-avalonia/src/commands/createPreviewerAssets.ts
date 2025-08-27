@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { Command } from "../commandManager";
 import { logger, AppConstants, getExecutableProject } from "../util/Utilities";
 import * as fs from "fs-extra";
+import * as path from "path";
 import { spawn } from "child_process";
 import { PreviewerParams } from "../models/PreviewerParams";
 import * as sln from "../services/solutionParser";
@@ -49,7 +50,8 @@ export class CreatePreviewerAssets implements Command {
 
 	generatePreviewerAssets(projectPath: string, project: sm.Project): Promise<PreviewerParams> {
 		return new Promise((resolve, reject) => {
-			const dotnet = spawn("dotnet", ["build", projectPath.putInQuotes(), "-nologo"]);
+			const projectDir = path.dirname(projectPath);
+			const dotnet = spawn("dotnet", ["build", projectPath.putInQuotes(), "-nologo"], { cwd: projectDir });
 			dotnet.stderr.on("data", (data) => {
 				logger.appendLine(`[ERROR]  dotnet build error: ${data}`);
 			});

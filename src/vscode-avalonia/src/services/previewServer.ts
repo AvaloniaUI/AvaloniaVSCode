@@ -23,6 +23,9 @@ export class PreviewServer implements IPreviewServer {
 	public async start() {
 		logger.appendLine(`PreviewServer.start ${this._assemblyName}`);
 
+		this._onReady = new EventDispatcher<IPreviewServer, void>(); // Remove all subscribers
+		this._onError = new EventDispatcher<IPreviewServer, Error>();
+
 		this._server.listen(this._port, this._host, () =>
 			logger.appendLine(`Preview server listening on port ${this._port}`)
 		);
@@ -45,6 +48,10 @@ export class PreviewServer implements IPreviewServer {
 				// TODO: Investigate this oddity
 				// const renderInfo = Messages.clientRenderInfoMessage();
 				// socket.write(renderInfo);
+			} else if (msg.type === Messages.updateXamlResultMessageId) {
+				logger.info("XAML update completed");
+				this._isReady = true;
+				this._onReady.dispatch((this as unknown) as IPreviewServer);
 			}
 		});
 
@@ -56,6 +63,7 @@ export class PreviewServer implements IPreviewServer {
 
 		socket.on("error", (error) => {
 			logger.appendLine(`Preview server error: ${error}`);
+			logger.show();
 		});
 	}
 
@@ -70,8 +78,12 @@ export class PreviewServer implements IPreviewServer {
 	/**
 	 * Gets whether the preview server is running.
 	 */
-	public get isRunnig() {
+	public get isRunning() {
 		return this._server?.listening;
+	}
+
+	public get isReady() {
+		return this._isReady;
 	}
 
 	/**
@@ -104,6 +116,7 @@ export class PreviewServer implements IPreviewServer {
 	}
 
 	updateXaml(fileData: sm.File, xamlText: string): void {
+		this._isReady = false;
 		const updateXamlMessage = Messages.updateXaml(fileData.targetPath, xamlText);
 		this._socket?.write(updateXamlMessage);
 	}
@@ -117,10 +130,25 @@ export class PreviewServer implements IPreviewServer {
 	}
 
 	_onMessage = new EventDispatcher<IPreviewServer, Buffer>();
+	_onReady = new EventDispatcher<IPreviewServer, void>();
+	_onError = new EventDispatcher<IPreviewServer, Error>();
+
+	public get onReady(): IEvent<IPreviewServer, void> {
+		return this._onReady.asEvent();
+	}
+
+	public get onError(): IEvent<IPreviewServer, Error> {
+		return this._onError.asEvent();
+	}
+
+	dispatchError(signal: string) {
+		this._onError.dispatch(this, new Error(`Preview server error: ${signal}`));
+	}
 
 	_server: net.Server;
 	_socket: net.Socket | undefined;
 	_host = "127.0.0.1";
+	private _isReady = false;
 
 	private static _instance: PreviewServer;
 

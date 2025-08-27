@@ -3,8 +3,9 @@ import { BSON } from "bson";
 export class Messages {
 	public static startDesignerSessionMessageId = "854887CF26944EB6B4997461B6FB96C7";
 	public static clientRenderInfoMessageId = "7A3C25D33652438D8EF186E942CC96C0";
-	public static clientSupportedPixelFormats = "63481025701643FEBADCF2FD0F88609E";
-	public static updateXamlId = "9AEC9A2E63154066B4BAE9A9EFD0F8CC";
+	public static clientSupportedPixelFormatsMessageId = "63481025701643FEBADCF2FD0F88609E";
+	public static updateXamlMessageId = "9AEC9A2E63154066B4BAE9A9EFD0F8CC";
+	public static updateXamlResultMessageId = "B7A700930C5D47FD926122086D43A2E2";
 
 	public static parseIncomingMessage(message: Buffer) {
 		const length = message.messageSize();
@@ -22,7 +23,7 @@ export class Messages {
 
 	public static clientSupportedPixelFormatsMessage(): Buffer {
 		const message = { formats: [1] };
-		return createMessage(message, Messages.clientSupportedPixelFormats);
+		return createMessage(message, Messages.clientSupportedPixelFormatsMessageId);
 	}
 
 	public static updateXaml(assemblyPath: string, xamlText: string): Buffer {
@@ -30,7 +31,7 @@ export class Messages {
 			assemblyPath: assemblyPath,
 			xaml: xamlText,
 		};
-		return createMessage(message, Messages.updateXamlId);
+		return createMessage(message, Messages.updateXamlMessageId);
 	}
 }
 

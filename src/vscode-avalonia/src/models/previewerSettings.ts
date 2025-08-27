@@ -10,4 +10,5 @@ export interface PreviewerData {
 	readonly previewerUrl?: string;
 	readonly wsAddress?: string;
 	readonly assetsAvailable?: boolean;
+	readonly targetPath?: string;
 }

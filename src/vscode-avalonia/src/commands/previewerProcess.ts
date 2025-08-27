@@ -48,12 +48,12 @@ export class PreviewerProcess implements Command {
 		const assemblyPath = fileData.targetPath;
 
 		const server = PreviewServer.getInstance(assemblyPath, bsonPort);
-		if (!server.isRunnig) {
+		if (!server.isRunning) {
 			await server.start();
 			console.log(`Preview server started on port ${bsonPort}`);
 		}
 
-		const previewerArags = [
+		const previewerArgs = [
 			"exec",
 			`--runtimeconfig "${previewParams.projectRuntimeConfigFilePath}"`,
 			`--depsfile "${previewParams.projectDepsFilePath}" "${previewParams.previewerPath}"`,
@@ -65,13 +65,13 @@ export class PreviewerProcess implements Command {
 		];
 
 		return new Promise((resolve, reject) => {
-			const previewer = spawn("dotnet", previewerArags, {
+			const previewer = spawn("dotnet", previewerArgs, {
 				env: process.env,
 				shell: true,
 			});
 
 			previewer.on("spawn", () => {
-				util.logger.appendLine(`Previewer process started with args: ${previewerArags}`);
+				util.logger.appendLine(`Previewer process started with args: ${previewerArgs}`);
 				let wsAddress = util.AppConstants.webSocketAddress(httpPort);
 				let previewerData = {
 					file: mainUri,
@@ -79,6 +79,7 @@ export class PreviewerProcess implements Command {
 					assetsAvailable: true,
 					pid: previewer.pid,
 					wsAddress: wsAddress,
+					targetPath: assemblyPath,
 				};
 				this._processManager.addProcess(assemblyPath, previewerData);
 				resolve(previewerData);
