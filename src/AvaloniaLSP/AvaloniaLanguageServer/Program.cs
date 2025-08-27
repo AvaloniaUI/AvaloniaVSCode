@@ -28,6 +28,7 @@ public class Program
             )
             .WithHandler<CompletionHandler>()
             .WithHandler<TextDocumentSyncHandler>()
+            .WithHandler<DocumentSymbolHandler>()
             .WithServices(ConfigureServices)
             .OnInitialize((init_server, request, token) =>
             {

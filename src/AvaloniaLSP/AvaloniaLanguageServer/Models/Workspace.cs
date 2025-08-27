@@ -46,7 +46,16 @@ public class Workspace
         var package = JsonSerializer.Deserialize<SolutionData>(content);
         var exeProj = package!.GetExecutableProject();
 
-        return _metadataReader.GetForTargetAssembly(exeProj?.TargetPath ?? "");
+        if (exeProj == null || string.IsNullOrEmpty(exeProj.TargetPath))
+            return null;
+
+        // Prefer designer host path as the primary XAML assembly if provided; otherwise fall back to target path.
+        var primaryXamlAssembly = string.IsNullOrEmpty(exeProj.DesignerHostPath)
+            ? exeProj.TargetPath
+            : exeProj.DesignerHostPath;
+
+        IAssemblyProvider provider = new DepsJsonFileAssemblyProvider(exeProj.TargetPath, primaryXamlAssembly);
+        return _metadataReader.GetForTargetAssembly(provider);
     }
 
     string? SolutionName(string RootPath)

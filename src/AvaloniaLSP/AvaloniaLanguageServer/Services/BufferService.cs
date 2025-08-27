@@ -22,6 +22,11 @@ public class BufferService
         return _buffers[key].GetTextTillLine(position);
     }
 
+    public string? GetFullText(DocumentUri key)
+    {
+        return _buffers.TryGetValue(key, out var buf) ? buf.GetText() : null;
+    }
+
     public void ApplyFullChange(DocumentUri key, string text)
     {
         var buffer = _buffers[key];
