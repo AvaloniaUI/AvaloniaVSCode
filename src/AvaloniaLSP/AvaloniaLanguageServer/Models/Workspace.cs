@@ -4,7 +4,6 @@ using Avalonia.Ide.CompletionEngine;
 using Avalonia.Ide.CompletionEngine.AssemblyMetadata;
 using Avalonia.Ide.CompletionEngine.DnlibMetadataProvider;
 using AvaloniaLanguageServer.Services;
-using AvaloniaLanguageServer.Utilities;
 
 
 namespace AvaloniaLanguageServer.Models;
@@ -14,12 +13,12 @@ public class Workspace
     public ProjectInfo? ProjectInfo { get; private set; }
     public BufferService BufferService { get; } = new();
 
-    public async Task InitializeAsync(DocumentUri uri)
+    public async Task InitializeAsync(DocumentUri uri, string? RootPath)
     {
         try
         {
             ProjectInfo = await ProjectInfo.GetProjectInfoAsync(uri);
-            CompletionMetadata = BuildCompletionMetadata(uri);
+            CompletionMetadata = BuildCompletionMetadata(RootPath);
         }
         catch (Exception e)
         {
@@ -27,9 +26,12 @@ public class Workspace
         }
     }
 
-    Metadata? BuildCompletionMetadata(DocumentUri uri)
+    Metadata? BuildCompletionMetadata(string? RootPath)
     {
-        var slnFile = SolutionName(uri) ?? Path.GetFileNameWithoutExtension(ProjectInfo?.ProjectDirectory);
+        if (RootPath == null)
+            return null;
+
+        var slnFile = SolutionName(RootPath) ?? Path.GetFileNameWithoutExtension(RootPath);
 
         if (slnFile == null)
             return null;
@@ -47,29 +49,14 @@ public class Workspace
         return _metadataReader.GetForTargetAssembly(exeProj?.TargetPath ?? "");
     }
 
-    string? SolutionName(DocumentUri uri)
+    string? SolutionName(string RootPath)
     {
-        string path = Utils.FromUri(uri);
-        string root = Directory.GetDirectoryRoot(path);
-        string? current = Path.GetDirectoryName(path);
-
-        if (!File.Exists(path) || current == null)
-            return null;
-
-        var files = Array.Empty<FileInfo>();
-
-        while (root != current && files.Length == 0)
+        var slnFiles = Directory.EnumerateFiles(RootPath, "*.sln", SearchOption.AllDirectories);
+        foreach (string slnFile in slnFiles)
         {
-            var directory = new DirectoryInfo(current!);
-            files = directory.GetFiles("*.sln", SearchOption.TopDirectoryOnly);
-
-            if (files.Length != 0)
-                break;
-
-            current = Path.GetDirectoryName(current);
+            return Path.GetFileName(slnFile);
         }
-
-        return files.FirstOrDefault()?.Name;
+        return null;
     }
 
     public Metadata? CompletionMetadata { get; private set; }

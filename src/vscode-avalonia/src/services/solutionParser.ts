@@ -51,7 +51,7 @@ export async function getSolutionDataFile() {
 		return;
 	}
 
-	return path.join(os.tmpdir(), path.basename(slnFile) + ".json");
+	return path.join(os.tmpdir(), `${path.basename(slnFile)}.json`);
 }
 
 /**
