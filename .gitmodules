@@ -1,6 +1,0 @@
-[submodule "src/AvaloniaVS"]
-	path = src/AvaloniaVS
-	url = https://github.com/AvaloniaUI/AvaloniaVS.git
-[submodule "src/SolutionParser"]
-	path = src/SolutionParser
-	url = https://github.com/AvaloniaUI/SolutionParser/
