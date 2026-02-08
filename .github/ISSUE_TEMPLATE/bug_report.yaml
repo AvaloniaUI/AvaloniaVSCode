@@ -23,6 +23,17 @@ body:
           placeholder: e.g. v0.10.18
       validations:
           required: true
+    - type: dropdown
+      id: tier
+      attributes:
+        label: Accelerate Tier
+        options:
+          - Community
+          - Trial
+          - Business
+          - Enterprise
+      validations:
+        required: true
     - type: input
       id: avalonia-version
       attributes:
