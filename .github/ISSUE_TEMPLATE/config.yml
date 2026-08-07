@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report issues in Avalonia Accelerate repository
-    url: https://github.com/AvaloniaUI/Accelerate/issues/new/choose
-    about: Please file bugs and feature requests in the Accelerate repository.
+  - name: Report issues in Avalonia Pro repository
+    url: https://github.com/AvaloniaUI/AvaloniaPro/issues/new/choose
+    about: Please file bugs and feature requests in the Avalonia Pro repository.
